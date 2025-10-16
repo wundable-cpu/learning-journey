@@ -19,3 +19,14 @@ I just learned how to:
 - Commit and push changes to GitHub
 
 This is real developer workflow!
+
+## Daily Notes
+### Day 4 - 16th October 2025
+**What I learned:**
+- GitHub Desktop makes Git visual and esay
+- Clone = download repo to my computer
+- Commit = save checkpoint
+- Push = upload to GitHub
+
+**How I feel:**
+I feel elated learning how to code. The mystery surrounding coding is being demystified for me. How exciting!
