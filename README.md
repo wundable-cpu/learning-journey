@@ -38,7 +38,9 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
 # My Learning Journey
 
 **Project:** Building a website for Tima Sara Hotel
+
 **Start Date: 16th October 2025
+
 **Goal:** Master web development while creating a real business website
 
 ## Progress
