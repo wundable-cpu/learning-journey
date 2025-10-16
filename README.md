@@ -15,7 +15,8 @@ This repo documents my journey from complete beginner to app developer.
 - HTML, CSS, JavaScript
 - Supabase (coming soon)
 
-##✅ Day 4
+## Day 4
+
 I just learned how to:
 - Clone a repository to my computer
 - Edit files loclly in my VS Code
