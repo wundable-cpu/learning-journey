@@ -34,3 +34,13 @@ This is real developer workflow!
 
 **How I feel:**
 I feel elated learning how to code. The mystery surrounding coding is being demystified for me. How exciting!
+
+# My Learning Journey
+
+**Project:** Building a website for Tima Sara Hotel
+**Start Date: 16th October 2025
+**Goal:** Master web development while creating a real business website
+
+## Progress
+- ✅ Day 1 - 4: Foundations complete
+- ✅ Day 5: HTML structure for hotel website
