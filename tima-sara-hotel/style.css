@@ -1,0 +1,162 @@
+/* Reset default browser style */
+* {
+    margin: 0;
+    paddin: 0;
+    box-sizing: border-box;
+}
+
+/* Body - overall body styling */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* Header styling */
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+/* Navigation links */
+nav {
+    margin-top: 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    background-color: #34495e;
+    transition: background-color 0.3s;
+}
+
+nav a:hover {
+    background-color: #1abc9c;
+}
+
+/* Sections - general spacing */
+section {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h2 {
+    color: #2c3e50;
+    font-size: 2em;
+    margin-bottom: 20px;
+    border-bottom: 10px;
+}
+
+h3 {
+    color: #34495e;
+    font-size: 1.5em;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+/* Lists */
+ul {
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+
+li {
+    margin-bottom: 10px;
+    font-size: 1.05em;
+}
+
+/* Footer */
+footer {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+/* Room cards styling*/
+.room {
+    border: 2px solid #e0e0e0;
+    padding: 20px;
+    margin: 30px 0;
+    background-color: #fafafa;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.room:hover {
+    transform: translateY(-5px);
+    box-shadow: 0.5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.room img {
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    margin: 15px auto;
+}
+
+.room strong {
+    color: #e74c3c;
+    font-size: 1.3em;
+}
+
+/* Hero section */
+#hero {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin: 0;
+    border-radius: 0;
+}
+
+#hero h2 {
+    color: white;
+    border-bottom: none;
+    font-size: 3em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#hero p {
+    font-size: 1.3em;
+    margin-top: 15px;
+}
+
+#hero img {
+    max-height: 400px;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
