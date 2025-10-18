@@ -116,6 +116,34 @@
         </ul>
        </section>
 
+       <!--Image gallery-->
+       <section id="galllery">
+        <h2>Photo Gallery</h2>
+        <button id="galleryBtn">View Hotel Photos</button>
+
+        <div id="photoGallery" style="display: none;">
+            <h3>Explore Tima Sara Hotel</h3>
+            <img src="images/front_elevetion.jpg" alt="Hotel Exterior">
+            <img src="images/front_view.png" alt="Hotel Exterior">
+            <img src="images/reception.jpg" alt="Reception">
+            <img src="images/reception_3.jpg" alt="Reception">
+            <img src="images/reception_ladies_3.jpg" alt="Reception">
+            <img src="images/superior.jpg" alt="Standard Room">
+            <img src="images/superior_5.jpg" alt="Standard Room">
+            <img src="images/executive_room.jpg" alt="Executive Room">
+            <img src="images/executive_room_1.jpg" alt="Executive Room">
+            <img src="images/executive_room_4.jpg" alt="Executive Room">
+            <img src="images/executive_room_11.jpg" alt="Executive Room">
+            <img src="images/super_deluxe.jpg" alt="Deluxe Room">
+            <img src="images/deluxe_room.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_12.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_11.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_13.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_3.jpg" alt="Deluxe Room">
+            <p><em>Click "Hide Photos" to close gallery</em></p>
+        </div>
+       </section>
+
        <!-- Contact Section-->
       <section id="contact">
         <h2>Contact Us</h2>
@@ -123,17 +151,37 @@
         <p><strong>Phone:</strong> 233 540 394 553</p>
         <p><strong>Email:</strong> timasarahotel1@gmail.com</p>
 
-        <h3>Book Your Stay</h3>
-        <p>Call us or visit in person to make a reservation.</p>
-        <!-- We'ii add a booking form later with JavaScript-->
+        <h3>Check Availabilty</h3>
+        <div id="bookingForm">
+            <label for="checkIn">Check-in Date:</label>
+            <input type="date" id="checkIn" required>
+
+            <label for="checkOut">Check-out Date:</label>
+            <input type="date" id="checkOut" required>
+
+            <label for="roomType">Room Type:</label>
+            <select id="roomType">
+                <option value="Standard">Standard Room</option>
+                <option value="executive">Executive Room</option>
+                <option value="deluxe">Deluxe Room</option>
+                <option value="suite">Royal Suite</option>
+            </select>
+
+            <button id="checkAvailabilityBtn">Check Availability</button>
+            <p id="availResult"></p>
+        </div>
+
+        <h3>Ready to book?</h3>
+        <button id="bookBtn">Book Now</button>
       </section>
 
       <!-- Footer-->
        <footer>
         <hr>
         <p>&copy; 2025 Tima Sara Hotel. All rights reserved.</p>
+        <p id="currentDate"></p>
         <p>Website built during my 28-day developer Journey!</p>
        </footer>
-    
+    <script src="script.js"></script>
 </body>
 </html>

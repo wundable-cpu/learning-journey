@@ -46,3 +46,4 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
 ## Progress
 - ✅ Day 1 - 4: Foundations complete
 - ✅ Day 5: HTML structure for hotel website
+- ✅ Day 6: CSS design for hotel website

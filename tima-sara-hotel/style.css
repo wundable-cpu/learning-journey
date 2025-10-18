@@ -77,7 +77,8 @@ p {
 
 /* Images */
 img {
-    max-width: 100%;
+    width: 100%;
+    max-width: 600px;
     height: auto;
     border-radius: 8px;
     margin: 15px 0;
@@ -174,4 +175,72 @@ footer p {
 
 #contact strong {
     color: #2c3e50;
+}
+
+/* Button styling */
+button {
+    background-color: #1abc9c;
+    color: white;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin: 20px 0;
+}
+
+button:hover {
+    background-color: #16a085;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Booking form styling */
+#bookingForm {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+#bookingForm label {
+    display: block;
+    margin-top: 15px;
+    color: #2c3e50;
+}
+
+#bookingForm input,
+#bookingForm select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #ddd;
+    font-size: 1em;
+}
+
+#bookingForm input:focus,
+#bookingForm select:focus {
+    border-color: #1abc9c;
+    outline: none
+}
+
+#availableResult {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.available {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.unavailable {
+    background-color: #f8d7da;
+    color: #721c24;
 }
