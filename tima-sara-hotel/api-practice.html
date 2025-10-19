@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Practice - Random Dog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            text-align: center;
+            padding: 20px;
+        }
+        button {
+            background-color: #1abc9c;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px;
+        }
+        button:hover {
+            background-color: #16a085;
+        }
+        img {
+            max-width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        #loading {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐕 Random Dog Picture API</h1>
+    <p>Click the button to fetch a random dog picture from an API!</p>
+    
+    <button id="dogBtn">Get Random Dog</button>
+    
+    <div id="loading" style="display: none;">Loading...</div>
+    <div id="dogContainer"></div>
+
+    <script>
+        // Get elements
+        const dogBtn = document.getElementById('dogBtn');
+        const dogContainer = document.getElementById('dogContainer');
+        const loading = document.getElementById('loading');
+
+        // Function to fetch dog image
+        const fetchDog = () => {
+            // Show loading message
+            loading.style.display = 'block';
+            dogContainer.innerHTML = '';
+
+            // Make API call
+            fetch('https://dog.ceo/api/breeds/image/random')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Response:', data);
+                    
+                    // Hide loading
+                    loading.style.display = 'none';
+                    
+                    // Display the image
+                    dogContainer.innerHTML = `
+                        <img src="${data.message}" alt="Random dog">
+                        <p>Image URL: ${data.message}</p>
+                    `;
+                })
+                .catch(error => {
+                    loading.style.display = 'none';
+                    dogContainer.innerHTML = `<p style="color: red;">Error: ${error}</p>`;
+                    console.error('Error fetching dog:', error);
+                });
+        };
+
+        // Add event listener
+        dogBtn.addEventListener('click', fetchDog);
+
+        // Fetch one on page load
+        fetchDog();
+    </script>
+</body>
+</html>

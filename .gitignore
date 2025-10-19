@@ -1,0 +1,15 @@
+# API keys and sensitive files
+weather-test.html
+api-keys.txt
+
+# Any file with "key" or "secret" in the name
+*key*
+*secret*
+
+# Environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
