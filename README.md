@@ -48,3 +48,5 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
 - ✅ Day 5: HTML structure for hotel website
 - ✅ Day 6: CSS design for hotel website
 - ✅ Day 7: Added JavaScript interactivity - buttons, gallery, booking form
+- ✅ Day 8 - 9: Understanding APIs and how they function 
+
