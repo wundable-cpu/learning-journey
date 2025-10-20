@@ -50,3 +50,4 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
 - ✅ Day 7: Added JavaScript interactivity - buttons, gallery, booking form
 - ✅ Day 8 - 9: Understanding APIs and how they function 
 - ✅ Day 10: First API calls - Dog picture and Tamale weather
+- ✅ Day 11: Completed JSON challenges - Full room management system with search, filters, and add room functionality
