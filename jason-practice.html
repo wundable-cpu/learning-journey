@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Practice - Hotel Rooms</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .room-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .room-info {
+            flex: 1;
+        }
+        .room-price {
+            font-size: 2em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .amenities {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .amenity-tag {
+            background-color: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .stats {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+        }
+        .stat-value {
+            font-size: 2em;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏨 Tima Sara Hotel - Room Management</h1>
+    
+    <div class="stats">
+        <h2>Hotel Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="totalRooms">0</div>
+                <div class="stat-label">Total Rooms</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="availableRooms">0</div>
+                <div class="stat-label">Available</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avgPrice">$0</div>
+                <div class="stat-label">Avg Price</div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button onclick="showAllRooms()">Show All Rooms</button>
+        <button onclick="showAvailable()">Show Available Only</button>
+        <button onclick="showLuxury()">Luxury Rooms ($200+)</button>
+        <button onclick="sortByPrice()">Sort by Price</button>
+    </div>
+
+
+    <div style="margin: 20px 0;">
+    <input 
+        type="text" 
+        id="searchBox" 
+        placeholder="Search rooms by type or amenity..." 
+        style="padding: 10px; width: 300px; border: 2px solid #3498db; border-radius: 5px;"
+        oninput="searchRooms()"
+    >
+
+    <div style="margin: 20px 0;">
+    <h3>Filter by Price Range:</h3>
+    <button onclick="filterByPriceRange(0, 150)">Budget ($0-$150)</button>
+    <button onclick="filterByPriceRange(151, 250)">Mid-Range ($151-$250)</button>
+    <button onclick="filterByPriceRange(251, 500)">Luxury ($251+)</button>
+</div>
+
+<div style="background: white; padding: 20px; margin: 20px 0; border-radius: 10px;">
+    <h3>➕ Add New Room</h3>
+    <form id="addRoomForm" style="display: grid; gap: 10px; max-width: 500px;">
+        <input type="text" id="newRoomType" placeholder="Room Type (e.g., Family Suite)" required>
+        
+        <input type="number" id="newRoomPrice" placeholder="Price per night" required>
+        
+        <input type="number" id="newRoomCapacity" placeholder="Guest Capacity" required>
+        
+        <input type="text" id="newRoomBedType" placeholder="Bed Type (e.g., 2 Queens)" required>
+        
+        <input type="text" id="newRoomAmenities" placeholder="Amenities (comma-separated)" required>
+        
+        <label>
+            <input type="checkbox" id="newRoomAvailable" checked> Available Now
+        </label>
+        
+        <button type="button" onclick="addNewRoom()" style="width: 200px;">Add Room</button>
+    </form>
+</div>
+
+</div>
+
+    <div id="roomsContainer"></div>
+
+    <script>
+        // Hotel data in JSON format
+        const hotelData = {
+            "name": "Tima Sara Hotel",
+            "location": "Tamale, Ghana",
+            "rooms": [
+                {
+                    "id": 1,
+                    "type": "Standard Room",
+                    "price": 100,
+                    "capacity": 2,
+                    "isAvailable": true,
+                    "amenities": ["WiFi", "TV", "AC"],
+                    "bedType": "Queen"
+                },
+                {
+                    "id": 2,
+                    "type": "Standard Room",
+                    "price": 100,
+                    "capacity": 2,
+                    "isAvailable": false,
+                    "amenities": ["WiFi", "TV", "AC"],
+                    "bedType": "Queen"
+                },
+                {
+                    "id": 3,
+                    "type": "Deluxe Room",
+                    "price": 150,
+                    "capacity": 3,
+                    "isAvailable": true,
+                    "amenities": ["WiFi", "TV", "AC", "Mini-fridge", "Balcony"],
+                    "bedType": "King"
+                },
+                {
+                    "id": 4,
+                    "type": "Deluxe Room",
+                    "price": 150,
+                    "capacity": 3,
+                    "isAvailable": true,
+                    "amenities": ["WiFi", "TV", "AC", "Mini-fridge", "Balcony"],
+                    "bedType": "King"
+                },
+                {
+                    "id": 5,
+                    "type": "Executive Suite",
+                    "price": 250,
+                    "capacity": 4,
+                    "isAvailable": true,
+                    "amenities": ["WiFi", "TV", "AC", "Mini-fridge", "Balcony", "Jacuzzi", "Living Room"],
+                    "bedType": "King"
+                },
+                {
+                    "id": 6,
+                    "type": "Presidential Suite",
+                    "price": 400,
+                    "capacity": 6,
+                    "isAvailable": false,
+                    "amenities": ["WiFi", "TV", "AC", "Full Kitchen", "2 Bathrooms", "Jacuzzi", "Living Room", "Dining Area"],
+                    "bedType": "2 Kings"
+                }
+            ]
+        };
+
+        // Function to display rooms
+        function displayRooms(roomsToShow) {
+            const container = document.getElementById('roomsContainer');
+            container.innerHTML = '';
+
+            roomsToShow.forEach(room => {
+                const roomCard = document.createElement('div');
+                roomCard.className = 'room-card';
+                
+                const amenitiesHTML = room.amenities.map(amenity => 
+                    `<span class="amenity-tag">${amenity}</span>`
+                ).join('');
+
+                roomCard.innerHTML = `
+                    <div class="room-info">
+                        <h3>${room.type} ${room.isAvailable ? '✅' : '❌'}</h3>
+                        <p><strong>Bed:</strong> ${room.bedType} | <strong>Capacity:</strong> ${room.capacity} guests</p>
+                        <div class="amenities">${amenitiesHTML}</div>
+                    </div>
+                    <div class="room-price">$${room.price}</div>
+                `;
+                
+                container.appendChild(roomCard);
+            });
+        }
+
+        // Function to update statistics
+        function updateStats(rooms) {
+            const total = rooms.length;
+            const available = rooms.filter(room => room.isAvailable).length;
+            const avgPrice = Math.round(
+                rooms.reduce((sum, room) => sum + room.price, 0) / total
+            );
+
+            document.getElementById('totalRooms').textContent = total;
+            document.getElementById('availableRooms').textContent = available;
+            document.getElementById('avgPrice').textContent = `$${avgPrice}`;
+        }
+
+        // Show all rooms
+        function showAllRooms() {
+            displayRooms(hotelData.rooms);
+            updateStats(hotelData.rooms);
+        }
+
+        // Show only available rooms
+        function showAvailable() {
+            const available = hotelData.rooms.filter(room => room.isAvailable);
+            displayRooms(available);
+            updateStats(available);
+        }
+
+        // Show luxury rooms ($200+)
+        function showLuxury() {
+            const luxury = hotelData.rooms.filter(room => room.price >= 200);
+            displayRooms(luxury);
+            updateStats(luxury);
+        }
+
+        // Sort rooms by price
+        function sortByPrice() {
+            const sorted = [...hotelData.rooms].sort((a, b) => a.price - b.price);
+            displayRooms(sorted);
+            updateStats(sorted);
+        }
+
+        // Load all rooms on page load
+        showAllRooms();
+
+        // Search function
+function searchRooms() {
+    const query = document.getElementById('searchBox').value;
+    
+    if (query === '') {
+        // If search box is empty, show all rooms
+        showAllRooms();
+        return;
+    }
+    
+    const results = hotelData.rooms.filter(room => 
+        room.type.toLowerCase().includes(query.toLowerCase()) ||
+        room.amenities.some(amenity => 
+            amenity.toLowerCase().includes(query.toLowerCase())
+        )
+    );
+    
+    displayRooms(results);
+    updateStats(results);
+}
+
+// Price range filter
+function filterByPriceRange(min, max) {
+    const filtered = hotelData.rooms.filter(room => 
+        room.price >= min && room.price <= max
+    );
+    
+    displayRooms(filtered);
+    updateStats(filtered);
+    
+    // Update the stats display
+    console.log(`Showing ${filtered.length} rooms between $${min}-$${max}`);
+}
+
+// Add new room function
+function addNewRoom() {
+    // Get form values
+    const type = document.getElementById('newRoomType').value;
+    const price = parseInt(document.getElementById('newRoomPrice').value);
+    const capacity = parseInt(document.getElementById('newRoomCapacity').value);
+    const bedType = document.getElementById('newRoomBedType').value;
+    const amenitiesInput = document.getElementById('newRoomAmenities').value;
+    const isAvailable = document.getElementById('newRoomAvailable').checked;
+    
+    // Validate
+    if (!type || !price || !capacity || !bedType || !amenitiesInput) {
+        alert('Please fill in all fields!');
+        return;
+    }
+    
+    // Convert amenities string to array
+    const amenities = amenitiesInput.split(',').map(a => a.trim());
+    
+    // Create new room object
+    const newRoom = {
+        id: hotelData.rooms.length + 1,
+        type: type,
+        price: price,
+        capacity: capacity,
+        isAvailable: isAvailable,
+        amenities: amenities,
+        bedType: bedType
+    };
+    
+    // Add to hotel data
+    hotelData.rooms.push(newRoom);
+    
+    // Clear form
+    document.getElementById('addRoomForm').reset();
+    
+    // Show success message
+    alert(`✅ ${type} added successfully!`);
+    
+    // Refresh display
+    showAllRooms();
+    
+    console.log('New room added:', newRoom);
+}
+    </script>
+</body>
+</html>
