@@ -47,6 +47,15 @@
         .flag {
             font-size: 3em;
         }
+
+        /* Images */
+img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 8px;
+    margin: 15px 0;
+}
     </style>
 </head>
 <body>
@@ -87,6 +96,34 @@
         <button onclick="getCatFact()">Get Cat Fact</button>
         <div id="catResult" class="result">Click the button to learn about cats...</div>
     </div>
+
+   <!--Photo Gallery Test insect-->
+    <section id="galllery">
+        <h2>Photo Gallery</h2>
+        <button id="galleryBtn">View Hotel Photos</button>
+
+        <div id="photoGallery" style="display: none;">
+            <h3>Explore Tima Sara Hotel</h3>
+            <img src="images/front_elevetion.jpg" alt="Hotel Exterior">
+            <img src="images/front_view.png" alt="Hotel Exterior">
+            <img src="images/reception.jpg" alt="Reception">
+            <img src="images/reception_3.jpg" alt="Reception">
+            <img src="images/reception_ladies_3.jpg" alt="Reception">
+            <img src="images/superior.jpg" alt="Standard Room">
+            <img src="images/superior_5.jpg" alt="Standard Room">
+            <img src="images/executive_room.jpg" alt="Executive Room">
+            <img src="images/executive_room_1.jpg" alt="Executive Room">
+            <img src="images/executive_room_4.jpg" alt="Executive Room">
+            <img src="images/executive_room_11.jpg" alt="Executive Room">
+            <img src="images/super_deluxe.jpg" alt="Deluxe Room">
+            <img src="images/deluxe_room.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_12.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_11.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_13.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_3.jpg" alt="Deluxe Room">
+            <p><em>Click "Hide Photos" to close gallery</em></p>
+        </div>
+       </section>
 
     <script>
         // Random Quote API
@@ -192,6 +229,25 @@
                     resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
                 });
         }
+
+        
+        // Photo Gallery Test Insert
+        // Photo Gallery Toggle
+const galleryBtn = document.getElementById('galleryBtn');
+const photoGallery = document.getElementById('photoGallery');
+
+galleryBtn.addEventListener('click', function() {
+// Check if gallery is hidden
+if (photoGallery.style.display === 'none') {
+    // Show it
+    photoGallery.style.display = 'block';
+    galleryBtn.textContent = 'Hide Photos';
+} else {
+    // Hide it
+    photoGallery.style.display = 'none';
+    galleryBtn.textContent = 'View Hotel Photos';
+}
+});
     </script>
 </body>
 </html>

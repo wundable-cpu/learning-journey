@@ -163,6 +163,57 @@ footer p {
     margin-bottom: 20px;
 }
 
+/* Weather Widget */
+#weather-widget {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+    margin: 40px auto;
+    border-radius: 15px;
+}
+
+#weatherDisplay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.weather-main {
+    font-size: 4em;
+}
+
+.weather-temp {
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.weather-detail-item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.weather-detail-item strong {
+    display: block;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.weather-detail-item span {
+    font-size: 1.5em;
+}
 /* Contact section */
 #contact {
     background-color: #ecf0f1;
@@ -243,4 +294,98 @@ button:active {
 .unavailable {
     background-color: #f8d7da;
     color: #721c24;
+}
+
+/* Currency Converter */
+#currency-converter {
+    background-color: #ecf0f1;
+    padding: 30px;
+    margin: 40px auto;
+    border-radius: 10px;
+}
+
+#currencySelect {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+#convertedPrice {
+    font-weight: bold;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    display: inline-block;
+    min-width: 200px;
+}
+
+/* Guest Reviews */
+#guest-reviews {
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+}
+
+.review-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-width: 700px;
+    margin: 0 auto;
+    min-height: 200px;
+}
+
+.review-stars {
+    color: #f39c12;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.review-text {
+    font-size: 1.1em;
+    font-style: italic;
+    color: #2c3e50;
+    margin: 20px 0;
+    line-height: 1.6;
+}
+
+.review-author {
+    font-weight: bold;
+    color: #7f8c8d;
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* Room Currency Converter */
+.room-currency-converter {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.room-currency-select {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.converted-price {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #27ae60;
+}
+
+.room-price-ghs {
+    color: #e74c3c;
+    font-size: 1.3em;
 }
