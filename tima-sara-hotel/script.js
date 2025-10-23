@@ -41,17 +41,20 @@ function checkAvailability() {
     const nights = Math.round((checkOutDate - checkInDate) / oneDay);
     
     // Get room name
-    const roomNames = {
-        'standard': 'Standard Room',
-        'deluxe': 'Deluxe Room',
-        'suite': 'Executive Suite'
-    };
-    
     const roomPrices = {
-        'standard': 1450,
-        'deluxe': 2175,
-        'suite': 3625
-    };
+    'standard': 550,
+    'executive': 800,
+    'deluxe': 1500,
+    'royal': 2500
+   };
+
+const roomNames = {
+    'standard': 'Standard Room',
+    'executive': 'Executive Room',
+    'deluxe': 'Deluxe Room',
+    'royal': 'Royal Suite'
+
+};
     
     const roomName = roomNames[roomType];
     const pricePerNight = roomPrices[roomType];
@@ -114,3 +117,25 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('✅ Tima Sara Hotel - Luxury Homepage Loaded!');
+
+
+// Scroll to booking and pre-select room
+function scrollToBooking(roomType) {
+    // Set the room type
+    document.getElementById('roomType').value = roomType;
+    
+    // Scroll to hero section
+    document.querySelector('.hero').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+    
+    // Optional: Add a subtle highlight effect
+    const bookingWidget = document.querySelector('.booking-widget');
+    bookingWidget.style.animation = 'pulse 0.5s';
+    setTimeout(() => {
+        bookingWidget.style.animation = '';
+    }, 500);
+}
+
+// Add pulse animation to CSS

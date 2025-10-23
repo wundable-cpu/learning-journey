@@ -10,234 +10,102 @@
     <!-- Navigation -->
     <nav class="main-nav">
         <div class="nav-container">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <span class="logo-icon">🌍</span>
                 <div class="logo-text">
                     <span class="hotel-name">TIMA SARA</span>
                     <span class="hotel-subtitle">HOTEL</span>
                 </div>
-            </div>
+            </a>
             
             <ul class="nav-links">
-                <li><a href="#home" class="active">HOME</a></li>
-                <li><a href="#rooms">ROOMS & SUITES</a></li>
-                <li><a href="#dining">DINING</a></li>
-                <li><a href="#experiences">EXPERIENCES</a></li>
-                <li><a href="#gallery">GALLERY</a></li>
-                <li><a href="#contact">CONTACT</a></li>
+                <li><a href="index.html" class="active">HOME</a></li>
+                <li><a href="rooms.html">ROOMS & SUITES</a></li>
+                <li><a href="dining.html">DINING</a></li>
+                <li><a href="experiences.html">EXPERIENCES</a></li>
+                <li><a href="gallery.html">GALLERY</a></li>
+                <li><a href="contact.html">CONTACT</a></li>
             </ul>
             
-            <button class="book-now-btn">BOOK NOW</button>
+            <a href="booking.html" class="book-now-btn">BOOK NOW</a>
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero-homepage">
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1 class="hero-title">ESCAPE TO PARADISE</h1>
-            <p class="hero-subtitle">Unwind in Luxury, Discover Serenity</p>
-            
-            <!-- Booking Widget -->
-            <div class="booking-widget">
-                <div class="booking-tabs">
-                    <button class="tab-btn active" onclick="switchTab('checkin')">CHECK-IN</button>
-                    <button class="tab-btn" onclick="switchTab('adults')">ADULTS</button>
-                    <button class="tab-btn" onclick="switchTab('rooms')">ROOMS</button>
-                    <button class="tab-btn" onclick="switchTab('children')">CHILDREN</button>
-                </div>
-                
-                <div class="booking-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="checkInDate">Check-in Date</label>
-                            <input type="date" id="checkInDate" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="checkOutDate">Check-out Date</label>
-                            <input type="date" id="checkOutDate" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="adults">Adults</label>
-                            <select id="adults">
-                                <option value="1">1 Adult</option>
-                                <option value="2" selected>2 Adults</option>
-                                <option value="3">3 Adults</option>
-                                <option value="4">4 Adults</option>
-                                <option value="5">5+ Adults</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="children">Children</label>
-                            <select id="children">
-                                <option value="0" selected>No Children</option>
-                                <option value="1">1 Child</option>
-                                <option value="2">2 Children</option>
-                                <option value="3">3 Children</option>
-                                <option value="4">4+ Children</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="roomType">Room Type</label>
-                            <select id="roomType">
-                                <option value="standard">Standard Room - ₵550/night</option>
-                                <option value="executive">Executive Room - ₵800/night</option>
-                                <option value="deluxe">Deluxe Room - ₵1,500/night</option>
-                                <option value="royal">Royal Suite - ₵2,500/night</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <button class="search-btn" onclick="checkAvailability()">
-                        SEARCH AVAILABILITY
-                    </button>
-                    
-                    <div id="availabilityResult" class="availability-result"></div>
-                </div>
-            </div>
+            <p class="hero-subtitle">Unwind in Luxury, Discover unique cultures</p>
+            <a href="booking.html" class="hero-cta-btn">CHECK AVAILABILITY</a>
         </div>
         
-        <!-- Scroll Indicator -->
         <div class="scroll-indicator">
-            <span>Scroll Down</span>
+            <span>Discover More</span>
             <div class="scroll-arrow">↓</div>
         </div>
     </section>
 
-    <!-- Feature Cards -->
-    <section class="features">
-        <div class="feature-card">
+    <!-- Three Feature Cards -->
+    <section class="home-features">
+        <a href="rooms.html" class="home-feature-card">
             <div class="feature-image">
-                <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800" alt="Luxurious bedroom">
+                <img src="images/royal_suite_bedroom_12.jpg" alt="Luxurious accommodations">
             </div>
-            <div class="feature-content">
+            <div class="feature-overlay">
                 <h3>LUXURIOUS ACCOMMODATIONS</h3>
-                <p>Experience unparalleled comfort in our elegantly designed rooms and suites, each offering breathtaking views of the African landscape.</p>
-                <a href="#rooms" class="feature-link">EXPLORE ROOMS →</a>
+                <p>Experience unparalleled comfort in elegantly designed rooms</p>
+                <span class="feature-arrow">→</span>
             </div>
-        </div>
+        </a>
         
-        <div class="feature-card">
+        <a href="dining.html" class="home-feature-card">
             <div class="feature-image">
-                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=800" alt="Gourmet dining">
+                <img src="images/tubani_food.jpeg" alt="World-class dining">
             </div>
-            <div class="feature-content">
-                <h3>WORLD-CLASS DINING</h3>
-                <p>Savor exquisite local and international cuisine crafted by our award-winning chefs, featuring the finest ingredients from Ghana.</p>
-                <a href="#dining" class="feature-link">VIEW MENU →</a>
+            <div class="feature-overlay">
+                <h3>AUTHENTIC LOCAL CUISINE</h3>
+                <p>Savor exquisite local and international cuisine crafted by award-winning chefs</p>
+                <span class="feature-arrow">→</span>
             </div>
-        </div>
+        </a>
         
-        <div class="feature-card">
+        <a href="experiences.html" class="home-feature-card">
             <div class="feature-image">
-                <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800" alt="Safari experience">
+                <img src="images/dagomba-horsemen.jpg" alt="Bespoke experiences">
             </div>
-            <div class="feature-content">
+            <div class="feature-overlay">
                 <h3>BESPOKE EXPERIENCES</h3>
-                <p>Immerse yourself in authentic African culture with our curated safari tours, wildlife encounters, and cultural experiences.</p>
-                <a href="#experiences" class="feature-link">DISCOVER MORE →</a>
+                <p>Immerse yourself in authentic African culture and wildlife</p>
+                <span class="feature-arrow">→</span>
             </div>
-        </div>
+        </a>
     </section>
 
-    <!-- Quick Info Section -->
-    <section class="quick-info">
-        <div class="info-container">
-            <div class="info-item">
-                <div class="info-icon">📍</div>
-                <h4>Location</h4>
-                <p>Tamale, Northern Region<br>Ghana, West Africa</p>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon">📞</div>
-                <h4>Contact</h4>
-                <p>+233 XX XXX XXXX<br>info@timasarahotel.com</p>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon">🕐</div>
-                <h4>Reception</h4>
-                <p>24/7 Service<br>Always Here for You</p>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon">⭐</div>
-                <h4>Awards</h4>
-                <p>5-Star Rated<br>Best Hotel in Northern Ghana</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Amenities Section -->
-   <section class="amenities-section">
-       <div class="amenities-header">
-           <h2>WORLD-CLASS AMENITIES</h2>
-           <p>Everything you need for an unforgettable stay</p>
-       </div>
-    
-       <div class="amenities-grid">
-          <div class="amenity-card">
-              <div class="amenity-icon">🍽️</div>
-              <h3>Modern Restaurant</h3>
-              <p>Exquisite dining experience with local and international cuisine</p>
-          </div>
-        
-          <div class="amenity-card">
-              <div class="amenity-icon">🏊</div>
-              <h3>Rooftop Pool</h3>
-              <p>Stunning infinity pool with panoramic views of Tamale</p>
-         </div>
-        
-         <div class="amenity-card">
-              <div class="amenity-icon">🅿️</div>
-              <h3>Free Parking</h3>
-              <p>Secure parking facilities for all our guests</p>
-         </div>
-        
-         <div class="amenity-card">
-              <div class="amenity-icon">📶</div>
-              <h3>High-Speed WiFi</h3>
-              <p>Complimentary fast internet throughout the property</p>
-         </div>
-        
-         <div class="amenity-card">
-              <div class="amenity-icon">🎯</div>
-              <h3>Conference Halls</h3>
-              <p>Modern facilities for meetings, events, and conferences</p>
-        </div>
-        
-        <div class="amenity-card">
-            <div class="amenity-icon">💪</div>
-            <h3>Modern Gym</h3>
-            <p>State-of-the-art fitness center with latest equipment</p>
-        </div>
-        
-        <div class="amenity-card">
-            <div class="amenity-icon">🍳</div>
-            <h3>Complimentary Meals</h3>
-            <p>Free breakfast and choice of lunch or dinner included</p>
-        </div>
-        
-        <div class="amenity-card">
-            <div class="amenity-icon">☕</div>
-            <h3>Afternoon Snacks</h3>
-            <p>Enjoy complimentary refreshments throughout the day</p>
-        </div>
-      </div>
- </section>
- 
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2025 Tima Sara Hotel. All rights reserved.</p>
-        <p>Designed & Built by Dr. Jacoby - 28-Day Developer Journey</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Tima Sara Hotel</h4>
+                <p>Luxury Safari Experience<br>Tamale, Northern Ghana</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="rooms.html">Rooms & Suites</a>
+                <a href="dining.html">Dining</a>
+                <a href="experiences.html">Experiences</a>
+                <a href="gallery.html">Gallery</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>+233 54 039 4553<br>info@timasarahotel.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tima Sara Hotel. All rights reserved.</p>
+            <p>Designed by Dr. Jacoby - 28-Day Developer Journey</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>

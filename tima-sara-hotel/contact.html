@@ -1,0 +1,157 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Tima Sara Hotel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🌍</span>
+                <div class="logo-text">
+                    <span class="hotel-name">TIMA SARA</span>
+                    <span class="hotel-subtitle">HOTEL</span>
+                </div>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="rooms.html">ROOMS & SUITES</a></li>
+                <li><a href="dining.html">DINING</a></li>
+                <li><a href="experiences.html">EXPERIENCES</a></li>
+                <li><a href="gallery.html">GALLERY</a></li>
+                <li><a href="contact.html" class="active">CONTACT</a></li>
+            </ul>
+            
+            <a href="booking.html" class="book-now-btn">BOOK NOW</a>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <section class="page-hero" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920');">
+        <div class="page-hero-overlay"></div>
+        <div class="page-hero-content">
+            <h1>GET IN TOUCH</h1>
+            <p>We're Here to Help</p>
+        </div>
+    </section>
+
+    <section class="contact-page">
+        <div class="contact-container">
+            <!-- Contact Information -->
+            <div class="contact-info-section">
+                <h2>CONTACT INFORMATION</h2>
+                <p>Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+
+                <div class="contact-cards">
+                    <div class="contact-card">
+                        <div class="contact-icon">📍</div>
+                        <h3>Visit Us</h3>
+                        <p>Tima Sara Hotel<br>Tamale, Northern Region<br>Ghana, West Africa</p>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">📞</div>
+                        <h3>Call Us</h3>
+                        <p>Reception: +233 XX XXX XXXX<br>Reservations: +233 XX XXX XXXX<br>24/7 Available</p>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">✉️</div>
+                        <h3>Email Us</h3>
+                        <p>General: info@timasarahotel.com<br>Bookings: reservations@timasarahotel.com<br>Events: events@timasarahotel.com</p>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">🕐</div>
+                        <h3>Office Hours</h3>
+                        <p>Monday - Friday: 8:00 AM - 6:00 PM<br>Saturday: 9:00 AM - 4:00 PM<br>Sunday: By Appointment<br><em>Reception: 24/7</em></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form-section">
+                <h2>SEND US A MESSAGE</h2>
+                <form id="contactForm" class="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactName">Full Name *</label>
+                            <input type="text" id="contactName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Email Address *</label>
+                            <input type="email" id="contactEmail" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactPhone">Phone Number</label>
+                            <input type="tel" id="contactPhone">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactSubject">Subject *</label>
+                            <select id="contactSubject" required>
+                                <option value="">Select Subject</option>
+                                <option value="booking">Booking Inquiry</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="events">Events & Conferences</option>
+                                <option value="experiences">Experiences & Tours</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="contactMessage">Message *</label>
+                        <textarea id="contactMessage" rows="6" required placeholder="Tell us how we can help you..."></textarea>
+                    </div>
+
+                    <button type="submit" class="contact-submit-btn">Send Message</button>
+                </form>
+                <div id="contactFormResult" class="form-result"></div>
+            </div>
+        </div>
+
+        <!-- Map Placeholder -->
+        <div class="map-section">
+            <h2>FIND US</h2>
+            <div class="map-placeholder">
+                <p>📍 Map Location</p>
+                <p><em>Add your Google Maps embed code here</em></p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Tima Sara Hotel</h4>
+                <p>Luxury Safari Experience<br>Tamale, Northern Ghana</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="rooms.html">Rooms & Suites</a>
+                <a href="dining.html">Dining</a>
+                <a href="experiences.html">Experiences</a>
+                <a href="gallery.html">Gallery</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>+233 XX XXX XXXX<br>info@timasarahotel.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tima Sara Hotel. All rights reserved.</p>
+            <p>Designed by Dr. Jacoby</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
