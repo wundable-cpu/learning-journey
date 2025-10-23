@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tima Sara Hotel - Your Home Away From Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!--Header / Navigation-->
+    <header>
+        <h1> Tima Sara Hotel</h1>
+        <nav>
+            <a href="#about">About</a>
+            <a href="#rooms">Rooms</a>
+            <a href="#amenities">Amenities</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+     <section id="hero">
+        <img src="images/front_elevation_2.jpg" alt="Tima Sara Hotel Exterior" width="100%">
+        <h2>Welcome to Tima Sara Hotel</h2>
+        <p>Experience comfort, luxury, and hospitality in the heart of Tamale</p>
+     </section>
+
+    <section id="weather-widget">
+    <h2>Current Weather in Tamale</h2>
+    <div id="weatherDisplay">
+        <p>Loading weather data...</p>
+    </div>
+   </section>
+
+     <!-- About Section-->
+      <section id="about">
+        <h2>About Us</h2>
+        <p>Tima Sara Hotel is a culturally-themed boutique hotel located in the heart of a serene suburb of Tamale, the gateway to the northern regions of Ghana.</p> 
+        <p>It has a restaurant that provides authentic northern cuisine, a rooftop swimming pool, gym, and cultural event spaces</p>
+        
+      </section>
+
+      <!-- Rooms Section-->
+
+       <section id="rooms">
+        <h2>Our Rooms</h2>
+
+        <!-- Standard Room - ₵550 per night -->
+<div class="room">
+    <h3>Standard Room</h3>
+    <img src="images/superior.jpg" alt="Standard room" width="400">
+    <p>Comfortable room with all essential amenities</p>
+    <ul>
+        <li>Queen-size bed</li>
+        <li>Premium bathroom</li>
+        <li>Air conditioning</li>
+        <li>Free WiFi</li>
+    </ul>
+    <p><strong class="room-price-ghs">₵550</strong> per night</p>
+    <div class="room-currency-converter">
+        <select class="room-currency-select" onchange="convertRoomPrice(this, 550)">
+            <option value="GHS" selected>₵ GHS</option>
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="NGN">₦ NGN</option>
+            <option value="ZAR">R ZAR</option>
+        </select>
+        <span class="converted-price">₵550</span>
+    </div>
+</div>
+
+<!-- Executive Room - ₵800 per night -->
+<div class="room">
+    <h3>Executive Room</h3>
+    <img src="images/executive_room.jpg" alt="Executive room" width="400">
+    <p>Comfortable room with all essential amenities</p>
+    <ul>
+        <li>Queen-size bed</li>
+        <li>Soft furnishing</li>
+        <li>Premium bathroom</li>
+        <li>Air conditioning</li>
+        <li>Free WiFi</li>
+    </ul>
+    <p><strong class="room-price-ghs">₵800</strong> per night</p>
+    <div class="room-currency-converter">
+        <select class="room-currency-select" onchange="convertRoomPrice(this, 800)">
+            <option value="GHS" selected>₵ GHS</option>
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="NGN">₦ NGN</option>
+            <option value="ZAR">R ZAR</option>
+        </select>
+        <span class="converted-price">₵800</span>
+    </div>
+</div>
+
+<!-- Deluxe Room - ₵1,500 per night -->
+<div class="room">
+    <h3>Deluxe Room</h3>
+    <img src="images/deluxe_room.jpg" alt="Deluxe room" width="400">
+    <p>Spacious room with premium amenities and balcony</p>
+    <ul>
+        <li>King-size bed</li>
+        <li>Premium bathroom</li>
+        <li>Mini-fridge</li>
+        <li>Kitchenette</li>
+        <li>Living Area</li>
+        <li>Luxury soft furnishing</li>
+        <li>Air conditioning</li>
+        <li>Free WiFi</li>
+    </ul>
+    <p><strong class="room-price-ghs">₵1,500</strong> per night</p>
+    <div class="room-currency-converter">
+        <select class="room-currency-select" onchange="convertRoomPrice(this, 1500)">
+            <option value="GHS" selected>₵ GHS</option>
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="NGN">₦ NGN</option>
+            <option value="ZAR">R ZAR</option>
+        </select>
+        <span class="converted-price">₵1500</span>
+    </div>
+</div>
+
+<!-- Royal Suite - ₵2,500 per night -->
+<div class="room">
+    <h3>Executive Suite</h3>
+    <img src="images/royal_suite_sitting_2.jpg" alt="Executive suite" width="400">
+    <p>Luxurious suite with separate living area</p>
+    <ul>
+        <li>King-size bed</li>
+        <li>Separate living room</li>
+        <li>Luxury soft furnishing</li>
+        <li>Premium Bath and Shower</li>
+        <li>Kitchenette</li>
+        <li>Modern Dining area</li>
+        <li>Balcony View</li>
+        <li>Air conditioning</li>
+        <li>Free WiFi</li>
+    </ul>
+    <p><strong class="room-price-ghs">₵2,500</strong> per night</p>
+    <div class="room-currency-converter">
+        <select class="room-currency-select" onchange="convertRoomPrice(this, 2500)">
+            <option value="GHS" selected>₵ GHS</option>
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="NGN">₦ NGN</option>
+            <option value="ZAR">R ZAR</option>
+        </select>
+        <span class="converted-price">₵2500</span>
+    </div>
+</div>
+       </section>
+
+       <!--Amenities Section-->
+       <section id="amenities">
+        <h2>Hotel Amenities</h2>
+        <ul>
+            <li>24-hour front desk</li>
+            <li>Free parking</li>
+            <li>Restaurant</li>
+            <li>Rooftop Swimming pool</li>
+            <li>Conference rooms</li>
+            <li>Laundry services</li>
+            <li>24-hour gym</li>
+        </ul>
+       </section>
+
+       <!--Image gallery-->
+       <section id="galllery">
+        <h2>Photo Gallery</h2>
+        <button id="galleryBtn">View Hotel Photos</button>
+
+        <div id="photoGallery" style="display: none;">
+            <h3>Explore Tima Sara Hotel</h3>
+            <img src="images/front_elevetion.jpg" alt="Hotel Exterior">
+            <img src="images/front_view.png" alt="Hotel Exterior">
+            <img src="images/reception.jpg" alt="Reception">
+            <img src="images/reception_3.jpg" alt="Reception">
+            <img src="images/reception_ladies_3.jpg" alt="Reception">
+            <img src="images/superior.jpg" alt="Standard Room">
+            <img src="images/superior_5.jpg" alt="Standard Room">
+            <img src="images/executive_room.jpg" alt="Executive Room">
+            <img src="images/executive_room_1.jpg" alt="Executive Room">
+            <img src="images/executive_room_4.jpg" alt="Executive Room">
+            <img src="images/executive_room_11.jpg" alt="Executive Room">
+            <img src="images/super_deluxe.jpg" alt="Deluxe Room">
+            <img src="images/deluxe_room.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_12.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_11.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_13.jpg" alt="Deluxe Room">
+            <img src="images/super_deluxe_3.jpg" alt="Deluxe Room">
+            <p><em>Click "Hide Photos" to close gallery</em></p>
+        </div>
+       </section>
+
+       <!--Guest Reviews section-->
+    <section id="guest-reviews">
+    <h2>⭐ What Our Guests Say</h2>
+    <div id="reviewsContainer">
+        <div id="currentReview" class="review-card"></div>
+        <div style="margin-top: 20px;">
+            <button onclick="previousReview()">← Previous</button>
+            <button onclick="nextReview()">Next →</button>
+            <button onclick="autoRotateReviews()">Auto-Rotate</button>
+        </div>
+    </div>
+   </section>
+
+       <!-- Contact Section-->
+        <section id="contact">
+    <h2>📧 Contact Us</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px;">
+        <!-- Contact Info Column -->
+        <div>
+            <h3>Get in Touch</h3>
+            <p><strong>📍 Address:</strong> 110 Fuo Extension, Fuo, Tamale, Ghana</p>
+            <p><strong>📞 Phone:</strong>+233 54 039 4553</p>
+            <p><strong>📧 Email:</strong> timasarahotel1@gmail.com</p>
+            <p><strong>⏰ Reception Hours:</strong> 24/7</p>
+            
+            <!-- Local Time Widget -->
+            <div id="local-time-widget" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; margin: 20px 0;">
+                <h3>🕐 Current Time in Tamale</h3>
+                <div id="currentTime" style="font-size: 3em; font-weight: bold; margin: 10px 0;"></div>
+                <p id="currentDate" style="font-size: 1.2em;"></p>
+                <p style="font-size: 0.9em; opacity: 0.9;">GMT+0 (No Daylight Saving)</p>
+            </div>
+            
+            <!-- MAP -->
+            <div style="margin-top: 20px;">
+                <h3>📍 Find Us</h3>
+                <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d28477.493626383533!2d-0.8511839791742737!3d9.416606237235234!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1760994336040!5m2!1sen!2sus" 
+                width="600" 
+                height="450" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+               </iframe>
+                   
+                <p style="font-size: 0.9em; color: #7f8c8d; margin-top: 10px;">
+                    <em>Note: Replace this with your actual Google Maps embed link</em>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Contact Form Column -->
+        <div>
+            <!-- CHECK AVAILABILITY -->
+            <h3>Check Availability</h3>
+            <div id="bookingForm" style="background-color: #f9f9f9; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
+                <label for="checkIn">Check-in Date:</label>
+                <input type="date" id="checkIn" required>
+                
+                <label for="checkOut">Check-out Date:</label>
+                <input type="date" id="checkOut" required>
+                
+                <label for="roomType">Room Type:</label>
+                <select id="roomType">
+                    <option value="standard">Standard Room (₵1,450/night)</option>
+                    <option value="deluxe">Deluxe Room (₵2,175/night)</option>
+                    <option value="suite">Executive Suite (₵3,625/night)</option>
+                </select>
+                
+                <button id="checkAvailBtn" onclick="checkAvailability()">Check Availability</button>
+                <p id="availResult"></p>
+            </div>
+            
+            <!-- CONTACT FORM -->
+            <h3>Send Us a Message</h3>
+            <form id="contactForm" onsubmit="handleContactForm(event)">
+                <div style="margin-bottom: 15px;">
+                    <label for="guestName">Full Name *</label>
+                    <input type="text" id="guestName" required 
+                           style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="guestEmail">Email Address *</label>
+                    <input type="email" id="guestEmail" required 
+                           style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="guestPhone">Phone Number</label>
+                    <input type="tel" id="guestPhone" 
+                           style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="inquiryType">Inquiry Type *</label>
+                    <select id="inquiryType" required 
+                            style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;">
+                        <option value="">Select...</option>
+                        <option value="booking">Room Booking</option>
+                        <option value="info">General Information</option>
+                        <option value="event">Event Booking</option>
+                        <option value="complaint">Complaint</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="guestMessage">Message *</label>
+                    <textarea id="guestMessage" required rows="5" 
+                              style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;"></textarea>
+                </div>
+                
+                <button type="submit" style="width: 100%; padding: 15px; font-size: 1.1em;">
+                    Send Message
+                </button>
+            </form>
+            
+            <div id="formResponse" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+</section>
+
+      <!-- Footer-->
+
+<footer>
+    <hr>
+    <div id="localTime" style="margin: 15px 0; font-size: 1.1em;">
+        <strong>🕐 Current Time in Tamale:</strong> <span id="ghanaTime">Loading...</span>
+    </div>
+    <p>&copy; 2025 Tima Sara Hotel. All rights reserved.</p>
+    <p>Website built during my 28-day developer journey!</p>
+</footer>
+
+    <script src="script.js"></script>
+
+    
+</body>
+</html>
