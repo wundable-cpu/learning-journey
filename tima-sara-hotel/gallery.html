@@ -47,18 +47,18 @@
 
         <!-- Gallery Filter -->
         <div class="gallery-filter">
-            <button class="filter-btn active" onclick="filterGallery('all')">All</button>
-            <button class="filter-btn" onclick="filterGallery('rooms')">Rooms</button>
-            <button class="filter-btn" onclick="filterGallery('dining')">Dining</button>
-            <button class="filter-btn" onclick="filterGallery('facilities')">Facilities</button>
-            <button class="filter-btn" onclick="filterGallery('experiences')">Experiences</button>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="rooms">Rooms</button>
+            <button class="filter-btn" data-filter="dining">Dining</button>
+            <button class="filter-btn" data-filter="facilities">Facilities</button>
+            <button class="filter-btn" data-filter="experiences">Experiences</button>
         </div>
 
         <!-- Gallery Grid -->
         <div class="gallery-grid">
             <!-- Rooms -->
             <div class="gallery-item" data-category="rooms">
-                <img src="images/room-standard.jpg" alt="Standard Room">
+                <img src="images/superior.jpg" alt="Standard Room">
                 <div class="gallery-overlay">
                     <h3>Standard Room</h3>
                     <p>Elegant Comfort</p>
@@ -66,7 +66,7 @@
             </div>
 
             <div class="gallery-item" data-category="rooms">
-                <img src="images/room-standard.jpg" alt="Executive Room">
+                <img src="images/executive_room_4.jpg" alt="Executive Room">
                 <div class="gallery-overlay">
                     <h3>Executive Room</h3>
                     <p>Sophisticated Luxury</p>
@@ -74,7 +74,7 @@
             </div>
 
             <div class="gallery-item" data-category="rooms">
-                <img src="images/room-standard.jpg" alt="Deluxe Room">
+                <img src="images/super_deluxe_3.jpg" alt="Deluxe Room">
                 <div class="gallery-overlay">
                     <h3>Deluxe Room</h3>
                     <p>Spacious Elegance</p>
@@ -82,7 +82,7 @@
             </div>
 
             <div class="gallery-item" data-category="rooms">
-                <img src="images/room-standard.jpg" alt="Royal Suite">
+                <img src="images/royal_suite_sitting_2.jpg" alt="Royal Suite">
                 <div class="gallery-overlay">
                     <h3>Royal Suite</h3>
                     <p>Ultimate Luxury</p>
@@ -91,7 +91,7 @@
 
             <!-- Dining -->
             <div class="gallery-item" data-category="dining">
-                <img src="images/room-standard.jpg" alt="Restaurant">
+                <img src="images/restaurant_3.jpg" alt="Restaurant">
                 <div class="gallery-overlay">
                     <h3>Main Restaurant</h3>
                     <p>Culinary Excellence</p>
@@ -99,7 +99,7 @@
             </div>
 
             <div class="gallery-item" data-category="dining">
-                <img src="images/room-standard.jpg" alt="Rooftop Bar">
+                <img src="images/sunset_tamale.webp" alt="Rooftop Bar">
                 <div class="gallery-overlay">
                     <h3>Rooftop Bar</h3>
                     <p>Sunset Views</p>
@@ -107,7 +107,7 @@
             </div>
 
             <div class="gallery-item" data-category="dining">
-                <img src="images/room-standard.jpg" alt="Fine Dining">
+                <img src="images/TZ_ayoyo3.jpg" alt="Fine Dining">
                 <div class="gallery-overlay">
                     <h3>Gourmet Cuisine</h3>
                     <p>Artfully Crafted</p>
@@ -116,15 +116,15 @@
 
             <!-- Facilities -->
             <div class="gallery-item" data-category="facilities">
-                <<img src="images/room-standard.jpg" alt="Swimming Pool">
+
                 <div class="gallery-overlay">
                     <h3>Infinity Pool</h3>
                     <p>Rooftop Paradise</p>
                 </div>
             </div>
-
+            
             <div class="gallery-item" data-category="facilities">
-                <img src="images/room-standard.jpg" alt="Gym">
+                <img src="images/gym 1.jpg" alt="Gym">
                 <div class="gallery-overlay">
                     <h3>Fitness Center</h3>
                     <p>State-of-the-Art</p>
@@ -132,7 +132,7 @@
             </div>
 
             <div class="gallery-item" data-category="facilities">
-                <img src="images/room-standard.jpg" alt="Conference Hall">
+                <img src="images/conference_hall_1.jpg" alt="Conference Hall">
                 <div class="gallery-overlay">
                     <h3>Conference Halls</h3>
                     <p>Modern Meeting Spaces</p>
@@ -141,7 +141,7 @@
 
             <!-- Experiences -->
             <div class="gallery-item" data-category="experiences">
-                <img src="images/room-standard.jpg" alt="Safari">
+                <img src="images/mole_park_tours.jpg" alt="Safari">
                 <div class="gallery-overlay">
                     <h3>Wildlife Safari</h3>
                     <p>African Adventure</p>
@@ -149,7 +149,7 @@
             </div>
 
             <div class="gallery-item" data-category="experiences">
-                <img src="images/room-standard.jpg" alt="Cultural Tour">
+                <img src="images/ancient_mosque.jpg" alt="Cultural Tour">
                 <div class="gallery-overlay">
                     <h3>Cultural Tours</h3>
                     <p>Authentic Experience</p>
@@ -157,7 +157,7 @@
             </div>
 
             <div class="gallery-item" data-category="experiences">
-                <img src="images/room-standard.jpg" alt="Traditional Dance">
+                <img src="images/dance_takai.jpg" alt="Traditional Dance">
                 <div class="gallery-overlay">
                     <h3>Traditional Dance</h3>
                     <p>Vibrant Culture</p>
@@ -166,7 +166,7 @@
 
             <!-- Add more placeholders -->
             <div class="gallery-item" data-category="facilities">
-                <img src="images/room-standard.jpg" alt="Hotel Exterior">
+                <img src="images/front_elevetion.jpg" alt="Hotel Exterior">
                 <div class="gallery-overlay">
                     <h3>Hotel Exterior</h3>
                     <p>Modern Architecture</p>
@@ -174,7 +174,7 @@
             </div>
 
             <div class="gallery-item" data-category="experiences">
-                <img src="images/room-standard.jpg" alt="Sunset">
+                <img src="images/sunset_tamale.webp" alt="Sunset">
                 <div class="gallery-overlay">
                     <h3>African Sunset</h3>
                     <p>Breathtaking Views</p>
@@ -182,7 +182,7 @@
             </div>
 
             <div class="gallery-item" data-category="dining">
-                <img src="images/room-standard.jpg" alt="Poolside">
+                <img src="images/pool.jpg" alt="Poolside">
                 <div class="gallery-overlay">
                     <h3>Poolside Service</h3>
                     <p>Relaxation Redefined</p>
