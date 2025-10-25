@@ -56,3 +56,6 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
              - Fixed booking price calculator and gallery filter buttons
              - Added real Tima Sara Hotel data: 4 room types, 8 amenities, authentic pricing
              - Complete multi-page luxury hotel website - 7 pages, fully functional, production-ready
+             - Fixed booking price calculator and gallery filter button
+             - Added official Tima Sara Hotel logo to all pages
+             - Fixed navigation: stays fixed at top, instant black background, proper logo size
