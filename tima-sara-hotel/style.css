@@ -25,63 +25,49 @@ html {
     scroll-behavior: smooth;
 }
 
-/* ================================
-   NAVIGATION
-   ================================ */
-.main-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    padding: 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-.nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-}
-
+/* ============ LOGO FIX - OPTIMAL SIZE ============ */
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
     text-decoration: none;
     transition: transform 0.3s;
+    flex-shrink: 0;
 }
 
 .logo:hover {
     transform: scale(1.05);
 }
 
-.logo-icon {
-    font-size: 2rem;
+img.logo-image,
+.logo-image,
+a.logo img,
+.nav-container .logo img {
+    height: 70px !important; 
+    min-height: 90px !important;  /* for nav-container */       /* Increased for visibility */
+    width: auto !important;
+    max-width: 250px !important;
+    object-fit: contain !important;
+    display: block !important;
 }
 
-.logo-text {
+/* Adjust nav container to accommodate larger logo */
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
-    line-height: 1.2;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem !important;   /* More breathing room */
+    min-height: 90px !important;     /* Taller nav bar */
 }
+/* ============ END LOGO FIX ============ */
 
-.hotel-name {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: var(--gold);
-    letter-spacing: 2px;
-}
-
+/* Remove ANY old logo styles that might conflict */
+.logo-icon,
+.logo-text,
+.hotel-name,
 .hotel-subtitle {
-    font-size: 0.8rem;
-    color: #fff;
-    letter-spacing: 3px;
+    display: none !important;
 }
 
 .nav-links {
@@ -1711,4 +1697,38 @@ html {
 .experience-card,
 .dining-card {
     opacity: 0;
+}
+
+/* ================================
+   LOGO STYLES (PROPORTIONAL)
+   ================================ */
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.logo-image {
+    height: 45px; /* Adjust this value: 35px, 40px, 45px, or 50px */
+    width: auto;
+    max-width: 200px; /* Prevents logo from being too wide */
+    object-fit: contain;
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+    .logo-image {
+        height: 35px; /* Smaller on mobile */
+    }
+}
+
+@media (min-width: 1400px) {
+    .logo-image {
+        height: 50px; /* Slightly larger on big screens */
+    }
 }
