@@ -192,7 +192,7 @@ a.logo img,
     animation: fadeInUp 1s ease-out;
 }
 
-.hero-subtitle {
+.hero-subtitle, .gallery-note {
     font-size: 1.8rem;
     font-weight: 300;
     letter-spacing: 4px;
