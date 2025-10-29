@@ -59,3 +59,8 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
              - Fixed booking price calculator and gallery filter button
              - Added official Tima Sara Hotel logo to all pages
              - Fixed navigation: stays fixed at top, instant black background, proper logo size
+             - Cloudflare account created, custom domain purchased, Timasarahotel.com
+             - Created email hosting with Namecheap, info@timasarahotel.com
+             - Cloudflare DNS is 100% configured correctly
+             - The CNAME file is successfully created and pushed to GitHub 
+
