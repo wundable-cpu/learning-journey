@@ -63,4 +63,5 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
              - Created email hosting with Namecheap, info@timasarahotel.com
              - Cloudflare DNS is 100% configured correctly
              - The CNAME file is successfully created and pushed to GitHub 
+             - Domain is LIVE and working
 
