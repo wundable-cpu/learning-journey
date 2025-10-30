@@ -65,3 +65,10 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
              - The CNAME file is successfully created and pushed to GitHub 
              - Domain is LIVE and working
 
+## My Site Enhancement Journey
+- ✅ Day 1: GSAP ScrollTrigger Animations
+             - Added GSAP to my site
+             - Created animations.js file
+             - Updated CSS for Smooth Animations
+             - Linked animation.js to HTML
+

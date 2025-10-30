@@ -1754,3 +1754,54 @@ a.logo img,
     margin-bottom: 1rem;
     object-fit: contain;
 }
+
+/* ============================================
+   GSAP ANIMATION ENHANCEMENTS
+   ============================================ */
+
+/* Ensure smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Initial states for animated elements (prevents flash) */
+.hero-title,
+.hero-subtitle,
+.hero-cta-btn,
+.home-feature-card,
+.room-detail-card,
+.experience-card,
+.gallery-item,
+.dining-card,
+.contact-card {
+    opacity: 1; /* Will be animated by GSAP */
+}
+
+/* Parallax container setup */
+.hero-homepage {
+    background-attachment: fixed;
+    background-position: 50% 0%;
+}
+
+/* Scrolled navbar state */
+.main-nav.scrolled {
+    padding: 0.5rem 2rem !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+.main-nav.scrolled .logo-image {
+    height: 55px !important;
+    transition: height 0.3s ease;
+}
+
+/* Smooth transitions for all interactive elements */
+.room-detail-card,
+.experience-card,
+.gallery-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Enhanced hover states work with GSAP */
+.home-feature-card:hover {
+    transform: scale(1.02);
+}
