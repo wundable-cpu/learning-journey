@@ -1,38 +1,59 @@
 // animations.js - GSAP ScrollTrigger Animations for Tima Sara Hotel
 
-// Register ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
-
-// ============================================
-// HOMEPAGE ANIMATIONS
-// ============================================
-
-// Hero Title Animation - Fade in from below
-gsap.from('.hero-title', {
-    y: 100,
-    opacity: 0,
-    duration: 1.2,
-    ease: 'power3.out',
-    delay: 0.3
+// Ensure GSAP waits for all content to load
+window.addEventListener('load', function() {
+    ScrollTrigger.refresh();
 });
 
-// Hero Subtitle - Stagger after title
-gsap.from('.hero-subtitle', {
-    y: 50,
-    opacity: 0,
-    duration: 1,
-    ease: 'power3.out',
-    delay: 0.6
-});
+// REPLACE the existing hero animations with this:
 
-// Hero CTA Button - Pop in
-gsap.from('.hero-cta-btn', {
-    scale: 0.8,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'back.out(1.7)',
-    delay: 0.9
-});
+// Hero Title Animation - Fade in from below (FIXED)
+gsap.fromTo('.hero-title', 
+    {
+        y: 100,
+        opacity: 0
+    },
+    {
+        y: 0,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power3.out',
+        delay: 0.3,
+        clearProps: 'all' // Clears GSAP properties after animation
+    }
+);
+
+// Hero Subtitle - Stagger after title (FIXED)
+gsap.fromTo('.hero-subtitle',
+    {
+        y: 50,
+        opacity: 0
+    },
+    {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: 'power3.out',
+        delay: 0.6,
+        clearProps: 'all'
+    }
+);
+
+// Hero CTA Button - Pop in (FIXED)
+gsap.fromTo('.hero-cta-btn',
+    {
+        scale: 0.8,
+        opacity: 0
+    },
+    {
+        scale: 1,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'back.out(1.7)',
+        delay: 0.6,
+        clearProps: 'all'
+    }
+);
 
 // ============================================
 // PARALLAX HERO EFFECT
@@ -72,31 +93,33 @@ gsap.from('.home-feature-card', {
 // ROOMS PAGE ANIMATIONS
 // ============================================
 
-// Room detail cards - Fade and slide
-gsap.from('.room-detail-card', {
-    scrollTrigger: {
-        trigger: '.rooms-grid-page',
-        start: 'top 75%'
-    },
-    x: -100,
-    opacity: 0,
-    duration: 1,
-    stagger: 0.3,
-    ease: 'power2.out'
-});
+// REPLACE the rooms animations in animations.js:
 
-// Alternate direction for even cards
-gsap.utils.toArray('.room-detail-card:nth-child(even)').forEach(card => {
-    gsap.from(card, {
-        scrollTrigger: {
-            trigger: card,
-            start: 'top 80%'
-        },
-        x: 100, // Come from right instead
-        opacity: 0,
-        duration: 1,
-        ease: 'power2.out'
-    });
+// Room detail cards - Fade and slide (FIXED)
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Check if we're on rooms page
+    if (document.querySelector('.rooms-grid-page')) {
+        
+        // Animate ALL room cards
+        const roomCards = gsap.utils.toArray('.room-detail-card');
+        
+        roomCards.forEach((card, index) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none',
+                    markers: false // Set to true to debug
+                },
+                x: index % 2 === 0 ? -100 : 100, // Alternate directions
+                opacity: 0,
+                duration: 1,
+                ease: 'power2.out'
+            });
+        });
+    }
 });
 
 // ============================================
@@ -104,32 +127,35 @@ gsap.utils.toArray('.room-detail-card:nth-child(even)').forEach(card => {
 // ============================================
 
 // Experience cards grid
-gsap.from('.experience-card', {
-    scrollTrigger: {
-        trigger: '.experiences-grid',
-        start: 'top 75%'
-    },
-    scale: 0.8,
-    opacity: 0,
-    duration: 0.6,
-    stagger: 0.15,
-    ease: 'back.out(1.5)'
-});
+// gsap.from('.experience-card', {
+//    scrollTrigger: {
+//        trigger: '.experiences-grid',
+//        start: 'top 75%'
+//    },
+//    scale: 0.8,
+//    opacity: 0,
+//    duration: 0.6,
+//    stagger: 0.15,
+//    ease: 'back.out(1.5)'
+//});
 
 // ============================================
 // GALLERY ANIMATIONS
 // ============================================
 
-// Gallery items pop in
+// REPLACE the gallery animation in animations.js:
+
+// Gallery items pop in (FASTER)
 gsap.from('.gallery-item', {
     scrollTrigger: {
         trigger: '.gallery-grid',
-        start: 'top 70%'
+        start: 'top 85%', // Changed from 70% - triggers earlier
+        toggleActions: 'play none none none'
     },
-    scale: 0,
+    scale: 0.3, // Start smaller for more dramatic effect
     opacity: 0,
-    duration: 0.5,
-    stagger: 0.05,
+    duration: 0.4, // Faster - changed from 0.5
+    stagger: 0.03, // Faster stagger - changed from 0.05
     ease: 'back.out(1.7)'
 });
 

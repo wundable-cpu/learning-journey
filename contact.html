@@ -51,16 +51,12 @@
                     </div>
 
                     <div class="contact-card">
-                        <div class="contact-icon">📞</div>
-                        <h3>Call Us</h3>
-                        <p>Reception: +233 54 039 4553<br>Reservations: +233 54 039 4553<br>24/7 Available</p>
-                    </div>
-
-                    <div class="contact-card">
-                        <div class="contact-icon">✉️</div>
-                        <h3>Email Us</h3>
-                        <p>General: info@timasarahotel.com<br>Bookings: reservations@timasarahotel.com<br>Events: events@timasarahotel.com</p>
-                    </div>
+                       <div class="contact-icon">✉️</div>
+                           <h3>Email Us</h3>
+                           <p>Email: info@timasarahotel.com<br>
+                             We respond within 24 hours<br>
+                             Available 7 days a week</p>
+                   </div>
 
                     <div class="contact-card">
                         <div class="contact-icon">🕐</div>
@@ -73,44 +69,44 @@
             <!-- Contact Form -->
             <div class="contact-form-section">
                 <h2>SEND US A MESSAGE</h2>
-                <form id="contactForm" class="contact-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="contactName">Full Name *</label>
-                            <input type="text" id="contactName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="contactEmail">Email Address *</label>
-                            <input type="email" id="contactEmail" required>
-                        </div>
-                    </div>
+                <form id="contactForm" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+  <!-- Update input names for Formspree -->
+                     <div class="form-row">
+                         <div class="form-group">
+                             <label for="contactName">Full Name *</label>
+                             <input type="text" id="contactName" name="name" required>
+                         </div>
+                         <div class="form-group">
+                             <label for="contactEmail">Email Address *</label>
+                             <input type="email" id="contactEmail" name="email" required>
+                         </div>
+                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="contactPhone">Phone Number</label>
-                            <input type="tel" id="contactPhone">
-                        </div>
-                        <div class="form-group">
-                            <label for="contactSubject">Subject *</label>
-                            <select id="contactSubject" required>
-                                <option value="">Select Subject</option>
-                                <option value="booking">Booking Inquiry</option>
-                                <option value="general">General Inquiry</option>
-                                <option value="events">Events & Conferences</option>
-                                <option value="experiences">Experiences & Tours</option>
-                                <option value="feedback">Feedback</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
+                     <div class="form-row">
+                         <div class="form-group">
+                             <label for="contactPhone">Phone Number</label>
+                             <input type="tel" id="contactPhone" name="phone">
+                         </div>
+                         <div class="form-group">
+                             <label for="contactSubject">Subject *</label>
+                             <select id="contactSubject" name="subject" required>
+                                 <option value="">Select Subject</option>
+                                 <option value="booking">Booking Inquiry</option>
+                                 <option value="general">General Inquiry</option>
+                                 <option value="events">Events & Conferences</option>
+                                 <option value="experiences">Experiences & Tours</option>
+                                 <option value="feedback">Feedback</option>
+                                 <option value="other">Other</option>
+                             </select>
+                         </div>
+                     </div>
+                     <div class="form-group full-width">
+                         <label for="contactMessage">Message *</label>
+                         <textarea id="contactMessage" name="message" rows="6" required placeholder="Tell us how we can help you..."></textarea>
+                     </div>
 
-                    <div class="form-group full-width">
-                        <label for="contactMessage">Message *</label>
-                        <textarea id="contactMessage" rows="6" required placeholder="Tell us how we can help you..."></textarea>
-                    </div>
-
-                    <button type="submit" class="contact-submit-btn">Send Message</button>
-                </form>
+                     <button type="submit" class="contact-submit-btn">Send Message</button>
+                 </form>
                 <div id="contactFormResult" class="form-result"></div>
             </div>
         </div>

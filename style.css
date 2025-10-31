@@ -807,68 +807,47 @@ a.logo img,
 /* ================================
    EXPERIENCES PAGE
    ================================ */
-.experiences-content {
-    padding: 5rem 2rem;
-    background: #fff;
-}
-
-.experiences-intro {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto 4rem;
-}
-
-.experiences-intro h2 {
-    font-size: 2.5rem;
-    letter-spacing: 3px;
-    color: var(--dark);
-    margin-bottom: 1rem;
-}
-
-.experiences-intro p {
-    font-size: 1.2rem;
-    color: #666;
-    line-height: 1.8;
-}
-
-.experiences-grid {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-}
+/* ============================================
+   EXPERIENCES PAGE - FIXED
+   ============================================ */
 
 .experience-card {
-    background: #fff;
+    background: #1a1a1a;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
 }
 
 .experience-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
 }
 
+/* Experience Card Image Container */
 .experience-image {
+    width: 100%;
+    height: 280px; /* FIXED HEIGHT for all images */
     position: relative;
-    height: 250px;
     overflow: hidden;
+    background: #000;
 }
 
 .experience-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s;
+    object-fit: cover; /* Makes image fill container properly */
+    display: block;
+    transition: transform 0.4s ease;
 }
 
 .experience-card:hover .experience-image img {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
+/* Category Badge */
 .experience-category {
     position: absolute;
     top: 15px;
@@ -880,27 +859,31 @@ a.logo img,
     font-size: 0.85rem;
     font-weight: bold;
     letter-spacing: 1px;
-    font-family: 'Arial', sans-serif;
+    z-index: 2;
 }
 
+/* Experience Card Content */
 .experience-content {
     padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .experience-content h3 {
     font-size: 1.5rem;
-    color: var(--dark);
-    letter-spacing: 1px;
+    color: var(--light);
     margin-bottom: 1rem;
 }
 
 .experience-content p {
-    font-size: 1rem;
-    color: #666;
+    color: #999;
     line-height: 1.7;
     margin-bottom: 1.5rem;
+    flex: 1;
 }
 
+/* Experience Details (icons) */
 .experience-details {
     display: flex;
     flex-wrap: wrap;
@@ -910,13 +893,14 @@ a.logo img,
 
 .detail-item {
     font-size: 0.9rem;
-    color: #555;
+    color: #999;
     padding: 0.5rem 1rem;
-    background: #f8f8f8;
+    background: #2a2a2a;
     border-radius: 20px;
     font-family: 'Arial', sans-serif;
 }
 
+/* Experience Button */
 .experience-btn {
     display: inline-block;
     width: 100%;
@@ -928,57 +912,27 @@ a.logo img,
     font-weight: bold;
     letter-spacing: 1px;
     border-radius: 6px;
-    transition: all 0.3s;
-    font-family: 'Arial', sans-serif;
+    transition: all 0.3s ease;
 }
 
 .experience-btn:hover {
-    background: var(--dark-gold);
+    background: #efcc5b;
     transform: translateY(-2px);
-}
-
-.custom-experiences {
-    text-align: center;
-    max-width: 800px;
-    margin: 5rem auto 0;
-    padding: 3rem;
-    background: var(--dark);
-    color: #fff;
-    border-radius: 12px;
-}
-
-.custom-experiences h2 {
-    font-size: 2rem;
-    letter-spacing: 3px;
-    color: var(--gold);
-    margin-bottom: 1.5rem;
-}
-
-.custom-experiences p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    margin-bottom: 2rem;
-    opacity: 0.9;
-}
-
-.custom-experience-btn {
-    display: inline-block;
-    padding: 1rem 2rem;
-    background: var(--gold);
-    color: #000;
-    text-decoration: none;
-    font-weight: bold;
-    letter-spacing: 2px;
-    border-radius: 6px;
-    transition: all 0.3s;
-    font-family: 'Arial', sans-serif;
-}
-
-.custom-experience-btn:hover {
-    background: #fff;
-    transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
 }
+
+/* Experiences Grid */
+.experiences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 2.5rem;
+    padding: 3rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .experiences-grid {
+        grid-template-columns
 
 /* ================================
    BOOKING PAGE
@@ -1329,16 +1283,19 @@ a.logo img,
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
+    padding: 2rem 0;
 }
 
 .gallery-item {
     position: relative;
     height: 300px;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: all transform 0.3s ease;
+    aspect-ratio: 1; /* Makes items square */
+    background: #222;
 }
 
 .gallery-item:hover {
@@ -1348,12 +1305,13 @@ a.logo img,
 .gallery-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s;
+    object-fit: cover; /* This is KEY - makes images fill the container */
+    display: block;
+    transition: transform 0.4s ease;
 }
 
 .gallery-item:hover img {
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 .gallery-overlay {
@@ -1624,7 +1582,7 @@ a.logo img,
 /* ================================
    RESPONSIVE DESIGN
    ================================ */
-@media (max-width: 1200px) {
+@media (max-width: px) {
     .room-detail-card,
     .dining-card {
         grid-template-columns: 1fr;
@@ -1686,32 +1644,18 @@ a.logo img,
     
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
     }
 
     /* ================================
    ANIMATIONS
    ================================ */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-}
-
-/* Initial state for animated elements */
-.room-detail-card,
-.experience-card,
-.dining-card {
-    opacity: 0;
+/* Make sure hero elements don't have conflicting animations */
+.hero-title,
+.hero-subtitle,
+.hero-cta-btn {
+    animation: none !important; /* Disable any CSS animations */
 }
 
 /* ================================
