@@ -71,4 +71,9 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
              - Created animations.js file
              - Updated CSS for Smooth Animations
              - Linked animation.js to HTML
+- ✅ Day 2: Problem with images after animations
+             - Footers all pages not styled
+             - Experience page images are of unequal sizes
+             - Hero Title, subtitle and availabity button not moving smoothly
+             - animation.js deleted, script.js and style.css replaced completely
 
