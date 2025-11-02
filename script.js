@@ -19,7 +19,7 @@ function toggleMobileMenu() {
 }
 
 // ============================================
-// BOOKING FORM HANDLER
+// BOOKING FORM HANDLER WITH CALCULATOR
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -34,6 +34,50 @@ document.addEventListener('DOMContentLoaded', function() {
         if (checkInDate) checkInDate.setAttribute('min', today);
         if (checkOutDate) checkOutDate.setAttribute('min', today);
         
+        // Room prices
+        const roomPrices = {
+            'standard': 250,
+            'deluxe': 400,
+            'executive': 600,
+            'royal': 1000
+        };
+        
+        // Calculate price function
+        function calculatePrice() {
+            const checkIn = document.getElementById('checkInDate').value;
+            const checkOut = document.getElementById('checkOutDate').value;
+            const selectedRoom = document.querySelector('input[name="roomType"]:checked');
+            
+            if (!checkIn || !checkOut || !selectedRoom) {
+                document.getElementById('totalPrice').textContent = '₵0';
+                document.getElementById('nightsCount').textContent = '0';
+                return;
+            }
+            
+            const checkInDateObj = new Date(checkIn);
+            const checkOutDateObj = new Date(checkOut);
+            const nights = Math.ceil((checkOutDateObj - checkInDateObj) / (1000 * 60 * 60 * 24));
+            
+            if (nights <= 0) {
+                document.getElementById('totalPrice').textContent = '₵0';
+                document.getElementById('nightsCount').textContent = '0';
+                return;
+            }
+            
+            const roomPrice = roomPrices[selectedRoom.value];
+            const totalPrice = roomPrice * nights;
+            
+            document.getElementById('totalPrice').textContent = '₵' + totalPrice;
+            document.getElementById('nightsCount').textContent = nights;
+        }
+        
+        // Add event listeners for price calculation
+        document.getElementById('checkInDate').addEventListener('change', calculatePrice);
+        document.getElementById('checkOutDate').addEventListener('change', calculatePrice);
+        document.querySelectorAll('input[name="roomType"]').forEach(radio => {
+            radio.addEventListener('change', calculatePrice);
+        });
+        
         // Pre-select room from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
         const roomParam = urlParams.get('room');
@@ -41,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const roomRadio = document.getElementById(roomParam);
             if (roomRadio) {
                 roomRadio.checked = true;
+                calculatePrice();
             }
         }
         
@@ -51,60 +96,40 @@ document.addEventListener('DOMContentLoaded', function() {
             const firstName = document.getElementById('firstName').value;
             const lastName = document.getElementById('lastName').value;
             const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
             const checkIn = document.getElementById('checkInDate').value;
             const checkOut = document.getElementById('checkOutDate').value;
-            const adults = document.getElementById('adults').value;
-            const children = document.getElementById('children').value;
             const selectedRoom = document.querySelector('input[name="roomType"]:checked');
-            const specialRequests = document.getElementById('specialRequests').value;
             
             if (!selectedRoom) {
                 alert('Please select a room type');
                 return;
             }
             
-            // Calculate nights
-            const checkInDateObj = new Date(checkIn);
-            const checkOutDateObj = new Date(checkOut);
-            const nights = Math.ceil((checkOutDateObj - checkInDateObj) / (1000 * 60 * 60 * 24));
+            const nights = document.getElementById('nightsCount').textContent;
+            const totalPrice = document.getElementById('totalPrice').textContent;
             
-            if (nights <= 0) {
+            if (nights === '0') {
                 alert('Check-out date must be after check-in date');
                 return;
             }
             
-            // Calculate total price
-            const roomPrices = {
-                'standard': 250,
-                'deluxe': 400,
-                'executive': 600,
-                'royal': 1000
-            };
-            
-            const roomPrice = roomPrices[selectedRoom.value];
-            const totalPrice = roomPrice * nights;
-            
-            // Display confirmation
             const confirmationMessage = `
-                Booking Summary:
-                Name: ${firstName} ${lastName}
-                Email: ${email}
-                Phone: ${phone}
-                Check-in: ${checkIn}
-                Check-out: ${checkOut}
-                Nights: ${nights}
-                Room: ${selectedRoom.value.toUpperCase()}
-                Guests: ${adults} adults, ${children} children
-                Total: ₵${totalPrice}
-                
-                Special Requests: ${specialRequests || 'None'}
-                
-                Thank you for your booking! We'll send confirmation to ${email}
+Booking Confirmed! 
+
+Name: ${firstName} ${lastName}
+Email: ${email}
+Check-in: ${checkIn}
+Check-out: ${checkOut}
+Nights: ${nights}
+Room: ${selectedRoom.value.toUpperCase()}
+Total: ${totalPrice}
+
+Thank you! We'll send confirmation to ${email}
             `;
             
             alert(confirmationMessage);
             bookingForm.reset();
+            calculatePrice();
         });
     }
 });
@@ -136,37 +161,6 @@ function filterGallery(category) {
 }
 
 // ============================================
-// CONTACT FORM HANDLER
-// ============================================
-
-function handleContactSubmission(event) {
-    event.preventDefault();
-    
-    const name = document.getElementById('contactName').value;
-    const email = document.getElementById('contactEmail').value;
-    const phone = document.getElementById('contactPhone').value;
-    const subject = document.getElementById('contactSubject').value;
-    const message = document.getElementById('contactMessage').value;
-    
-    const resultDiv = document.getElementById('contactFormResult');
-    
-    // Show loading state
-    resultDiv.innerHTML = 'Sending message...';
-    resultDiv.className = 'form-result';
-    resultDiv.style.display = 'block';
-    
-    // Simulate sending (replace with actual Formspree or API call)
-    setTimeout(() => {
-        resultDiv.innerHTML = `
-            <strong>✅ Message Sent Successfully!</strong><br>
-            Thank you, ${name}! We've received your message and will respond within 24 hours to ${email}.
-        `;
-        resultDiv.className = 'form-result success';
-        document.getElementById('contactForm').reset();
-    }, 1500);
-}
-
-// ============================================
 // NAVIGATION SCROLL EFFECT
 // ============================================
 
@@ -181,21 +175,4 @@ window.addEventListener('scroll', function() {
     }
 });
 
-// ============================================
-// SMOOTH SCROLL FOR ANCHOR LINKS
-// ============================================
-
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
-
-console.log('✅ Tima Sara Hotel - Multi-page Website Loaded Successfully!');
+console.log('✅ Tima Sara Hotel scripts loaded successfully!');
