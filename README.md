@@ -43,7 +43,7 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
 
 **Goal:** Master web development while creating a real business website
 
-## Progress
+## Progress Tracker
 - ✅ Day 1 - 4: Foundations complete
 - ✅ Day 5: HTML structure for hotel website
 - ✅ Day 6: CSS design for hotel website
@@ -66,14 +66,12 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
              - Domain is LIVE and working
 
 ## My Site Enhancement Journey
-- ✅ Day 1: GSAP ScrollTrigger Animations
-             - Added GSAP to my site
-             - Created animations.js file
-             - Updated CSS for Smooth Animations
-             - Linked animation.js to HTML
-- ✅ Day 2: Problem with images after animations
-             - Footers all pages not styled
-             - Experience page images are of unequal sizes
-             - Hero Title, subtitle and availabity button not moving smoothly
-             - animation.js deleted, script.js and style.css replaced completely
+- ✅ Day 14: REAL, FUNCTIONAL, PROFESSIONAL WEBSITE COMPLETED
+             - Built 7-page professional website
+             - Configured custom domain + email
+             - Integrated Formspree for contact forms
+             - Created working interactive features
+             - Debugged complex CSS/JavaScript issues
+             - Used Git for version control
+             - DEPLOYED TO PRODUCTION!
 

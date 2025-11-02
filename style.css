@@ -24,6 +24,8 @@ body {
 html {
     scroll-behavior: smooth;
 }
+/* Apply fadeInUp to all other page title headings */
+
 
 /* ============================================================
    NAVIGATION - FIXED POSITION FIX
@@ -367,6 +369,7 @@ a.logo img,
     letter-spacing: 8px;
     margin-bottom: 1rem;
     font-weight: 300;
+    animation: fadeInUp 1s ease-out;
 }
 
 .page-hero-content p {
