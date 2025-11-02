@@ -76,5 +76,6 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
              - DEPLOYED TO PRODUCTION!
 
 - ✅ Day 15: Created Supabase account and connected to website
+- ✅ Day 16: Saved first real booking to database
     
 
