@@ -1,3 +1,23 @@
+
+// Admin password protection
+(function() {
+    const ADMIN_PASSWORD = 'TimaSara2025!'; // Change this!
+    
+    const isAuthenticated = sessionStorage.getItem('adminAuth');
+    
+    if (!isAuthenticated) {
+        const password = prompt('🔒 Admin Password Required:');
+        
+        if (password !== ADMIN_PASSWORD) {
+            alert('Access denied.');
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        sessionStorage.setItem('adminAuth', 'true');
+    }
+})();
+
 // admin.js - Admin Dashboard Functionality
 
 let allBookings = [];
@@ -125,5 +145,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-refresh every 30 seconds
     setInterval(loadBookings, 30000);
 });
+
+// Logout function
+function logoutAdmin() {
+    sessionStorage.removeItem('adminAuth');
+    alert('Logged out successfully');
+    window.location.href = 'index.html';
+}
 
 console.log('✅ Admin script loaded!');
