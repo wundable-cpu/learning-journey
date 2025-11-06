@@ -6,180 +6,163 @@
     <title>Admin Dashboard - Tima Sara Hotel</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Admin-specific styles */
+        .admin-section {
+            padding: 80px 20px;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+        
         .admin-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
         }
-
-        .admin-header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            padding: 3rem 2rem;
-            text-align: center;
-            color: white;
-            margin-bottom: 2rem;
-        }
-
-        .admin-header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            color: #d4a574;
-        }
-
-        .admin-stats {
+        
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 20px;
+            margin-bottom: 40px;
         }
-
+        
         .stat-card {
             background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
+            padding: 30px;
+            border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             text-align: center;
         }
-
+        
         .stat-card h3 {
-            margin: 0;
-            font-size: 2rem;
-            color: #d4a574;
+            font-size: 36px;
+            color: #d4af37;
+            margin: 0 0 10px 0;
         }
-
+        
         .stat-card p {
-            margin: 0.5rem 0 0 0;
             color: #666;
-            font-size: 0.9rem;
+            margin: 0;
         }
-
-        .search-bar {
-            margin-bottom: 2rem;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 1rem;
-            font-size: 1rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-
-        .search-bar input:focus {
-            outline: none;
-            border-color: #d4a574;
-        }
-
-        .bookings-table {
+        
+        .admin-controls {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
         }
-
-        table {
+        
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .refresh-btn {
+            padding: 12px 24px;
+            background: #d4af37;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background: #b8941f;
+        }
+        
+        .refresh-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .bookings-table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .bookings-table {
             width: 100%;
             border-collapse: collapse;
         }
-
-        thead {
-            background: #2d2d2d;
+        
+        .bookings-table th {
+            background: #333;
             color: white;
-        }
-
-        th, td {
-            padding: 1rem;
+            padding: 15px;
             text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .bookings-table td {
+            padding: 15px;
             border-bottom: 1px solid #eee;
         }
-
-        th {
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        tbody tr:hover {
+        
+        .bookings-table tr:hover {
             background: #f9f9f9;
         }
-
+        
         .status-badge {
-            padding: 0.25rem 0.75rem;
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
-
+        
         .status-pending {
             background: #fff3cd;
             color: #856404;
         }
-
+        
         .status-confirmed {
             background: #d4edda;
             color: #155724;
         }
-
+        
         .status-cancelled {
             background: #f8d7da;
             color: #721c24;
         }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            font-size: 1.2rem;
-            color: #666;
-        }
-
-        .no-bookings {
-            text-align: center;
-            padding: 3rem;
-            color: #999;
-        }
-
-        .refresh-btn {
-            background: #d4a574;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .refresh-btn:hover {
-            background: #c49563;
-        }
-
-        @media (max-width: 768px) {
-            .admin-container {
-                padding: 1rem;
-            }
-
-            table {
-                font-size: 0.85rem;
-            }
-
-            th, td {
-                padding: 0.5rem;
-            }
-        }
+    
     </style>
+
+
+
+
+    <!-- Add this to booking.html and admin.html -->
+<!-- Add this line -->
+    <link rel="stylesheet" href="admin-table-fix.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Your EmailJS (booking.html only) -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        emailjs.init("nC__S45_I_XaOAxg");
+    </script>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="main-nav">
         <div class="nav-container">
-            <a href="index.html" class="logo">
+            <div class="logo">
                 <img src="images/tima_sara_logo.png" alt="Tima Sara Hotel" class="logo-image">
-            </a>
-
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">HOME</a></li>
                 <li><a href="rooms.html">ROOMS & SUITES</a></li>
@@ -189,127 +172,111 @@
                 <li><a href="contact.html">CONTACT</a></li>
                 <li><a href="admin.html" class="active">ADMIN</a></li>
             </ul>
-
-            <a href="booking.html" class="book-now-btn">BOOK NOW</a>
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            <a href="booking.html" class="book-now-btn">BOOK NOW</a>
         </div>
     </nav>
 
-    <!-- Admin Header -->
-    <div class="page-hero" style="background-image: url('images/paul-schnurle-VPbVlC_cWaA-unsplash.jpg');">
-w=1920');">
-        <div class="page-hero-overlay"></div>
+    <!-- Hero Section -->
+    <section class="page-hero" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920');">
+         <div class="page-hero-overlay"></div>
         <div class="page-hero-content">
             <h1>ADMIN DASHBOARD</h1>
             <p>Manage all hotel bookings</p>
-            <button onclick="logoutAdmin()" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-top: 1rem;">🔒 Logout</button>
         </div>
-    </div>
+    </section>
 
-    
+    <!-- Admin Section -->
+    <section class="admin-section">
+        <div class="admin-container">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>0</h3>
+                    <p>Total Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <h3>0</h3>
+                    <p>Pending Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <h3>₵0.00</h3>
+                    <p>Total Revenue</p>
+                </div>
+                <div class="stat-card">
+                    <h3>0</h3>
+                    <p>Today's Bookings</p>
+                </div>
+            </div>
 
-    <!-- Admin Container -->
-    <div class="admin-container">
-        
-        <!-- Statistics Cards -->
-        <div class="admin-stats">
-            <div class="stat-card">
-                <h3 id="totalBookings">0</h3>
-                <p>Total Bookings</p>
+            <!-- Controls -->
+            <div class="admin-controls">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchBookings" 
+                        placeholder="🔍 Search by name, email, or booking reference..."
+                    >
+                </div>
+                <button id="refreshBookings" class="refresh-btn">
+                    🔄 Refresh Bookings
+                </button>
             </div>
-            <div class="stat-card">
-                <h3 id="pendingBookings">0</h3>
-                <p>Pending Bookings</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="totalRevenue">₵0</h3>
-                <p>Total Revenue</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="todayBookings">0</h3>
-                <p>Today's Bookings</p>
+
+            <!-- Bookings Table -->
+            <div class="bookings-table-container">
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>BOOKING REF</th>
+                            <th>GUEST NAME</th>
+                            <th>EMAIL</th>
+                            <th>PHONE</th>
+                            <th>CHECK-IN</th>
+                            <th>CHECK-OUT</th>
+                            <th>ROOM</th>
+                            <th>GUESTS</th>
+                            <th>TOTAL</th>
+                            <th>STATUS</th>
+                            <th>DATE CREATED</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTable">
+                        <tr>
+                            <td colspan="12" style="text-align: center; padding: 40px; color: #666;">
+                                Loading bookings...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <!-- Refresh Button -->
-        <button class="refresh-btn" onclick="loadBookings()">🔄 Refresh Bookings</button>
-
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="🔍 Search by name, email, or booking reference..." onkeyup="filterBookings()">
-        </div>
-
-        <!-- Bookings Table -->
-        <div class="bookings-table">
-            <div id="loadingMessage" class="loading">
-                Loading bookings...
-            </div>
-            <div id="noBookingsMessage" class="no-bookings" style="display: none;">
-                No bookings found
-            </div>
-            <table id="bookingsTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Booking Ref</th>
-                        <th>Guest Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Check-in</th>
-                        <th>Check-out</th>
-                        <th>Room</th>
-                        <th>Guests</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Date Created</th>
-                    </tr>
-                </thead>
-                <tbody id="bookingsTableBody">
-                    <!-- Bookings will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-
-    </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>Tima Sara Hotel</h3>
-                <p>Luxury Safari & Cultural Experience</p>
-                <p>Tamale, Northern Ghana</p>
+                <h4>Tima Sara Hotel</h4>
+                <p>Experience luxury and comfort in the heart of the city.</p>
             </div>
-
             <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="rooms.html">Rooms & Suites</a></li>
-                    <li><a href="dining.html">Dining</a></li>
-                    <li><a href="experiences.html">Experiences</a></li>
-                    <li><a href="gallery.html">Gallery</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                </ul>
+                <h4>Contact</h4>
+                <p>Email: info@timasarahotel.com</p>
+                <p>Phone: +233 54 039 4553</p>
             </div>
-
             <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p>+233 54 039 4553</p>
-                <p>info@timasarahotel.com</p>
+                <h4>Follow Us</h4>
+                <p>Facebook | Instagram | Twitter</p>
             </div>
         </div>
-
         <div class="footer-bottom">
             <p>&copy; 2025 Tima Sara Hotel. All rights reserved.</p>
-            <p>Designed by Dr. Jacob Mahama - 28-Day Developer Journey</p>
         </div>
     </footer>
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
-    
-    <!-- Admin Script -->
+    <script src="print-receipt.js"></script>
     <script src="admin.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>

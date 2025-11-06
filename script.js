@@ -1,22 +1,303 @@
 // ============================================
-// MOBILE MENU TOGGLE
+// SUPABASE CONFIGURATION
+// ============================================
+const SUPABASE_URL = 'https://yglehirjsxaxvrpfbvse.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbGVoaXJqc3hheHZycGZidnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwODA1NDAsImV4cCI6MjA3NzY1NjU0MH0.o631vL64ZMuQNDZQBs9Lx4ANILQgkq_5DrPhz36fpu8';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+console.log('✅ Supabase client initialized!');
+
+// ============================================
+// MOBILE MENU
 // ============================================
 function toggleMobileMenu() {
     const navLinks = document.querySelector('.nav-links');
-    if (navLinks) {
-        if (navLinks.style.display === 'flex') {
-            navLinks.style.display = 'none';
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    if (navLinks) navLinks.classList.toggle('active');
+    if (mobileMenuToggle) mobileMenuToggle.classList.toggle('active');
+}
+
+// ============================================
+// NAVIGATION SCROLL EFFECT
+// ============================================
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (nav) {
+        if (window.scrollY > 50) {
+            nav.style.background = 'rgba(0, 0, 0, 0.95)';
+            nav.style.backdropFilter = 'blur(10px)';
         } else {
-            navLinks.style.display = 'flex';
-            navLinks.style.flexDirection = 'column';
-            navLinks.style.position = 'absolute';
-            navLinks.style.top = '100%';
-            navLinks.style.left = '0';
-            navLinks.style.right = '0';
-            navLinks.style.background = 'rgba(0, 0, 0, 0.95)';
-            navLinks.style.padding = '2rem';
+            nav.style.background = 'rgba(0, 0, 0, 0.8)';
+            nav.style.backdropFilter = 'blur(5px)';
         }
     }
+});
+
+// ============================================
+// BOOKING FORM WITH SUPABASE
+// ============================================
+const bookingForm = document.getElementById('bookingForm');
+
+if (bookingForm) {
+    console.log('✅ Booking form found!');
+    
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const checkInInput = document.getElementById('checkInDate');
+    const checkOutInput = document.getElementById('checkOutDate');
+    const adultsInput = document.getElementById('adults');
+    const childrenInput = document.getElementById('children');
+    const totalPriceDiv = document.getElementById('totalPrice');
+    const specialRequestsInput = document.getElementById('specialRequests');
+    
+    if (checkInInput && checkOutInput) {
+        const today = new Date().toISOString().split('T')[0];
+        checkInInput.setAttribute('min', today);
+        checkOutInput.setAttribute('min', today);
+        
+        checkInInput.addEventListener('change', function() {
+            const checkinDate = new Date(this.value);
+            checkinDate.setDate(checkinDate.getDate() + 1);
+            const minCheckout = checkinDate.toISOString().split('T')[0];
+            checkOutInput.setAttribute('min', minCheckout);
+            calculatePrice();
+        });
+        
+        checkOutInput.addEventListener('change', calculatePrice);
+    }
+    
+    if (adultsInput) adultsInput.addEventListener('change', calculatePrice);
+    if (childrenInput) childrenInput.addEventListener('change', calculatePrice);
+    
+    const roomRadios = document.querySelectorAll('input[name="roomType"]');
+    roomRadios.forEach(radio => radio.addEventListener('change', calculatePrice));
+    
+    function calculatePrice() {
+        if (!checkInInput || !checkOutInput) return null;
+        
+        const checkin = new Date(checkInInput.value);
+        const checkout = new Date(checkOutInput.value);
+        
+        if (checkin && checkout && checkout > checkin) {
+            const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+            
+            const selectedRoom = document.querySelector('input[name="roomType"]:checked');
+            let roomPrice = 530;
+            let roomTypeName = 'Standard Room';
+            
+            if (selectedRoom) {
+                const roomValue = selectedRoom.value;
+                if (roomValue === 'standard') { roomPrice = 530; roomTypeName = 'Standard Room'; }
+                else if (roomValue === 'executive') { roomPrice = 800; roomTypeName = 'Executive Room'; }
+                else if (roomValue === 'deluxe') { roomPrice = 1500; roomTypeName = 'Deluxe Room'; }
+                else if (roomValue === 'royal') { roomPrice = 2500; roomTypeName = 'Royal Suite'; }
+            }
+            
+            const adults = adultsInput ? parseInt(adultsInput.value) || 2 : 2;
+            const children = childrenInput ? parseInt(childrenInput.value) || 0 : 0;
+            
+            const basePrice = roomPrice * nights;
+            const guestSurcharge = (adults + children) > 2 ? ((adults + children) - 2) * 20 * nights : 0;
+            const totalPrice = basePrice + guestSurcharge;
+            
+            if (totalPriceDiv) {
+                totalPriceDiv.textContent = `Total: ₵${totalPrice.toLocaleString()} for ${nights} night(s)`;
+            }
+            
+            return { totalPrice, nights, roomTypeName, adults, children };
+        }
+        
+        if (totalPriceDiv) totalPriceDiv.textContent = 'Total: ₵0';
+        return null;
+    }
+    
+    bookingForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        console.log('📝 Form submitted!');
+        
+        if (!firstNameInput || !lastNameInput || !emailInput || !phoneInput || !checkInInput || !checkOutInput) {
+            alert('Please fill in all required fields');
+            return;
+        }
+        
+        const checkin = new Date(checkInInput.value);
+        const checkout = new Date(checkOutInput.value);
+        
+        if (checkout <= checkin) {
+            alert('❌ Checkout date must be after check-in date');
+            return;
+        }
+        
+        const selectedRoom = document.querySelector('input[name="roomType"]:checked');
+        if (!selectedRoom) {
+            alert('❌ Please select a room type');
+            return;
+        }
+        
+        const submitBtn = bookingForm.querySelector('.submit-booking-btn') || bookingForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn ? submitBtn.textContent : '';
+        
+        if (submitBtn) {
+            submitBtn.textContent = '💾 Saving booking...';
+            submitBtn.disabled = true;
+        }
+        
+        const priceInfo = calculatePrice();
+        if (!priceInfo) {
+            alert('❌ Please fill in all booking details');
+            if (submitBtn) {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
+            return;
+        }
+        
+        const bookingRef = 'TSH-' + Date.now();
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+        const fullName = `${firstName} ${lastName}`;
+        const guestEmail = emailInput.value.trim();
+        const guestPhone = phoneInput.value.trim();
+        
+        let guestCount = priceInfo.children > 0 ? 
+            `${priceInfo.adults} adult(s), ${priceInfo.children} child(ren)` : 
+            `${priceInfo.adults} adult(s)`;
+        
+        const checkinFormatted = checkin.toLocaleDateString('en-GB');
+        const checkoutFormatted = checkout.toLocaleDateString('en-GB');
+        
+        console.log('💾 Saving to Supabase...');
+        
+        // MATCH YOUR EXACT TABLE STRUCTURE
+        const bookingData = {
+            booking_reference: bookingRef,
+            guest_name: fullName,
+            guest_email: guestEmail,
+            guest_phone: guestPhone,
+            check_in: checkInInput.value,        // Using check_in (not checkin_date)
+            check_out: checkOutInput.value,      // Using check_out (not checkout_date)
+            room_type: priceInfo.roomTypeName,
+            num_adults: priceInfo.adults,        // Using num_adults
+            num_children: priceInfo.children,    // Using num_children
+            total_price: priceInfo.totalPrice,   // Using total_price (not total_amount)
+            special_requests: specialRequestsInput ? specialRequestsInput.value : null,
+            status: 'pending'
+        };
+        
+        try {
+            const { data, error } = await supabase
+                .from('bookings')
+                .insert([bookingData])
+                .select();
+            
+            if (error) {
+                console.error('❌ Supabase error:', error);
+                throw error;
+            }
+            
+            console.log('✅ Booking saved to Supabase!', data);
+            
+            if (submitBtn) submitBtn.textContent = '📧 Sending email...';
+            
+            const emailParams = {
+                guest_name: fullName,
+                email: guestEmail,
+                phone: guestPhone,
+                booking_reference: bookingRef,
+                checkin_date: checkinFormatted,
+                checkout_date: checkoutFormatted,
+                room_type: priceInfo.roomTypeName,
+                guests: guestCount,
+                nights: priceInfo.nights,
+                total_amount: '₵' + priceInfo.totalPrice.toLocaleString(),
+                from_email: 'wundable@gmail.com'
+            };
+            
+            if (typeof emailjs !== 'undefined') {
+                emailjs.send('service_cq4rt71', 'template_bbofvzz', emailParams)
+                    .then(() => {
+                        console.log('✅ Email sent!');
+                        showSuccess();
+                    }, (error) => {
+                        console.error('⚠️ Email failed:', error);
+                        alert(`✅ BOOKING CONFIRMED!\n\nReference: ${bookingRef}\n\n⚠️ Email failed but booking is saved in database!`);
+                        resetForm();
+                    });
+            } else {
+                showSuccess();
+            }
+            
+            function showSuccess() {
+                // Show success alert first
+                alert(
+                    `✅ BOOKING CONFIRMED!\n\n` +
+                    `Reference: ${bookingRef}\n\n` +
+                    `Name: ${fullName}\n` +
+                    `Email: ${guestEmail}\n` +
+                    `Phone: ${guestPhone}\n\n` +
+                    `Check-in: ${checkinFormatted}\n` +
+                    `Check-out: ${checkoutFormatted}\n` +
+                    `Room: ${priceInfo.roomTypeName}\n` +
+                    `Guests: ${guestCount}\n` +
+                    `Nights: ${priceInfo.nights}\n` +
+                    `Total: ₵${priceInfo.totalPrice.toLocaleString()}\n\n` +
+                    `📧 Confirmation email sent to ${guestEmail}\n\n` +
+                    `Please save your booking reference: ${bookingRef}`
+                );
+                
+                // Ask if they want to print receipt
+                setTimeout(() => {
+                    if (confirm('Would you like to print your booking receipt?')) {
+                        // Prepare booking data for receipt
+                        const receiptData = {
+                            reference: bookingRef,
+                            name: fullName,
+                            email: guestEmail,
+                            phone: guestPhone,
+                            checkin: checkInInput.value,
+                            checkout: checkOutInput.value,
+                            room: priceInfo.roomTypeName,
+                            guests: guestCount,
+                            nights: priceInfo.nights,
+                            total: priceInfo.totalPrice,
+                            status: 'pending',
+                            date: new Date().toISOString()
+                        };
+                        
+                        // Call print function
+                        if (typeof window.printReceipt === 'function') {
+                            window.printReceipt(receiptData);
+                        } else {
+                            alert('Print function not available. Please reload the page and try again.');
+                        }
+                    }
+                }, 100);
+                
+                resetForm();
+            }
+            
+            function resetForm() {
+                bookingForm.reset();
+                calculatePrice();
+                if (submitBtn) {
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            }
+            
+        } catch (error) {
+            console.error('❌ Error:', error);
+            alert(`❌ ERROR: ${error.message}\n\nPlease try again or contact us.`);
+            if (submitBtn) {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        }
+    });
+    
+    calculatePrice();
 }
 
 // ============================================
@@ -27,193 +308,22 @@ function filterGallery(category) {
     const buttons = document.querySelectorAll('.filter-btn');
     
     buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    if (event && event.target) event.target.classList.add('active');
     
     items.forEach(item => {
-        if (category === 'all') {
+        if (category === '*') {
             item.style.display = 'block';
         } else {
-            if (item.getAttribute('data-category') === category) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
+            item.style.display = item.getAttribute('data-category') === category ? 'block' : 'none';
         }
     });
 }
 
 // ============================================
-// SAVE BOOKING TO SUPABASE
-// ============================================
-async function saveBookingToSupabase(bookingData) {
-    try {
-        const timestamp = Date.now();
-        const reference = 'TSH-' + timestamp;
-        
-        const supabaseData = {
-            guest_name: bookingData.firstName + ' ' + bookingData.lastName,
-            guest_email: bookingData.email,
-            guest_phone: bookingData.phone,
-            check_in: bookingData.checkIn,
-            check_out: bookingData.checkOut,
-            room_type: bookingData.roomType,
-            num_adults: parseInt(bookingData.adults),
-            num_children: parseInt(bookingData.children),
-            total_price: bookingData.totalPrice,
-            special_requests: bookingData.specialRequests,
-            status: 'pending',
-            booking_reference: reference
-        };
-        
-        const result = await supabase
-            .from('bookings')
-            .insert([supabaseData])
-            .select();
-        
-        if (result.error) {
-            console.error('Supabase error:', result.error);
-            return { success: false, error: result.error.message };
-        }
-        
-        console.log('✅ Booking saved:', result.data);
-        return { success: true, reference: reference, data: result.data };
-        
-    } catch (err) {
-        console.error('Error saving booking:', err);
-        return { success: false, error: err.message };
-    }
-}
-
-// ============================================
-// BOOKING FORM HANDLER
+// PAGE LOAD
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-    const bookingForm = document.getElementById('bookingForm');
-    
-    if (!bookingForm) {
-        console.log('No booking form found on this page');
-        return;
-    }
-    
-    console.log('📝 Booking form found, setting up...');
-    
-    // Room prices
-    const roomPrices = {
-        'standard': 250,
-        'deluxe': 400,
-        'executive': 600,
-        'royal': 1000
-    };
-    
-    // Set minimum dates
-    const today = new Date().toISOString().split('T')[0];
-    const checkInInput = document.getElementById('checkInDate');
-    const checkOutInput = document.getElementById('checkOutDate');
-    
-    if (checkInInput) checkInInput.setAttribute('min', today);
-    if (checkOutInput) checkOutInput.setAttribute('min', today);
-    
-    // Handle form submission
-    bookingForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        console.log('🚀 Form submitted!');
-        
-        // Get all form values
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName = document.getElementById('lastName').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const checkIn = document.getElementById('checkInDate').value;
-        const checkOut = document.getElementById('checkOutDate').value;
-        const adults = document.getElementById('adults').value;
-        const children = document.getElementById('children').value;
-        const selectedRoom = document.querySelector('input[name="roomType"]:checked');
-        const specialRequests = document.getElementById('specialRequests') ? document.getElementById('specialRequests').value : '';
-        
-        console.log('Form data:', { firstName, lastName, email, checkIn, checkOut, selectedRoom });
-        
-        // Validation
-        if (!firstName || !lastName || !email) {
-            alert('Please fill in your name and email');
-            return;
-        }
-        
-        if (!selectedRoom) {
-            alert('Please select a room type');
-            return;
-        }
-        
-        if (!checkIn || !checkOut) {
-            alert('Please select check-in and check-out dates');
-            return;
-        }
-        
-        // Calculate nights and price
-        const checkInDate = new Date(checkIn);
-        const checkOutDate = new Date(checkOut);
-        const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-        
-        console.log('Nights:', nights);
-        
-        if (nights <= 0) {
-            alert('Check-out date must be after check-in date');
-            return;
-        }
-        
-        const roomPrice = roomPrices[selectedRoom.value];
-        const totalPrice = roomPrice * nights;
-        
-        console.log('Total price:', totalPrice);
-        
-        // Prepare booking data
-        const bookingData = {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            phone: phone,
-            checkIn: checkIn,
-            checkOut: checkOut,
-            roomType: selectedRoom.value,
-            adults: adults,
-            children: children,
-            totalPrice: totalPrice,
-            specialRequests: specialRequests
-        };
-        
-        // Show loading
-        const submitBtn = bookingForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = '💾 Saving Booking...';
-        submitBtn.disabled = true;
-        
-        // Save to Supabase
-        const result = await saveBookingToSupabase(bookingData);
-        
-        // Restore button
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-        
-        if (result.success) {
-            alert('✅ BOOKING CONFIRMED!\n\n' +
-                'Booking Reference: ' + result.reference + '\n' +
-                'Name: ' + firstName + ' ' + lastName + '\n' +
-                'Email: ' + email + '\n' +
-                'Check-in: ' + checkIn + '\n' +
-                'Check-out: ' + checkOut + '\n' +
-                'Room: ' + selectedRoom.value.toUpperCase() + '\n' +
-                'Nights: ' + nights + '\n' +
-                'Total: ₵' + totalPrice + '\n\n' +
-                'Confirmation email will be sent to ' + email);
-            
-            bookingForm.reset();
-        } else {
-            alert('❌ BOOKING FAILED\n\n' +
-                'Error: ' + result.error + '\n\n' +
-                'Please try again or contact us at info@timasarahotel.com');
-        }
-    });
-    
-    console.log('✅ Booking form ready!');
+    console.log('✅ Page loaded!');
+    console.log('✅ Supabase:', typeof supabase !== 'undefined' ? 'CONNECTED ✓' : 'NOT CONNECTED ✗');
+    console.log('✅ EmailJS:', typeof emailjs !== 'undefined' ? 'LOADED ✓' : 'NOT LOADED ✗');
 });
-
-console.log('✅ Tima Sara Hotel scripts loaded successfully!');

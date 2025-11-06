@@ -1,156 +1,200 @@
 
-// Admin password protection
-(function() {
-    const ADMIN_PASSWORD = 'TimaSara2025!'; // Change this!
-    
-    const isAuthenticated = sessionStorage.getItem('adminAuth');
-    
-    if (!isAuthenticated) {
-        const password = prompt('🔒 Admin Password Required:');
-        
-        if (password !== ADMIN_PASSWORD) {
-            alert('Access denied.');
-            window.location.href = 'index.html';
-            return;
-        }
-        
-        sessionStorage.setItem('adminAuth', 'true');
-    }
-})();
+// ============================================
+// SUPABASE CONFIGURATION
+// ============================================
+const SUPABASE_URL = 'https://yglehirjsxaxvrpfbvse.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbGVoaXJqc3hheHZycGZidnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwODA1NDAsImV4cCI6MjA3NzY1NjU0MH0.o631vL64ZMuQNDZQBs9Lx4ANILQgkq_5DrPhz36fpu8';
 
-// admin.js - Admin Dashboard Functionality
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+console.log('✅ Admin - Supabase connected!');
 
-let allBookings = [];
-
-// Load all bookings from Supabase
 async function loadBookings() {
-    console.log('📥 Loading bookings from Supabase...');
+    console.log('📊 Loading bookings from Supabase...');
     
-    const loadingMessage = document.getElementById('loadingMessage');
-    const noBookingsMessage = document.getElementById('noBookingsMessage');
     const bookingsTable = document.getElementById('bookingsTable');
+    const statsDiv = document.querySelector('.stats-grid');
     
-    // Show loading
-    loadingMessage.style.display = 'block';
-    noBookingsMessage.style.display = 'none';
-    bookingsTable.style.display = 'none';
+    if (!bookingsTable) return;
+    
+    bookingsTable.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px;">⏳ Loading bookings from database...</td></tr>';
     
     try {
-        // Fetch all bookings, ordered by creation date (newest first)
-        const { data, error } = await supabase
+        const { data: bookings, error } = await supabase
             .from('bookings')
             .select('*')
             .order('created_at', { ascending: false });
         
-        if (error) {
-            console.error('Error loading bookings:', error);
-            alert('Error loading bookings: ' + error.message);
-            loadingMessage.style.display = 'none';
+        if (error) throw error;
+        
+        console.log('✅ Loaded bookings:', bookings.length);
+        
+        bookingsTable.innerHTML = '';
+        
+        if (bookings.length === 0) {
+            bookingsTable.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px;color:#666;">No bookings yet. When guests make bookings, they will appear here.</td></tr>';
             return;
         }
         
-        console.log('✅ Loaded bookings:', data);
-        allBookings = data || [];
+        // Calculate stats
+        const totalBookings = bookings.length;
+        const pendingBookings = bookings.filter(b => b.status === 'pending').length;
+        const totalRevenue = bookings.reduce((sum, b) => sum + (parseFloat(b.total_price) || 0), 0);
         
-        // Hide loading
-        loadingMessage.style.display = 'none';
+        const today = new Date().toISOString().split('T')[0];
+        const todayBookings = bookings.filter(b => {
+            const bookingDate = b.created_at ? b.created_at.split('T')[0] : '';
+            return bookingDate === today;
+        }).length;
         
-        if (allBookings.length === 0) {
-            noBookingsMessage.style.display = 'block';
-        } else {
-            bookingsTable.style.display = 'table';
-            displayBookings(allBookings);
+        // Update stats
+        if (statsDiv) {
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <h3>${totalBookings}</h3>
+                    <p>Total Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${pendingBookings}</h3>
+                    <p>Pending Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <h3>₵${totalRevenue.toLocaleString()}</h3>
+                    <p>Total Revenue</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${todayBookings}</h3>
+                    <p>Today's Bookings</p>
+                </div>
+            `;
         }
         
-        updateStatistics(allBookings);
+        // Display bookings
+        bookings.forEach(booking => {
+            const row = document.createElement('tr');
+            
+            // Format dates - USING YOUR EXACT COLUMN NAMES
+            const checkinDate = booking.check_in ? 
+                new Date(booking.check_in).toLocaleDateString('en-GB') : 'N/A';
+            const checkoutDate = booking.check_out ? 
+                new Date(booking.check_out).toLocaleDateString('en-GB') : 'N/A';
+            const bookingDate = booking.created_at ? 
+                new Date(booking.created_at).toLocaleDateString('en-GB') : 'N/A';
+            
+            // Format guests
+            let guestsDisplay = '';
+            if (booking.num_adults || booking.num_children) {
+                const adults = booking.num_adults || 0;
+                const children = booking.num_children || 0;
+                if (children > 0) {
+                    guestsDisplay = `${adults} adult(s), ${children} child(ren)`;
+                } else {
+                    guestsDisplay = `${adults} adult(s)`;
+                }
+            } else {
+                guestsDisplay = 'N/A';
+            }
+            
+            row.innerHTML = `
+                <td>${booking.booking_reference || 'N/A'}</td>
+                <td>${booking.guest_name || 'N/A'}</td>
+                <td>${booking.guest_email || 'N/A'}</td>
+                <td>${booking.guest_phone || 'N/A'}</td>
+                <td>${checkinDate}</td>
+                <td>${checkoutDate}</td>
+                <td>${booking.room_type || 'N/A'}</td>
+                <td>${guestsDisplay}</td>
+                <td>₵${booking.total_price ? parseFloat(booking.total_price).toLocaleString() : '0'}</td>
+                <td><span class="status-badge status-${booking.status}">${booking.status || 'pending'}</span></td>
+                <td>${bookingDate}</td>
+                <td>
+                    <button class="print-btn" onclick='printBookingReceipt(${JSON.stringify(booking).replace(/'/g, "&apos;")})'>
+                        🖨️ Print
+                    </button>
+                </td>
+            `;
+            
+            bookingsTable.appendChild(row);
+        });
         
-    } catch (err) {
-        console.error('Error:', err);
-        loadingMessage.style.display = 'none';
-        alert('Error loading bookings. Please refresh the page.');
+        console.log('✅ Bookings displayed successfully!');
+        
+    } catch (error) {
+        console.error('❌ Failed to load bookings:', error);
+        bookingsTable.innerHTML = `
+            <tr>
+                <td colspan="11" style="text-align:center;padding:40px;color:#d32f2f;">
+                    <div style="font-size:24px;">❌</div>
+                    <div><strong>Error loading bookings</strong></div>
+                    <div style="margin-top:10px;color:#666;">${error.message}</div>
+                    <div style="margin-top:15px;">
+                        <button onclick="loadBookings()" style="padding:10px 20px;background:#d4af37;color:white;border:none;border-radius:5px;cursor:pointer;">Try Again</button>
+                    </div>
+                </td>
+            </tr>
+        `;
     }
 }
 
-// Display bookings in table
-function displayBookings(bookings) {
-    const tbody = document.getElementById('bookingsTableBody');
-    tbody.innerHTML = '';
-    
-    bookings.forEach(booking => {
-        const row = document.createElement('tr');
-        
-        // Format dates
-        const checkIn = new Date(booking.check_in).toLocaleDateString();
-        const checkOut = new Date(booking.check_out).toLocaleDateString();
-        const createdAt = new Date(booking.created_at).toLocaleDateString();
-        
-        // Status badge
-        const statusClass = 'status-' + booking.status;
-        
-        row.innerHTML = `
-            <td><strong>${booking.booking_reference}</strong></td>
-            <td>${booking.guest_name}</td>
-            <td>${booking.guest_email}</td>
-            <td>${booking.guest_phone || 'N/A'}</td>
-            <td>${checkIn}</td>
-            <td>${checkOut}</td>
-            <td>${booking.room_type.toUpperCase()}</td>
-            <td>${booking.num_adults} adults, ${booking.num_children} children</td>
-            <td><strong>₵${booking.total_price}</strong></td>
-            <td><span class="status-badge ${statusClass}">${booking.status}</span></td>
-            <td>${createdAt}</td>
-        `;
-        
-        tbody.appendChild(row);
+const refreshBtn = document.getElementById('refreshBookings');
+if (refreshBtn) {
+    refreshBtn.addEventListener('click', async function() {
+        console.log('🔄 Refresh clicked');
+        const originalText = this.innerHTML;
+        this.innerHTML = '🔄 Refreshing...';
+        this.disabled = true;
+        await loadBookings();
+        setTimeout(() => {
+            this.innerHTML = originalText;
+            this.disabled = false;
+        }, 500);
     });
 }
 
-// Update statistics
-function updateStatistics(bookings) {
-    const totalBookings = bookings.length;
-    const pendingBookings = bookings.filter(b => b.status === 'pending').length;
-    const totalRevenue = bookings.reduce((sum, b) => sum + parseFloat(b.total_price || 0), 0);
-    
-    // Today's bookings
-    const today = new Date().toDateString();
-    const todayBookings = bookings.filter(b => {
-        const bookingDate = new Date(b.created_at).toDateString();
-        return bookingDate === today;
-    }).length;
-    
-    document.getElementById('totalBookings').textContent = totalBookings;
-    document.getElementById('pendingBookings').textContent = pendingBookings;
-    document.getElementById('totalRevenue').textContent = '₵' + totalRevenue.toFixed(2);
-    document.getElementById('todayBookings').textContent = todayBookings;
-}
-
-// Filter bookings based on search
-function filterBookings() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    
-    const filteredBookings = allBookings.filter(booking => {
-        return booking.guest_name.toLowerCase().includes(searchTerm) ||
-               booking.guest_email.toLowerCase().includes(searchTerm) ||
-               booking.booking_reference.toLowerCase().includes(searchTerm);
+const searchInput = document.getElementById('searchBookings');
+if (searchInput) {
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        document.querySelectorAll('#bookingsTable tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+        });
     });
-    
-    displayBookings(filteredBookings);
 }
 
-// Load bookings when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Admin dashboard loaded');
+    console.log('✅ Admin page loaded!');
+    console.log('✅ Supabase:', typeof supabase !== 'undefined' ? 'CONNECTED ✓' : 'NOT CONNECTED ✗');
     loadBookings();
-    
-    // Auto-refresh every 30 seconds
-    setInterval(loadBookings, 30000);
 });
 
-// Logout function
-function logoutAdmin() {
-    sessionStorage.removeItem('adminAuth');
-    alert('Logged out successfully');
-    window.location.href = 'index.html';
+setInterval(loadBookings, 30000);
+
+// ============================================
+// PRINT BOOKING RECEIPT FROM ADMIN
+// ============================================
+function printBookingReceipt(booking) {
+    const receiptData = {
+        reference: booking.booking_reference,
+        name: booking.guest_name,
+        email: booking.guest_email,
+        phone: booking.guest_phone,
+        checkin: booking.check_in,
+        checkout: booking.check_out,
+        room: booking.room_type,
+        guests: `${booking.num_adults || 0} adult(s)${booking.num_children ? ', ' + booking.num_children + ' child(ren)' : ''}`,
+        nights: booking.nights,
+        total: booking.total_price,
+        status: booking.status || 'pending',
+        date: booking.created_at
+    };
+    
+    if (typeof window.printReceipt === 'function') {
+        window.printReceipt(receiptData);
+    } else {
+        alert('Print function not available. Please refresh the page.');
+    }
 }
 
-console.log('✅ Admin script loaded!');
+// Make function globally available
+window.printBookingReceipt = printBookingReceipt;
+
+console.log('✅ Admin.js loaded!');

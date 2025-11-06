@@ -1646,13 +1646,18 @@ a.logo img,
     .booking-summary {
         position: static;
     }
+
 }
 
 @media (max-width: 768px) {
     .nav-links {
         display: none;
     }
-    
+
+    .rooms-grid-page {
+        width: 100%;
+        height: auto;
+    }   
     .mobile-menu-toggle {
         display: block;
     }
