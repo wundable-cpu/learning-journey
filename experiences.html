@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiences - Tima Sara Hotel</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <!-- NEW CODE (Replace with this): -->
+            <a href="experiences.html" class="logo">
+                <img src="/images/tima_sara_logo.png" alt="Tima Sara Hotel" class="logo-image">
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="rooms.html">ROOMS & SUITES</a></li>
+                <li><a href="dining.html">DINING</a></li>
+                <li><a href="experiences.html" class="active">EXPERIENCES</a></li>
+                <li><a href="gallery.html">GALLERY</a></li>
+                <li><a href="contact.html">CONTACT</a></li>
+            </ul>
+            
+            <a href="booking.html" class="book-now-btn">BOOK NOW</a>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <section class="page-hero" style="background-image: url('https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1920');">
+        <div class="page-hero-overlay"></div>
+        <div class="page-hero-content">
+            <h1>UNFORGETTABLE EXPERIENCES</h1>
+            <p>Discover the Heart of Northern Ghana</p>
+        </div>
+    </section>
+
+    <section class="experiences-content">
+        <div class="experiences-intro">
+            <h2>CURATED ADVENTURES</h2>
+            <p>Immerse yourself in authentic Ghanaian culture, breathtaking landscapes, and unforgettable wildlife encounters. Our expertly curated experiences showcase the best of Northern Ghana.</p>
+        </div>
+
+        <div class="experiences-grid">
+            <!-- Safari Tours -->
+            <div class="experience-card">
+                <div class="experience-image">
+                    <img src="/images/elephants_crossing.jpg" alt="Safari Experience">
+                    <div class="experience-category">Wildlife</div>
+                </div>
+                <div class="experience-content">
+                    <h3>Wildlife Safari Tours</h3>
+                    <p>Embark on guided safari tours to witness Northern Ghana's magnificent wildlife in their natural habitat. Experience the thrill of seeing elephants, antelopes, and exotic birds up close.</p>
+                    <div class="experience-details">
+                        <span class="detail-item">⏱️ 4-6 hours</span>
+                        <span class="detail-item">👥 Group/Private</span>
+                        <span class="detail-item">🎯 All Ages</span>
+                    </div>
+                    <a href="contact.html" class="experience-btn">Inquire Now</a>
+                </div>
+            </div>
+
+            
+
+            <!-- Cultural Tours -->
+            <div class="experience-card">
+                <div class="experience-image">
+                    <img src="/images/basket_weaving.jpeg" alt="Cultural Experience">
+                    <div class="experience-category">Culture</div>
+                </div>
+                <div class="experience-content">
+                    <h3>Cultural Village Tours</h3>
+                    <p>Visit traditional villages and immerse yourself in authentic Ghanaian culture. Learn about local customs, traditional crafts, and meet welcoming communities.</p>
+                    <div class="experience-details">
+                        <span class="detail-item">⏱️ Half/Full Day</span>
+                        <span class="detail-item">👥 Small Groups</span>
+                        <span class="detail-item">🎨 Interactive</span>
+                    </div>
+                    <a href="contact.html" class="experience-btn">Inquire Now</a>
+                </div>
+            </div>
+
+            <!-- Nature Walks -->
+            <div class="experience-card">
+                <div class="experience-image">
+                    <img src="/images/Naturewalk-gambaga-escarpment-2.jpg" alt="Nature Walks">
+                    <div class="experience-category">Nature</div>
+                </div>
+                <div class="experience-content">
+                    <h3>Guided Nature Walks</h3>
+                    <p>Explore stunning landscapes and discover unique flora and fauna with our expert naturalist guides. Perfect for photography enthusiasts and nature lovers.</p>
+                    <div class="experience-details">
+                        <span class="detail-item">⏱️ 2-3 hours</span>
+                        <span class="detail-item">🥾 Easy-Moderate</span>
+                        <span class="detail-item">📸 Photo Ops</span>
+                    </div>
+                    <a href="contact.html" class="experience-btn">Inquire Now</a>
+                </div>
+            </div>
+
+            <!-- Market Tours -->
+            <div class="experience-card">
+                <div class="experience-image">
+                    <img src="/images/tamale-market.png" alt="Local Markets">
+                    <div class="experience-category">Shopping</div>
+                </div>
+                <div class="experience-content">
+                    <h3>Local Market Experience</h3>
+                    <p>Explore vibrant local markets filled with colorful textiles, handcrafted goods, and fresh produce. A feast for the senses and perfect for unique souvenirs.</p>
+                    <div class="experience-details">
+                        <span class="detail-item">⏱️ 3 hours</span>
+                        <span class="detail-item">🛍️ Shopping</span>
+                        <span class="detail-item">🌶️ Food Tasting</span>
+                    </div>
+                    <a href="contact.html" class="experience-btn">Inquire Now</a>
+                </div>
+            </div>
+
+            <!-- Traditional Dance -->
+            <div class="experience-card">
+                <div class="experience-image">
+                    <img src="/images/dance_takai2.jpg" alt="Traditional Dance">
+                    <div class="experience-category">Entertainment</div>
+                </div>
+                <div class="experience-content">
+                    <h3>Traditional Dance & Music</h3>
+                    <p>Experience electrifying traditional performances featuring rhythmic drumming and energetic dancing. Join in and learn some moves from local performers!</p>
+                    <div class="experience-details">
+                        <span class="detail-item">⏱️ Evening Shows</span>
+                        <span class="detail-item">🎵 Live Music</span>
+                        <span class="detail-item">💃 Interactive</span>
+                    </div>
+                    <a href="contact.html" class="experience-btn">Inquire Now</a>
+                </div>
+            </div>
+
+            <!-- Cooking Classes -->
+            <div class="experience-card">
+                <div class="experience-image">
+                    <img src="/images/food_preparation_2.jpg" alt="Cooking Class">
+                    <div class="experience-category">Culinary</div>
+                </div>
+                <div class="experience-content">
+                    <h3>Ghanaian Cooking Classes</h3>
+                    <p>Learn to prepare authentic Ghanaian dishes from our talented chefs. Take home recipes and culinary skills to impress your friends and family.</p>
+                    <div class="experience-details">
+                        <span class="detail-item">⏱️ 2-3 hours</span>
+                        <span class="detail-item">👨‍🍳 Hands-on</span>
+                        <span class="detail-item">🍽️ Lunch Included</span>
+                    </div>
+                    <a href="contact.html" class="experience-btn">Inquire Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Your Own Photos Section -->
+        <div class="custom-experiences">
+            <h2>BESPOKE EXPERIENCES</h2>
+            <p>Have something specific in mind? Our concierge team can arrange personalized experiences tailored to your interests, whether it's a private photography tour, bird watching expedition, or exclusive cultural encounter.</p>
+            <a href="contact.html" class="custom-experience-btn">Request Custom Experience</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Tima Sara Hotel</h4>
+                <p>Luxury Safari & Cultural Experience<br>Tamale, Northern Ghana</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="rooms.html">Rooms & Suites</a>
+                <a href="dining.html">Dining</a>
+                <a href="experiences.html">Experiences</a>
+                <a href="gallery.html">Gallery</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>+233 54 039 4553<br>info@timasarahotel.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tima Sara Hotel. All rights reserved.</p>
+            <p>Designed by Jacob Mahama</p>
+        </div>
+    </footer>
+
+     <!-- GSAP Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- GSAP ScrollTrigger Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Your existing script -->
+    <script src="script.js"></script>
+
+    <!-- GSAP Core & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Your existing script -->
+    <script src="script.js"></script>
+    
+    <!-- NEW: GSAP Animations -->
+    <script src="animations.js"></script>
+
+    
+</body>
+</html>

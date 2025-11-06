@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Playground</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .api-section {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            min-height: 50px;
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .flag {
+            font-size: 3em;
+        }
+
+        /* Images */
+img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+    </style>
+</head>
+<body>
+    <h1>🎮 API Playground</h1>
+    <p>Click buttons to test different APIs!</p>
+
+    <!-- Random Quote API -->
+    <div class="api-section">
+        <h2>💬 Random Quote API</h2>
+        <button onclick="getQuote()">Get Random Quote</button>
+        <div id="quoteResult" class="result">Click the button to get a quote...</div>
+    </div>
+
+    <!-- Country Info API -->
+    <div class="api-section">
+        <h2>🌍 Country Information API</h2>
+        <button onclick="getCountryInfo()">Get Ghana Info</button>
+        <div id="countryResult" class="result">Click the button to get country info...</div>
+    </div>
+
+    <!-- Time API -->
+    <div class="api-section">
+        <h2>⏰ World Time API</h2>
+        <button onclick="getTime()">Get Ghana Time</button>
+        <div id="timeResult" class="result">Click the button to get current time...</div>
+    </div>
+
+    <!-- Random User API -->
+    <div class="api-section">
+        <h2>👤 Random User API</h2>
+        <button onclick="getRandomUser()">Get Random User</button>
+        <div id="userResult" class="result">Click the button to get a random user profile...</div>
+    </div>
+
+    <!-- Cat Facts API -->
+    <div class="api-section">
+        <h2>🐱 Cat Facts API</h2>
+        <button onclick="getCatFact()">Get Cat Fact</button>
+        <div id="catResult" class="result">Click the button to learn about cats...</div>
+    </div>
+
+   <!--Photo Gallery Test insect-->
+    <section id="galllery">
+        <h2>Photo Gallery</h2>
+        <button id="galleryBtn">View Hotel Photos</button>
+
+        <div id="photoGallery" style="display: none;">
+            <h3>Explore Tima Sara Hotel</h3>
+            <img src="/images/front_elevetion.jpg" alt="Hotel Exterior">
+            <img src="/images/front_view.png" alt="Hotel Exterior">
+            <img src="/images/reception.jpg" alt="Reception">
+            <img src="/images/reception_3.jpg" alt="Reception">
+            <img src="/images/reception_ladies_3.jpg" alt="Reception">
+            <img src="/images/superior.jpg" alt="Standard Room">
+            <img src="/images/superior_5.jpg" alt="Standard Room">
+            <img src="/images/executive_room.jpg" alt="Executive Room">
+            <img src="/images/executive_room_1.jpg" alt="Executive Room">
+            <img src="/images/executive_room_4.jpg" alt="Executive Room">
+            <img src="/images/executive_room_11.jpg" alt="Executive Room">
+            <img src="/images/super_deluxe.jpg" alt="Deluxe Room">
+            <img src="/images/deluxe_room.jpg" alt="Deluxe Room">
+            <img src="/images/super_deluxe_12.jpg" alt="Deluxe Room">
+            <img src="/images/super_deluxe_11.jpg" alt="Deluxe Room">
+            <img src="/images/super_deluxe_13.jpg" alt="Deluxe Room">
+            <img src="/images/super_deluxe_3.jpg" alt="Deluxe Room">
+            <p><em>Click "Hide Photos" to close gallery</em></p>
+        </div>
+       </section>
+
+    <script>
+        // Random Quote API
+        function getQuote() {
+            const resultDiv = document.getElementById('quoteResult');
+            resultDiv.innerHTML = 'Loading...';
+            
+            fetch('https://api.quotable.io/random')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.innerHTML = `
+                        <p style="font-size: 1.2em; font-style: italic;">"${data.content}"</p>
+                        <p style="text-align: right; color: #7f8c8d;">— ${data.author}</p>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+
+        // Country Information API
+        function getCountryInfo() {
+            const resultDiv = document.getElementById('countryResult');
+            resultDiv.innerHTML = 'Loading...';
+            
+            fetch('https://restcountries.com/v3.1/name/ghana')
+                .then(response => response.json())
+                .then(data => {
+                    const country = data[0];
+                    resultDiv.innerHTML = `
+                        <div class="flag">${country.flag}</div>
+                        <p><strong>Country:</strong> ${country.name.common}</p>
+                        <p><strong>Capital:</strong> ${country.capital[0]}</p>
+                        <p><strong>Population:</strong> ${country.population.toLocaleString()}</p>
+                        <p><strong>Region:</strong> ${country.region}</p>
+                        <p><strong>Currency:</strong> ${Object.values(country.currencies)[0].name}</p>
+                        <p><strong>Languages:</strong> ${Object.values(country.languages).join(', ')}</p>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+
+        // World Time API
+        function getTime() {
+            const resultDiv = document.getElementById('timeResult');
+            resultDiv.innerHTML = 'Loading...';
+            
+            fetch('https://worldtimeapi.org/api/timezone/Africa/Accra')
+                .then(response => response.json())
+                .then(data => {
+                    const date = new Date(data.datetime);
+                    resultDiv.innerHTML = `
+                        <p><strong>Timezone:</strong> ${data.timezone}</p>
+                        <p><strong>Current Date/Time:</strong> ${date.toLocaleString()}</p>
+                        <p><strong>Day of Year:</strong> ${data.day_of_year}</p>
+                        <p><strong>Week Number:</strong> ${data.week_number}</p>
+                        <p><strong>UTC Offset:</strong> ${data.utc_offset}</p>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+
+        // Random User API
+        function getRandomUser() {
+            const resultDiv = document.getElementById('userResult');
+            resultDiv.innerHTML = 'Loading...';
+            
+            fetch('https://randomuser.me/api/')
+                .then(response => response.json())
+                .then(data => {
+                    const user = data.results[0];
+                    resultDiv.innerHTML = `
+                        <img src="${user.picture.large}" alt="User photo" style="border-radius: 50%; width: 100px;">
+                        <p><strong>Name:</strong> ${user.name.first} ${user.name.last}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Location:</strong> ${user.location.city}, ${user.location.country}</p>
+                        <p><strong>Age:</strong> ${user.dob.age}</p>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+
+        // Cat Facts API
+        function getCatFact() {
+            const resultDiv = document.getElementById('catResult');
+            resultDiv.innerHTML = 'Loading...';
+            
+            fetch('https://catfact.ninja/fact')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.innerHTML = `
+                        <p style="font-size: 1.1em;">🐱 ${data.fact}</p>
+                        <p style="color: #7f8c8d; font-size: 0.9em;">Fact length: ${data.length} characters</p>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+
+        
+        // Photo Gallery Test Insert
+        // Photo Gallery Toggle
+const galleryBtn = document.getElementById('galleryBtn');
+const photoGallery = document.getElementById('photoGallery');
+
+galleryBtn.addEventListener('click', function() {
+// Check if gallery is hidden
+if (photoGallery.style.display === 'none') {
+    // Show it
+    photoGallery.style.display = 'block';
+    galleryBtn.textContent = 'Hide Photos';
+} else {
+    // Hide it
+    photoGallery.style.display = 'none';
+    galleryBtn.textContent = 'View Hotel Photos';
+}
+});
+    </script>
+</body>
+</html>
