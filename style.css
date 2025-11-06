@@ -1649,7 +1649,7 @@ a.logo img,
 
     
 
-}
+
 
 
 @media (max-width: 768px) 
@@ -1697,41 +1697,40 @@ a.logo img,
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
 
-    /* Replace .missing-image-container with the actual class */
-    .dining-card {
-        display: block !important; 
-        max-width: 100%;
-        height: auto;
+   
+    
+    /* 1. Ensure the main container for the cards is a simple block or column flex */
+    .dining-features {
+        display: block; /* Simplest reset to stack block elements */
+        width: 100%;
+        padding: 0 15px; /* Add some padding if needed */
     }
 
-
-    /* This rule ensures the images and text stack nicely */
+    /* 2. The critical part: Set the card to take full width and handle its children */
     .dining-card {
-        display: flex; /* Or grid */
+        width: 100%;
+        margin-bottom: 30px; /* Space between cards */
+        display: flex; /* Makes sure children (image/description) stack */
         flex-direction: column; 
-        /* Ensure it takes full width and stacks content */
-        grid-template-columns: 1fr !important; /* Force single column */
     }
 
-    /* THE CRITICAL FIX: Ensure the image container has space */
-    .dining-card .dining-image-placeholder {
-        width: 100%; /* Important: ensure it takes the full width */
-        height: auto; /* Allow height to be determined by the image */
-        margin-bottom: 15px; /* Add some space below the image */
+    /* 3. Handle the 'reverse' card that was likely causing confusion in flex/grid */
+    .dining-card.reverse {
+        flex-direction: column; /* Force the image to always be on top/first */
     }
     
-    /* Ensure the image itself is responsive */
-    .dining-card .dining-image-placeholder img {
+    /* 4. The image and its placeholder must take full width */
+    .dining-image-placeholder {
         width: 100%;
         height: auto;
-        /* Remove any object-fit: cover or height: 0 that may exist */
     }
     
-    /* Reverse elements often cause issues. Force them to stack normally */
-    .dining-card.reverse {
-        flex-direction: column; /* Force normal stacking */
+    .dining-image-placeholder img {
+        width: 100%;
+        height: auto;
+        display: block;
     }
-
+}
     /* ================================
    ANIMATIONS
    ================================ */
