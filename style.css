@@ -1727,9 +1727,12 @@ a.logo img,
     
     .dining-image-placeholder img {
         width: 100%;
-        height: auto;
+        height: auto !important;  /* Add !important to force override */
+        min-height: 250px;  /* Optional: keeps it from being too small */
         display: block;
     }
+
+    
 }
     /* ================================
    ANIMATIONS
