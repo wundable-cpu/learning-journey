@@ -721,6 +721,7 @@ a.logo img,
     color: #fff;
     opacity: 0;
     transition: opacity 0.5s;
+    display: none;
 }
 
 .dining-card:hover .dining-overlay {
@@ -1646,7 +1647,7 @@ a.logo img,
     .booking-summary {
         position: static;
     }
-
+}
     
 
 
@@ -1698,40 +1699,38 @@ a.logo img,
     }
 
    
-    
-    /* 1. Ensure the main container for the cards is a simple block or column flex */
-    .dining-features {
-        display: block; /* Simplest reset to stack block elements */
-        width: 100%;
-        padding: 0 15px; /* Add some padding if needed */
-    }
-
-    /* 2. The critical part: Set the card to take full width and handle its children */
     .dining-card {
         width: 100%;
-        margin-bottom: 30px; /* Space between cards */
-        display: flex; /* Makes sure children (image/description) stack */
-        flex-direction: column; 
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
     }
 
-    /* 3. Handle the 'reverse' card that was likely causing confusion in flex/grid */
     .dining-card.reverse {
-        flex-direction: column; /* Force the image to always be on top/first */
+        flex-direction: column;
     }
     
-    /* 4. The image and its placeholder must take full width */
     .dining-image-placeholder {
-        width: 100%;
-        height: auto;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 200px;
+        position: relative !important;
+        overflow: visible !important;  /* Change from hidden! */
     }
     
     .dining-image-placeholder img {
-        width: 100%;
-        height: auto !important;  /* Add !important to force override */
-        min-height: 250px;  /* Optional: keeps it from being too small */
-        display: block;
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+        object-fit: cover;
+        position: relative !important;
+        opacity: 1 !important;  /* Force visible */
+        visibility: visible !important;  /* Force visible */
     }
-
+    
+    .dining-overlay {
+        display: none !important;  /* Make absolutely sure it's gone */
+    }
     
 }
     /* ================================
