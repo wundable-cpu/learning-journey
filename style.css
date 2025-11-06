@@ -1647,17 +1647,17 @@ a.logo img,
         position: static;
     }
 
+    
+
 }
 
-@media (max-width: 768px) {
+
+@media (max-width: 768px) 
+{
     .nav-links {
         display: none;
     }
 
-    .rooms-grid-page {
-        width: 100%;
-        height: auto;
-    }   
     .mobile-menu-toggle {
         display: block;
     }
@@ -1695,6 +1695,41 @@ a.logo img,
     
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    /* Replace .missing-image-container with the actual class */
+    .dining-card {
+        display: block !important; 
+        max-width: 100%;
+        height: auto;
+    }
+
+
+    /* This rule ensures the images and text stack nicely */
+    .dining-card {
+        display: flex; /* Or grid */
+        flex-direction: column; 
+        /* Ensure it takes full width and stacks content */
+        grid-template-columns: 1fr !important; /* Force single column */
+    }
+
+    /* THE CRITICAL FIX: Ensure the image container has space */
+    .dining-card .dining-image-placeholder {
+        width: 100%; /* Important: ensure it takes the full width */
+        height: auto; /* Allow height to be determined by the image */
+        margin-bottom: 15px; /* Add some space below the image */
+    }
+    
+    /* Ensure the image itself is responsive */
+    .dining-card .dining-image-placeholder img {
+        width: 100%;
+        height: auto;
+        /* Remove any object-fit: cover or height: 0 that may exist */
+    }
+    
+    /* Reverse elements often cause issues. Force them to stack normally */
+    .dining-card.reverse {
+        flex-direction: column; /* Force normal stacking */
     }
 
     /* ================================
