@@ -78,5 +78,12 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
 - ✅ Day 15: Created Supabase account and connected to website
 - ✅ Day 16: Saved first real booking to database
 - ✅ Day 17: Built admin dashboard with booking management, search, and statistics
+     ✅ Resolved a complex path issue (absolute vs relative paths for GitHub Pages subdirectories)
+     ✅ Fixed CSS syntax errors (missing closing braces in media queries)
+     ✅ Mastered Git workflows (branches, merging, resolving conflicts)
+     ✅ Learned systematic debugging (testing URLs, checking branches, inspecting code)
+     ✅ Persevered through 6+ hours of troubleshooting without giving up
+     ✅ Completed a production-ready hotel website with real business functionality
+
     
 
