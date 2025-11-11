@@ -327,3 +327,18 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Supabase:', typeof supabase !== 'undefined' ? 'CONNECTED ✓' : 'NOT CONNECTED ✗');
     console.log('✅ EmailJS:', typeof emailjs !== 'undefined' ? 'LOADED ✓' : 'NOT LOADED ✗');
 });
+
+
+// ============================================
+// MOBILE MENU TOGGLE
+// ============================================
+
+function toggleMobileMenu() {
+    // 1. Get the menu element using the ID we set in the HTML
+    const navLinks = document.getElementById('mobileNavLinks');
+    
+    // 2. Toggle the 'open' class
+    // If the class is NOT there, it adds it (menu opens).
+    // If the class IS there, it removes it (menu closes).
+    navLinks.classList.toggle('open');
+}

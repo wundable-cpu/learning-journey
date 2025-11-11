@@ -334,7 +334,7 @@ a.logo img,
     transform: translateX(10px);
 }
 
-/* ================================
+ /* ================================
    PAGE HERO (Internal Pages)
    ================================ */
 .page-hero {
@@ -408,38 +408,41 @@ a.logo img,
 .rooms-grid-page {
     max-width: 1400px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
+    display: grid;
+   grid-template-columns: 1fr;
+    gap: 1.5rem;
 }
 
 .room-detail-card {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
+            max-width: 1200px; /* Limits overall card width */
+            margin: 40px auto; /* Centers the card on the page */
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            
+            /* KEY: Use Flexbox for side-by-side columns on desktop */
+            display: flex;
+            flex-direction: row; /* Default: items line up horizontally */
+            overflow: hidden; /* Keeps sharp edges inside the border-radius */
+        }
 
-.room-detail-card:hover {
+
+/* 2. Image and Info Sections */
+        .room-image-section,
+        .room-info-section {
+            /* KEY: Each section takes 50% of the card width on desktop */
+            width: 50%;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .room-image-section:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
-.room-detail-card:nth-child(even) {
-    grid-template-columns: 1fr 1fr;
-}
-
-.room-detail-card:nth-child(even) .room-image-section {
-    order: 2;
-}
-
-.room-detail-card:nth-child(even) .room-info-section {
-    order: 1;
-}
+/* Even children*/
 
 .room-image-section {
     position: relative;
@@ -451,11 +454,23 @@ a.logo img,
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s;
+    display: block;
+    border-radius: 8px;
 }
 
 .room-detail-card:hover .room-image-section img {
     transform: scale(1.1);
 }
+
+
+        .room-info-section,
+        .room-image-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Vertically centers the content */
+        }
+
+
 
 .room-badge {
     position: absolute;
@@ -612,7 +627,7 @@ a.logo img,
 .room-amenities-banner {
     background: var(--dark);
     color: #fff;
-    padding: 3rem 2rem;
+    padding: 5rem 3rem;
     text-align: center;
 }
 
@@ -638,6 +653,7 @@ a.logo img,
     background: rgba(255,255,255,0.1);
     border-radius: 25px;
 }
+
 
 /* ================================
    DINING PAGE
@@ -790,6 +806,12 @@ a.logo img,
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
+.highlight-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+
 .highlight-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
@@ -807,6 +829,8 @@ a.logo img,
     color: #666;
     line-height: 1.6;
 }
+
+
 
 /* ================================
    EXPERIENCES PAGE
@@ -984,6 +1008,7 @@ a.logo img,
     box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
 }
 
+
 /* ================================
    BOOKING PAGE
    ================================ */
@@ -1016,10 +1041,23 @@ a.logo img,
     color: #666;
 }
 
+
+
 .booking-form-section {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+    width: 1400px;
+    display: flex;
+    flex-direction: row;
     gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.booking-form-main {
+    background: #fff;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+    gap: 3rem;{
     margin-bottom: 3rem;
 }
 
@@ -1166,20 +1204,26 @@ a.logo img,
     color: var(--gold);
 }
 
-.submit-booking-btn {
-    width: 100%;
-    padding: 1.25rem;
+
+.book-now-btn {
     background: var(--gold);
-    color: #000;
+    color: var(--dark); /* Use your dark variable for consistency */
     border: none;
-    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
     font-weight: bold;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     cursor: pointer;
-    border-radius: 6px;
     transition: all 0.3s;
     font-family: 'Arial', sans-serif;
-    margin-top: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 4px; /* ✨ NEW: Slightly rounded corners */
+}
+
+.book-now-btn:hover {
+    background: #fff;
+    transform: translateY(-3px); /* Slightly stronger lift */
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4); /* Stronger, more dramatic shadow */
 }
 
 .submit-booking-btn:hover {
@@ -1272,6 +1316,7 @@ a.logo img,
     color: #721c24;
     border: 2px solid #f5c6cb;
 }
+
 
 /* ================================
    GALLERY PAGE
@@ -1403,6 +1448,8 @@ a.logo img,
     line-height: 1.6;
     
 }
+
+
 
 /* ================================
    CONTACT PAGE
@@ -1571,6 +1618,7 @@ a.logo img,
     margin-bottom: 1rem;
 }
 
+
 /* ================================
    FOOTER
    ================================ */
@@ -1626,14 +1674,41 @@ a.logo img,
     margin: 0.5rem 0;
 }
 
+.test-page-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    /* This creates a minimum of 2 columns on most standard desktops */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+}
+
+
+
+
+
+
+
+/* ================================
+   MEDIA QUERIES
+   ================================ */
+
+
+
+@media (max-width: 1200px) {
+    .room-detail-card, 
+    .dining-card { 
+        grid-template-columns: 1fr; /* Applied to the card itself */
+    }
+    /* ... other rules ... */
+}
+
+
 /* ================================
    RESPONSIVE DESIGN
    ================================ */
-@media (max-width: 1200px) {
-    .room-detail-card,
-    .dining-card {
-        grid-template-columns: 1fr;
-    }
+
     
     .room-detail-card:nth-child(even) .room-image-section,
     .room-detail-card:nth-child(even) .room-info-section {
@@ -1647,10 +1722,6 @@ a.logo img,
     .booking-summary {
         position: static;
     }
-}
-    
-
-
 
 
 @media (max-width: 768px) 
@@ -1672,8 +1743,9 @@ a.logo img,
         font-size: 1.2rem;
     }
     
-    .home-features {
+     .home-features {
         grid-template-columns: 1fr;
+        width: 100%;
     }
     
     .page-hero-content h1 {
@@ -1693,49 +1765,67 @@ a.logo img,
     .experiences-grid {
         grid-template-columns: 1fr;
     }
+
+     .rooms-grid-page {
+        grid-template-columns: 1fr;
+    }
     
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
-
-   
-    .dining-card {
-        width: 100%;
-        margin-bottom: 30px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .dining-card.reverse {
-        flex-direction: column;
-    }
-    
-    .dining-image-placeholder {
-        width: 100% !important;
-        height: auto !important;
-        min-height: 200px;
-        position: relative !important;
-        overflow: visible !important;  /* Change from hidden! */
-    }
-    
-    .dining-image-placeholder img {
-        width: 100% !important;
-        height: auto !important;
-        display: block !important;
-        object-fit: cover;
-        position: relative !important;
-        opacity: 1 !important;  /* Force visible */
-        visibility: visible !important;  /* Force visible */
-    }
-    
-    .dining-overlay {
-        display: none !important;  /* Make absolutely sure it's gone */
-    }
     
 }
+
+
+@media (max-width: 600px) {
+    .room-detail-card {
+        flex-direction: column; /* FORCES stacking vertically */
+    }
+    .room-image-section, .room-info-section {
+        width: 100%; /* Each now takes the full width */
+    }
+}
+
+/* --- Mobile Menu Base (Hidden) --- */
+
+/* This rule hides the links on mobile (inside your @media (max-width: 768px)) */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Keeps the menu hidden by default on mobile */
+        /* You might want to remove the 'display: none;' from the 768px block and
+           just rely on the transition below, but 'display: none' is safer for now. */
+        
+        /* New Styles for when it is hidden: */
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 90px; /* Below the nav bar */
+        left: 0;
+        background: rgba(0, 0, 0, 0.95); /* Dark background for the menu */
+        box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+    }
+    
+    .nav-links li {
+        text-align: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+
+/* --- Mobile Menu Open State (Visible) --- */
+
+/* This is the class JavaScript will ADD when the button is clicked */
+.nav-links.open {
+    display: flex !important; /* Forces the links to be visible! */
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+
     /* ================================
    ANIMATIONS
-   ================================ */
+   ================================ 
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -1750,52 +1840,12 @@ a.logo img,
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.02); }
-}
+}*/
 
 /* Initial state for animated elements */
-.room-detail-card,
+/*.room-detail-card,
 .experience-card,
 .dining-card {
     opacity: 0;
 }
-
-/* ================================
-   LOGO STYLES (PROPORTIONAL)
-   ================================ */
-.logo {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    transition: transform 0.3s;
-}
-
-.logo:hover {
-    transform: scale(1.05);
-}
-
-.logo-image {
-    height: 45px; /* Adjust this value: 35px, 40px, 45px, or 50px */
-    width: auto;
-    max-width: 200px; /* Prevents logo from being too wide */
-    object-fit: contain;
-}
-
-/* Responsive sizing */
-@media (max-width: 768px) {
-    .logo-image {
-        height: 35px; /* Smaller on mobile */
-    }
-}
-
-@media (min-width: 1400px) {
-    .logo-image {
-        height: 50px; /* Slightly larger on big screens */
-    }
-}
-
-.footer-logo {
-    height: 80px;
-    width: auto;
-    margin-bottom: 1rem;
-    object-fit: contain;
-}
+*/
