@@ -2002,3 +2002,148 @@ textarea:focus,
     outline-offset: 3px;
     box-shadow: 0 0 0 6px var(--gold);
 }
+
+
+/* ================================
+   DAY 19: ENHANCED HOVER EFFECTS
+   ================================ */
+
+/* Smooth button ripple effect */
+.room-book-button,
+.experience-btn,
+.book-now-btn,
+.hero-cta-btn,
+.submit-booking-btn,
+.contact-submit-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.room-book-button::before,
+.experience-btn::before,
+.book-now-btn::before,
+.hero-cta-btn::before,
+.submit-booking-btn::before,
+.contact-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.room-book-button:hover::before,
+.experience-btn:hover::before,
+.book-now-btn:hover::before,
+.hero-cta-btn:hover::before,
+.submit-booking-btn:hover::before,
+.contact-submit-btn:hover::before {
+    width: 400px;
+    height: 400px;
+}
+
+/* Enhanced card lift on hover */
+.room-detail-card,
+.experience-card,
+.dining-card {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.room-detail-card:hover {
+    transform: translateY(-12px) scale(1.01);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+}
+
+.experience-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+}
+
+.dining-card:hover {
+    transform: scale(1.02);
+}
+
+/* Smooth image zoom on card hover */
+.room-image-section img,
+.experience-image img,
+.dining-image-placeholder img,
+.feature-image img {
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.room-detail-card:hover .room-image-section img,
+.experience-card:hover .experience-image img,
+.dining-card:hover .dining-image-placeholder img,
+.home-feature-card:hover .feature-image img {
+    transform: scale(1.12) rotate(1deg);
+}
+
+/* Gallery item hover effect */
+.gallery-item {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-item:hover {
+    transform: scale(1.08) translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    z-index: 10;
+}
+
+.gallery-item img {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.15);
+}
+
+/* Gold glow effect on navigation links */
+.nav-links a {
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* Contact card subtle lift */
+.contact-card {
+    transition: all 0.4s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    background: #fff;
+}
+
+/* Form input focus glow */
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Filter button active state */
+.filter-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.filter-btn.active {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+}
