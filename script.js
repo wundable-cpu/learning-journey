@@ -342,3 +342,68 @@ function toggleMobileMenu() {
     // If the class IS there, it removes it (menu closes).
     navLinks.classList.toggle('open');
 }
+
+
+// ============================================
+// CONTACT FORM WITH FORMSPREE
+// ============================================
+
+
+// --- Function to handle Contact Form Submission ---
+function setupContactForm() {
+    const form = document.getElementById('contactForm');
+    const statusMessage = document.getElementById('formStatus');
+
+    if (!form || !statusMessage) {
+        console.error("Contact form or status element not found.");
+        return;
+    }
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Stop the default Formspree redirect/feedback
+
+        const formData = new FormData(form);
+        
+        // Show a temporary loading message
+        statusMessage.textContent = 'Sending message...';
+        statusMessage.className = 'form-result'; // Clear previous status styles
+
+        try {
+            // Use the fetch API to send the data to Formspree
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'Accept': 'application/json' // Crucial for Formspree AJAX
+                }
+            });
+
+            if (response.ok) {
+                // SUCCESS: Show success message and clear the form
+                statusMessage.textContent = 'Thank you! Your message has been sent successfully.';
+                statusMessage.classList.add('success');
+                form.reset(); // Clear all form fields
+                
+                // Optional: Trigger a custom alert
+                alert('Message Sent: Thank you for contacting us!');
+            } else {
+                // FAILURE: Get and show the specific error message
+                const data = await response.json();
+                if (data.errors) {
+                    statusMessage.textContent = data.errors.map(error => error.message).join(", ");
+                } else {
+                    statusMessage.textContent = 'Oops! There was an issue sending your message.';
+                }
+                statusMessage.classList.add('error');
+            }
+        } catch (error) {
+            // NETWORK ERROR: Handle connection issues
+            console.error('Submission Error:', error);
+            statusMessage.textContent = 'An unexpected error occurred. Please check your connection.';
+            statusMessage.classList.add('error');
+        }
+    });
+}
+
+// Call the function to set up the event listener when the page loads
+setupContactForm();
