@@ -1895,3 +1895,30 @@ a.logo img,
     opacity: 0;
 }
 */
+
+
+/* ================================
+   ANIMATION INITIAL STATES
+   ================================ */
+
+/* Hide elements before GSAP animates them */
+.room-detail-card,
+.experience-card,
+.dining-card,
+.gallery-item,
+.home-feature-card,
+.contact-card {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* Show them immediately if JavaScript fails to load */
+.no-js .room-detail-card,
+.no-js .experience-card,
+.no-js .dining-card,
+.no-js .gallery-item,
+.no-js .home-feature-card,
+.no-js .contact-card {
+    opacity: 1;
+    transform: translateY(0);
+}
