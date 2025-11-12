@@ -85,6 +85,8 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
      ✅ Persevered through 6+ hours of troubleshooting without giving up
      ✅ Completed a production-ready hotel website with real business functionality
      ✅ Moved back to the main site and deleted the branch redesign-homepage
+- ✅ Day 18: Image optimization (75% file size reduction)
+- ✅ Day 19: Smooth scroll animations with GSAP
 
     
 
