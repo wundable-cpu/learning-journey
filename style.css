@@ -1753,6 +1753,15 @@ a.logo img,
         letter-spacing: 4px;
     }
     
+     .booking-form-section {
+        grid-template-columns: 1fr;
+    }
+
+     .booking-summary {
+        position: static; /* Un-stick the sidebar */
+    }
+
+
     .form-grid,
     .form-row {
         grid-template-columns: 1fr;
@@ -1779,10 +1788,25 @@ a.logo img,
 
 @media (max-width: 600px) {
     .room-detail-card {
+        display: flex;
         flex-direction: column; /* FORCES stacking vertically */
     }
     .room-image-section, .room-info-section {
         width: 100%; /* Each now takes the full width */
+    }
+
+    .dining-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Vertically centers the content */
+        }
+
+    .booking-form-section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: 1fr;
+        justify-content: center; /* Vertically centers the content */
     }
 }
 
@@ -1823,7 +1847,7 @@ a.logo img,
 }
 
 
-    /* ================================
+    ================================
    ANIMATIONS
    ================================ 
 @keyframes fadeIn {

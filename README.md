@@ -84,6 +84,7 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
      ✅ Learned systematic debugging (testing URLs, checking branches, inspecting code)
      ✅ Persevered through 6+ hours of troubleshooting without giving up
      ✅ Completed a production-ready hotel website with real business functionality
+     ✅ Moved back to the main site and deleted the branch redesign-homepage
 
     
 
