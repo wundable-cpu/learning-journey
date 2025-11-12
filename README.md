@@ -87,6 +87,7 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
      ✅ Moved back to the main site and deleted the branch redesign-homepage
 - ✅ Day 18: Image optimization (75% file size reduction)
 - ✅ Day 19: Smooth scroll animations with GSAP
+- ✅ Day 20: Accessibility Features ♿
 
     
 
