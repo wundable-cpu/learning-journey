@@ -25,26 +25,28 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
     
     <!-- rest of your code -->
-    <nav class="main-nav">
-        <div class="nav-container">
-            <!-- NEW CODE (Replace with this): -->
-                <a href="booking.html" class="logo">
-                    <img src="images/tima_sara_logo.png" alt="Tima Sara Hotel" class="logo-image">
-                </a>
-            
-            <ul class="nav-links" id="mobileNavLinks">
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="rooms.html">ROOMS & SUITES</a></li>
-                <li><a href="dining.html">DINING</a></li>
-                <li><a href="experiences.html">EXPERIENCES</a></li>
-                <li><a href="gallery.html">GALLERY</a></li>
-                <li><a href="contact.html">CONTACT</a></li>
-            </ul>
-            
-            <a href="booking.html" class="book-now-btn active">BOOK NOW</a>
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
-        </div>
-    </nav>
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+        <a href="index.html" class="logo" aria-label="Tima Sara Hotel - Return to homepage">
+            <img src="images/tima_sara_logo.png" alt="Tima Sara Hotel Logo" class="logo-image">
+        </a>
+        
+        <ul class="nav-links">
+            <li><a href="index.html" aria-label="Go to homepage">HOME</a></li>
+            <li><a href="rooms.html" aria-label="View our rooms and suites">ROOMS & SUITES</a></li>
+            <li><a href="dining.html" aria-label="Explore dining options">DINING</a></li>
+            <li><a href="experiences.html" aria-label="Discover experiences">EXPERIENCES</a></li>
+            <li><a href="gallery.html" aria-label="Browse photo gallery">GALLERY</a></li>
+            <li><a href="contact.html" aria-label="Contact us">CONTACT</a></li>
+        </ul>
+        
+        <a href="booking.html" class="book-now-btn" aria-label="Book your stay now">BOOK NOW</a>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+            ☰
+        </button>
+    </div>
+</nav>
 
     <section class="page-hero" style="background-image: url('images/reception_5.jpg');">
 
@@ -57,7 +59,7 @@
 
     <main id="main-content"></main>
 
-    <section class="booking-page">
+    <section class="booking-page" id="main-content">
         <div class="booking-container">
             <div class="booking-header">
                 <h1>RESERVE YOUR STAY</h1>
@@ -71,20 +73,29 @@
                         <h3>Guest Information</h3>
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="firstName">First Name *</label>
-                                <input type="text" id="firstName" required>
+                               <label for="fullName">Full Name <span aria-label="required">*</span></label>
+                               <input type="text" id="fullName" name="fullName" required 
+                                      aria-required="true" aria-describedby="name-error">
+                               <span id="name-error" class="error-message" role="alert"></span>
                             </div>
                             <div class="form-group">
                                 <label for="lastName">Last Name *</label>
-                                <input type="text" id="lastName" required>
+                                <input type="text" id="lastName" name="lastName" required 
+                                       aria-required="true" aria-describedby="last-name-error">
+                                <span id="last-name-error" class="error-message" role="alert"></span>
                             </div>
+                            
                             <div class="form-group">
                                 <label for="email">Email Address *</label>
-                                <input type="email" id="email" required>
+                                <input type="email" id="email" name="email" required 
+                                       aria-required="true" aria-describedby="email-error">
+                                <span id="email-error" class="error-message" role="alert"></span>
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone Number *</label>
-                                <input type="tel" id="phone" required>
+                                <input type="tel" id="phone" name="phone" required 
+                                       aria-required="true" aria-describedby="phone-error">
+                                <span id="phone-error" class="error-message" role="alert"></span>
                             </div>
                         </div>
                     </div>
@@ -201,11 +212,12 @@
             </div>
 
             <!-- Result Display -->
-            <div id="bookingResult" class="booking-result"></div>
+            <div id="bookingResult" class="booking-result" role="alert" aria-live="polite" aria-atomic="true"></div>
         </div>
     </section>
 
-    <footer class="footer">
+    
+    <footer class="footer" role="contentinfo"></footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h4>Tima Sara Hotel</h4>

@@ -12,30 +12,31 @@
     
     <!-- rest of your code -->
     <!-- Navigation -->
-    <nav class="main-nav">    
-        <div class="nav-container">
-            <!-- NEW CODE (Replace with this): -->
-            <a href="index.html" class="logo">
-                <img src="images/tima_sara_logo.png" alt="Tima Sara Hotel" class="logo-image">
-            </a>
-            
-            <ul class="nav-links" id="mobileNavLinks">
-                <li><a href="index.html" class="active">HOME</a></li>
-                <li><a href="rooms.html">ROOMS & SUITES</a></li>
-                <li><a href="dining.html">DINING</a></li>
-                <li><a href="experiences.html">EXPERIENCES</a></li>
-                <li><a href="gallery.html">GALLERY</a></li>
-                <li><a href="contact.html">CONTACT</a></li>
-            </ul>
-            
-            <a href="booking.html" class="book-now-btn">BOOK NOW</a>
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
-        </div>
-    </nav>
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+     <div class="nav-container">
+        <a href="index.html" class="logo" aria-label="Tima Sara Hotel - Return to homepage">
+            <img src="images/tima_sara_logo.png" alt="Tima Sara Hotel Logo" class="logo-image">
+        </a>
+        
+        <ul class="nav-links">
+            <li><a href="index.html" aria-label="Go to homepage">HOME</a></li>
+            <li><a href="rooms.html" aria-label="View our rooms and suites">ROOMS & SUITES</a></li>
+            <li><a href="dining.html" aria-label="Explore dining options">DINING</a></li>
+            <li><a href="experiences.html" aria-label="Discover experiences">EXPERIENCES</a></li>
+            <li><a href="gallery.html" aria-label="Browse photo gallery">GALLERY</a></li>
+            <li><a href="contact.html" aria-label="Contact us">CONTACT</a></li>
+        </ul>
+        
+        <a href="booking.html" class="book-now-btn" aria-label="Book your stay now">BOOK NOW</a>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+            ☰
+        </button>
+     </div>
+    </nav>   
 
     <!-- Hero Section -->
-    <main id="main-content"></main>
-    <section class="hero-homepage">
+    <section class="hero-homepage" id="main-content">
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1 class="hero-title">ESCAPE TO PARADISE</h1>
@@ -87,7 +88,7 @@
 
     <!-- Footer -->
     
-<footer class="footer">
+<footer class="footer" role="contentinfo"></footer>
         <div class="footer-content">
             <div class="footer-section">
                  <h4>Tima Sara Hotel</h4>
