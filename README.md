@@ -88,6 +88,13 @@ I feel elated learning how to code. The mystery surrounding coding is being demy
 - ✅ Day 18: Image optimization (75% file size reduction)
 - ✅ Day 19: Smooth scroll animations with GSAP
 - ✅ Day 20: Accessibility Features ♿
+    ✅ Skip links added to all pages
+    ✅ ARIA labels on navigation
+    ✅ ARIA labels on forms
+    ✅ Enhanced focus indicators
+    ✅ Semantic HTML landmarks
+    ✅ Live regions for dynamic content
+    ✅ Alt text audit completed
 
     
 

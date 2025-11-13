@@ -1644,71 +1644,67 @@ a.logo img,
 
 
 /* ================================
-   FOOTER - Safari Compatible
+   FOOTER
    ================================ */
-
 .footer {
-    /* Multiple background declarations for Safari compatibility */
-    background-color: #1a1a1a;
-    background: #1a1a1a;
-    color: #ffffff;
-    padding: 60px 20px 30px;
-    -webkit-background-clip: border-box;
-    background-clip: border-box;
+    background: var(--dark);
+    color: #fff;
+    padding: 3rem 2rem 1rem;
 }
 
-/* Force footer content to be white */
-.footer * {
-    color: #ffffff;
-}
-
-.footer h3 {
-    color: #d4af37; /* Gold color for headings */
-    margin-bottom: 20px;
-}
-
-.footer p,
-.footer li,
-.footer a {
-    color: #ffffff;
-}
-
-.footer a:hover {
-    color: #d4af37;
-}
-
-/* Force footer sections background */
 .footer-content {
-    background-color: transparent;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    margin-bottom: 2rem;
 }
 
-.footer-section {
-    background-color: transparent;
+.footer-section h4 {
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+}
+
+.footer-section p {
+    color: #ccc;
+    line-height: 1.8;
+    font-size: 0.95rem;
+}
+
+.footer-section a {
+    display: block;
+    color: #ccc;
+    text-decoration: none;
+    margin: 0.5rem 0;
+    transition: color 0.3s;
+}
+
+.footer-section a:hover {
+    color: var(--gold);
 }
 
 .footer-bottom {
-    background-color: transparent;
-    color: #ffffff;
-    border-top: 1px solid #333;
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #444;
 }
 
+.footer-bottom p {
+    color: #999;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
 
-
-
-
-
-/* ================================
-   MEDIA QUERIES
-   ================================ */
-
-
-
-@media (max-width: 1200px) {
-    .room-detail-card, 
-    .dining-card { 
-        grid-template-columns: 1fr; /* Applied to the card itself */
-    }
-    /* ... other rules ... */
+.test-page-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    /* This creates a minimum of 2 columns on most standard desktops */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
 }
 
 

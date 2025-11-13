@@ -230,7 +230,6 @@ if (bookingForm) {
             }
             
             function showSuccess() {
-                // Show success alert first
                 alert(
                     `✅ BOOKING CONFIRMED!\n\n` +
                     `Reference: ${bookingRef}\n\n` +
@@ -243,38 +242,9 @@ if (bookingForm) {
                     `Guests: ${guestCount}\n` +
                     `Nights: ${priceInfo.nights}\n` +
                     `Total: ₵${priceInfo.totalPrice.toLocaleString()}\n\n` +
-                    `📧 Confirmation email sent to ${guestEmail}\n\n` +
-                    `Please save your booking reference: ${bookingRef}`
+                    `📧 Confirmation email sent!\n` +
+                    `💾 Saved to database!`
                 );
-                
-                // Ask if they want to print receipt
-                setTimeout(() => {
-                    if (confirm('Would you like to print your booking receipt?')) {
-                        // Prepare booking data for receipt
-                        const receiptData = {
-                            reference: bookingRef,
-                            name: fullName,
-                            email: guestEmail,
-                            phone: guestPhone,
-                            checkin: checkInInput.value,
-                            checkout: checkOutInput.value,
-                            room: priceInfo.roomTypeName,
-                            guests: guestCount,
-                            nights: priceInfo.nights,
-                            total: priceInfo.totalPrice,
-                            status: 'pending',
-                            date: new Date().toISOString()
-                        };
-                        
-                        // Call print function
-                        if (typeof window.printReceipt === 'function') {
-                            window.printReceipt(receiptData);
-                        } else {
-                            alert('Print function not available. Please reload the page and try again.');
-                        }
-                    }
-                }, 100);
-                
                 resetForm();
             }
             
