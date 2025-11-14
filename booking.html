@@ -199,12 +199,32 @@
 
                 <!-- Booking Summary Sidebar -->
                 <div class="booking-summary">
-                    <h3>Booking Summary</h3>
-                    <div id="summaryContent" class="summary-content">
-                        <p class="summary-placeholder">Select your dates and room type to see pricing</p>
-                    </div>
-                    <div id="totalPrice" class="total-price"></div>
-                </div>
+    <h3>Booking Summary</h3>
+    <div class="summary-item">
+        <span>Room Type:</span>
+        <span id="summaryRoomType">-</span>
+    </div>
+    <div class="summary-item">
+        <span>Check-in:</span>
+        <span id="summaryCheckIn">-</span>
+    </div>
+    <div class="summary-item">
+        <span>Check-out:</span>
+        <span id="summaryCheckOut">-</span>
+    </div>
+    <div class="summary-item">
+        <span>Nights:</span>
+        <span id="summaryNights">0</span>
+    </div>
+    <div class="summary-item">
+        <span>Price per night:</span>
+        <span id="summaryPrice" data-base-price="0">₵0</span>
+    </div>
+    <div class="summary-total">
+        <span>Total:</span>
+        <span id="summaryTotal" data-base-total="0">₵0</span>
+    </div>
+</div>
             </div>
 
             <!-- Result Display -->
@@ -258,6 +278,9 @@
             }
         })();
     </script>
+
+     <!-- Currency Converter -->
+    <script src="currency.js"></script>
     
     <script src="print-receipt.js"></script>
     <script src="script.js"></script>

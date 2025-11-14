@@ -379,3 +379,40 @@ function setupContactForm() {
 
 // Call the function to set up the event listener when the page loads
 setupContactForm();
+
+
+// ==================================
+// GSAP ANIMATIONS FOR CURRENCY UPDATE
+// ==================================
+gsap.registerPlugin(ScrollTrigger);
+// When room type changes or dates change
+function updateBookingSummary() {
+    const roomType = document.getElementById('roomType').value;
+    const checkIn = document.getElementById('checkIn').value;
+    const checkOut = document.getElementById('checkOut').value;
+    
+    if (roomType && checkIn && checkOut) {
+        // Calculate nights
+        const nights = calculateNights(checkIn, checkOut);
+        
+        // Get base price in GHS
+        const basePricePerNight = roomPrices[roomType];
+        const baseTotal = basePricePerNight * nights;
+        
+        // Update UI with base prices
+        document.getElementById('summaryRoomType').textContent = roomType;
+        document.getElementById('summaryCheckIn').textContent = checkIn;
+        document.getElementById('summaryCheckOut').textContent = checkOut;
+        document.getElementById('summaryNights').textContent = nights;
+        
+        // Set base prices in data attributes
+        const summaryPrice = document.getElementById('summaryPrice');
+        summaryPrice.dataset.basePrice = basePricePerNight;
+        
+        const summaryTotal = document.getElementById('summaryTotal');
+        summaryTotal.dataset.baseTotal = baseTotal;
+        
+        // Update displayed prices (will be converted by currency.js)
+        updateAllPrices();
+    }
+}

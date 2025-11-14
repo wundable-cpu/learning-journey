@@ -2215,104 +2215,88 @@ textarea:focus {
 
 
 /* ================================
-   CURRENCY SELECTOR
+   INLINE CURRENCY SELECTOR
    ================================ */
 
-.currency-selector {
-    position: relative;
-    margin-left: 20px;
-}
-
-.currency-btn {
+/* Room card price container */
+.room-price {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    padding: 8px 15px;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+.price-amount {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--gold);
+}
+
+.price-per {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Inline currency selector */
+.inline-currency-selector {
+    display: inline-flex;
+    align-items: center;
+}
+
+.currency-select {
+    padding: 6px 10px;
+    border: 2px solid var(--gold);
     border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.currency-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: var(--gold);
-}
-
-.currency-flag {
-    font-size: 20px;
-}
-
-.currency-code {
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.currency-arrow {
-    font-size: 10px;
-    transition: transform 0.3s ease;
-}
-
-.currency-btn:hover .currency-arrow {
-    transform: translateY(2px);
-}
-
-.currency-dropdown {
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    min-width: 250px;
-    z-index: 1000;
-    overflow: hidden;
-}
-
-.currency-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.currency-option:last-child {
-    border-bottom: none;
-}
-
-.currency-option:hover {
-    background: #f8f8f8;
-}
-
-.currency-option .currency-flag {
-    font-size: 24px;
-}
-
-.currency-option .currency-name {
     color: #333;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.currency-select:hover {
+    background: #fafafa;
+    border-color: #c4941f;
+}
+
+.currency-select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Currency selector in booking summary */
+.summary-currency-selector {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.summary-currency-selector .currency-select {
+    width: 100%;
+    max-width: 200px;
 }
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
-    .currency-selector {
-        margin-left: 10px;
+    .room-price {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
     
-    .currency-btn {
-        padding: 6px 12px;
+    .price-amount {
+        font-size: 24px;
+    }
+    
+    .currency-select {
+        padding: 8px 12px;
         font-size: 13px;
-    }
-    
-    .currency-dropdown {
-        right: -20px;
-        min-width: 220px;
     }
 }
