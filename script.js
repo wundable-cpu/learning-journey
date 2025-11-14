@@ -7,15 +7,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log('✅ Supabase client initialized!');
 
-// ============================================
-// MOBILE MENU
-// ============================================
-function toggleMobileMenu() {
-    const navLinks = document.querySelector('.nav-links');
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    if (navLinks) navLinks.classList.toggle('active');
-    if (mobileMenuToggle) mobileMenuToggle.classList.toggle('active');
-}
+
 
 // ============================================
 // NAVIGATION SCROLL EFFECT
@@ -300,17 +292,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // ============================================
-// MOBILE MENU TOGGLE
+// MOBILE MENU TOGGLE FUNCTIONALITY
 // ============================================
 
-function toggleMobileMenu() {
-    // 1. Get the menu element using the ID we set in the HTML
-    const navLinks = document.getElementById('mobileNavLinks');
+const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+if (mobileMenuToggle && navLinks) {
     
-    // 2. Toggle the 'open' class
-    // If the class is NOT there, it adds it (menu opens).
-    // If the class IS there, it removes it (menu closes).
-    navLinks.classList.toggle('open');
+    // Define the function that opens/closes the menu and changes the button icon
+    function toggleMobileMenu() {
+        // Toggle a class (e.g., 'open') on the navigation container
+        navLinks.classList.toggle('open'); 
+        mobileMenuToggle.classList.toggle('is-open'); // Change the button appearance/icon
+        
+        // Update ARIA attribute for accessibility
+        const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true' || false;
+        mobileMenuToggle.setAttribute('aria-expanded', !isExpanded);
+    }
+    
+    // Attach the function to the click event of the button
+    mobileMenuToggle.addEventListener('click', toggleMobileMenu);
 }
 
 
