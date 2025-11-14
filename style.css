@@ -1451,6 +1451,7 @@ a.logo img,
     margin: 0 auto;
     text-align: center;
     
+    
 }
 
 .contact-info-section {
@@ -1679,7 +1680,15 @@ a.logo img,
    RESPONSIVE DESIGN
    ================================ */
 
-    
+    @media (max-width: 768px) {
+    /* Target all input and textarea elements inside the form */
+    .contact-form-container input[type="text"],
+    .contact-form-container input[type="email"],
+    .contact-form-container textarea {
+        width: 100%; /* Force them to fill the space available in the centered container */
+        box-sizing: border-box; /* Ensure padding/border doesn't make them overflow */
+    }
+}
     .room-detail-card:nth-child(even) .room-image-section,
     .room-detail-card:nth-child(even) .room-info-section {
         order: 0;
@@ -1773,6 +1782,12 @@ a.logo img,
         grid-template-columns: 1fr;
          overflow-x: hidden;
     }
+
+    .contact-form {
+        width: 100%;
+        overflow-x: hidden;
+        padding: auto;
+    }
     
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -1833,6 +1848,8 @@ a.logo img,
 }
 
 
+
+
 /* --- Mobile Menu Open State (Visible) --- */
 
 /* This is the class JavaScript will ADD when the button is clicked */
@@ -1842,6 +1859,80 @@ a.logo img,
     transform: translateY(0);
 }
 
+
+/* ================================
+   CONTACT PAGE - MOBILE FIX
+   ================================ */
+
+/* Center contact form on mobile */
+@media (max-width: 768px) {
+    .contact-page {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .contact-form-section {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .contact-form {
+        width: 100%;
+        padding: 20px;
+        margin: 0 auto;
+    }
+    
+    .form-row {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .form-group {
+        width: 100%;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Center contact cards */
+    .contact-cards {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .contact-card {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    /* Center the entire contact content */
+    .contact-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Center heading */
+    .contact-page h1,
+    .contact-page h2 {
+        text-align: center;
+        width: 100%;
+    }
+}
 
     ================================
    ANIMATIONS
