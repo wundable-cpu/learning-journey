@@ -197,9 +197,10 @@
                     <button type="submit" class="submit-booking-btn">Check Availability & Pricing</button>
                 </form>
 
-                <!-- Booking Summary Sidebar -->
-                <div class="booking-summary">
+               <div class="booking-summary">
     <h3>Booking Summary</h3>
+    <!-- Currency selector will be inserted here by currency.js -->
+    
     <div class="summary-item">
         <span>Room Type:</span>
         <span id="summaryRoomType">-</span>
@@ -225,7 +226,6 @@
         <span id="summaryTotal" data-base-total="0">₵0</span>
     </div>
 </div>
-            </div>
 
             <!-- Result Display -->
             <div id="bookingResult" class="booking-result" role="alert" aria-live="polite" aria-atomic="true"></div>
@@ -263,7 +263,7 @@
     <!-- GSAP Animation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="animations.js"></script>
+    
 
    
     <!-- EmailJS - Load and Initialize -->
@@ -281,6 +281,8 @@
 
      <!-- Currency Converter -->
     <script src="currency.js"></script>
+
+    <script src="animations.js"></script>
     
     <script src="print-receipt.js"></script>
     <script src="script.js"></script>

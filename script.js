@@ -262,6 +262,134 @@ if (bookingForm) {
     calculatePrice();
 }
 
+
+// ================================
+// BOOKING FORM CALCULATION
+// ================================
+
+// Calculate total price when form fields change
+function calculateBookingTotal() {
+    const roomType = document.getElementById('roomType')?.value;
+    const checkIn = document.getElementById('checkIn')?.value;
+    const checkOut = document.getElementById('checkOut')?.value;
+    
+    console.log('📊 Calculating booking:', { roomType, checkIn, checkOut });
+    
+    // Update room type display
+    if (roomType) {
+        document.getElementById('summaryRoomType').textContent = roomType;
+    }
+    
+    // Update dates display
+    if (checkIn) {
+        document.getElementById('summaryCheckIn').textContent = checkIn;
+    }
+    if (checkOut) {
+        document.getElementById('summaryCheckOut').textContent = checkOut;
+    }
+    
+    // Calculate if all fields are filled
+    if (roomType && checkIn && checkOut) {
+        // Calculate number of nights
+        const date1 = new Date(checkIn);
+        const date2 = new Date(checkOut);
+        const diffTime = date2 - date1;
+        const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        console.log('Nights:', nights);
+        
+        if (nights > 0) {
+            // Get base price in GHS
+            const basePricePerNight = window.roomPrices[roomType] || 0;
+            const baseTotal = basePricePerNight * nights;
+            
+            console.log('Base price:', basePricePerNight);
+            console.log('Base total:', baseTotal);
+            
+            // Update nights display
+            document.getElementById('summaryNights').textContent = nights;
+            
+            // Store base prices in data attributes
+            const summaryPrice = document.getElementById('summaryPrice');
+            const summaryTotal = document.getElementById('summaryTotal');
+            
+            summaryPrice.dataset.basePrice = basePricePerNight;
+            summaryTotal.dataset.baseTotal = baseTotal;
+            
+            // Convert and display prices
+            if (typeof window.convertPrice === 'function' && typeof window.formatPrice === 'function') {
+                const convertedPrice = window.convertPrice(basePricePerNight);
+                const convertedTotal = window.convertPrice(baseTotal);
+                
+                summaryPrice.textContent = window.formatPrice(convertedPrice);
+                summaryTotal.textContent = window.formatPrice(convertedTotal);
+                
+                console.log('✅ Booking summary updated:', {
+                    pricePerNight: window.formatPrice(convertedPrice),
+                    total: window.formatPrice(convertedTotal)
+                });
+            } else {
+                // Fallback if currency functions not loaded
+                summaryPrice.textContent = `₵${basePricePerNight}`;
+                summaryTotal.textContent = `₵${baseTotal}`;
+                
+                console.log('⚠️ Using fallback prices (currency.js not loaded)');
+            }
+        } else {
+            console.warn('Invalid dates - check-out must be after check-in');
+            document.getElementById('summaryNights').textContent = '0';
+        }
+    }
+}
+
+// Attach event listeners to form fields
+function initBookingCalculation() {
+    const roomTypeSelect = document.getElementById('roomType');
+    const checkInInput = document.getElementById('checkIn');
+    const checkOutInput = document.getElementById('checkOut');
+    
+    console.log('Initializing booking calculation...');
+    console.log('Room type field:', roomTypeSelect ? 'found' : 'NOT FOUND');
+    console.log('Check-in field:', checkInInput ? 'found' : 'NOT FOUND');
+    console.log('Check-out field:', checkOutInput ? 'found' : 'NOT FOUND');
+    
+    if (roomTypeSelect) {
+        roomTypeSelect.addEventListener('change', () => {
+            console.log('Room type changed to:', roomTypeSelect.value);
+            calculateBookingTotal();
+        });
+    }
+    
+    if (checkInInput) {
+        checkInInput.addEventListener('change', () => {
+            console.log('Check-in changed to:', checkInInput.value);
+            calculateBookingTotal();
+        });
+    }
+    
+    if (checkOutInput) {
+        checkOutInput.addEventListener('change', () => {
+            console.log('Check-out changed to:', checkOutInput.value);
+            calculateBookingTotal();
+        });
+    }
+    
+    // Run initial calculation if fields have values
+    if (roomTypeSelect?.value || checkInInput?.value || checkOutInput?.value) {
+        calculateBookingTotal();
+    }
+    
+    console.log('✅ Booking calculation listeners attached');
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBookingCalculation);
+} else {
+    // DOM already loaded
+    initBookingCalculation();
+}
+
 // ============================================
 // GALLERY FILTER
 // ============================================
