@@ -60,10 +60,14 @@
                     <img src="images/superior.jpg" alt="Standard Room">
                     <div class="room-badge">Best Value</div>
                 </div>
-                <div class="room-info-section">
-                    <div class="room-header-info">
-                        <h3>Standard Room</h3>
-                        <p class="room-price" data-room-type="Standard Room">₵550</p> 
+                <div class="room-info-section"> 
+                    <h3>Standard Room</h3> 
+                <div class="room-price" data-room-type="Standard Room"> 
+                    <span class="price-amount">₵550</span> 
+                    <span class="price-per">/night</span> 
+
+<!-- Currency selector will be inserted here by JS --> 
+
                     </div>
                     <p class="room-description">Perfect for solo travelers or couples seeking comfort and elegance. Our Standard Rooms offer all essential amenities with a touch of luxury.</p>
                     <div class="room-amenities-list">
@@ -89,7 +93,7 @@
                 <div class="room-info-section">
                     <div class="room-header-info">
                         <h3>Executive Room</h3>
-                        <div class="room-price-large">₵800<span>/night</span></div>
+                        <p class="room-price" data-room-type="Executive Room">₵800</p> 
                     </div>
                     <p class="room-description">Ideal for business travelers and discerning guests. Spacious and sophisticated with premium furnishings and enhanced comfort.</p>
                     <div class="room-amenities-list">
@@ -116,7 +120,7 @@
                 <div class="room-info-section">
                     <div class="room-header-info">
                         <h3>Deluxe Room</h3>
-                        <div class="room-price-large">₵1,500<span>/night</span></div>
+                        <p class="room-price" data-room-type="Deluxe Room">₵1,500</p> 
                     </div>
                     <p class="room-description">Expansive luxury suite perfect for extended stays. Features a full kitchenette and generous living space for ultimate comfort and convenience.</p>
                     <div class="room-amenities-list">
@@ -145,7 +149,7 @@
                 <div class="room-info-section">
                     <div class="room-header-info">
                         <h3>Royal Suite</h3>
-                        <div class="room-price-large gold">₵2,500<span>/night</span></div>
+                        <p class="room-price gold" data-room-type="Royal Suite">₵2,500</p> 
                     </div>
                     <p class="room-description">The pinnacle of luxury living. Our flagship suite offers unmatched elegance with separate living quarters, premium amenities, and breathtaking panoramic views.</p>
                     <div class="room-amenities-list">
@@ -209,7 +213,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    
+     <!-- Currency Converter -->
+    <script src="currency.js"></script>
+
     <!-- Your existing script -->
     <script src="script.js"></script>
     

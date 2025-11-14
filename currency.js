@@ -1,5 +1,13 @@
 // currency.js - Currency conversion with country flags
 
+// Make roomPrices globally accessible
+window.roomPrices = {
+    'Standard Room': 550,
+    'Executive Room': 800,
+    'Deluxe Room': 1500,
+    'Royal Suite': 2500
+};
+
 // Currency data with flags and symbols
 const currencies = {
     GHS: { name: 'Ghana Cedi', symbol: '₵', flag: '🇬🇭', rate: 1 },
@@ -12,14 +20,6 @@ const currencies = {
 
 // Current selected currency (default GHS)
 let currentCurrency = localStorage.getItem('selectedCurrency') || 'GHS';
-
-// Base prices in GHS
-const roomPrices = {
-    'Standard Room': 550,
-    'Executive Room': 800,
-    'Deluxe Room': 1500,
-    'Royal Suite': 2500
-};
 
 // Fetch exchange rates from API
 async function fetchExchangeRates() {
@@ -50,37 +50,31 @@ async function fetchExchangeRates() {
 }
 
 // Convert price from GHS to selected currency
-function convertPrice(priceInGHS) {
+window.convertPrice = function(priceInGHS) {
     if (currentCurrency === 'GHS') {
         return priceInGHS;
     }
     const rate = currencies[currentCurrency].rate;
     return Math.round(priceInGHS * rate);
-}
+};
 
 // Format price with currency symbol
-function formatPrice(price, currency = currentCurrency) {
+window.formatPrice = function(price, currency = currentCurrency) {
     const currencyData = currencies[currency];
     return `${currencyData.symbol}${price.toLocaleString()}`;
-}
+};
 
-// Create currency selector dropdown
-function createCurrencySelector() {
+// Create inline currency selector (compact version)
+function createInlineCurrencySelector(containerId) {
     const selectorHTML = `
-        <div class="currency-selector">
-            <button class="currency-btn" id="currencyButton">
-                <span class="currency-flag">${currencies[currentCurrency].flag}</span>
-                <span class="currency-code">${currentCurrency}</span>
-                <span class="currency-arrow">▼</span>
-            </button>
-            <div class="currency-dropdown" id="currencyDropdown" style="display: none;">
+        <div class="inline-currency-selector">
+            <select class="currency-select" id="${containerId}">
                 ${Object.keys(currencies).map(code => `
-                    <div class="currency-option" data-currency="${code}">
-                        <span class="currency-flag">${currencies[code].flag}</span>
-                        <span class="currency-name">${code} - ${currencies[code].name}</span>
-                    </div>
+                    <option value="${code}" ${code === currentCurrency ? 'selected' : ''}>
+                        ${currencies[code].flag} ${code}
+                    </option>
                 `).join('')}
-            </div>
+            </select>
         </div>
     `;
     return selectorHTML;
@@ -88,13 +82,20 @@ function createCurrencySelector() {
 
 // Update all prices on the page
 function updateAllPrices() {
+    console.log('Updating prices to', currentCurrency);
+    
     // Update room card prices
     document.querySelectorAll('.room-price').forEach(priceEl => {
         const roomType = priceEl.dataset.roomType;
         if (roomType && roomPrices[roomType]) {
             const priceInGHS = roomPrices[roomType];
             const convertedPrice = convertPrice(priceInGHS);
-            priceEl.textContent = formatPrice(convertedPrice);
+            
+            // Find the price amount span
+            const priceAmount = priceEl.querySelector('.price-amount');
+            if (priceAmount) {
+                priceAmount.textContent = formatPrice(convertedPrice);
+            }
         }
     });
     
@@ -121,48 +122,43 @@ async function initCurrency() {
     // Fetch exchange rates
     await fetchExchangeRates();
     
-    // Add currency selector to navigation
-    const nav = document.querySelector('.main-nav .nav-container');
-    if (nav) {
-        const selectorDiv = document.createElement('div');
-        selectorDiv.innerHTML = createCurrencySelector();
-        nav.appendChild(selectorDiv.firstElementChild);
-        
-        // Setup event listeners
-        const currencyBtn = document.getElementById('currencyButton');
-        const currencyDropdown = document.getElementById('currencyDropdown');
-        
-        // Toggle dropdown
-        currencyBtn?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isVisible = currencyDropdown.style.display === 'block';
-            currencyDropdown.style.display = isVisible ? 'none' : 'block';
-        });
-        
-        // Select currency
-        document.querySelectorAll('.currency-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                const newCurrency = e.currentTarget.dataset.currency;
-                currentCurrency = newCurrency;
-                localStorage.setItem('selectedCurrency', newCurrency);
-                
-                // Update button
-                currencyBtn.querySelector('.currency-flag').textContent = currencies[newCurrency].flag;
-                currencyBtn.querySelector('.currency-code').textContent = newCurrency;
-                
-                // Hide dropdown
-                currencyDropdown.style.display = 'none';
-                
-                // Update all prices
-                updateAllPrices();
-            });
-        });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            currencyDropdown.style.display = 'none';
-        });
+    // Add currency selectors to room cards
+    document.querySelectorAll('.room-price').forEach((priceEl, index) => {
+        if (!priceEl.querySelector('.inline-currency-selector')) {
+            const selectorDiv = document.createElement('div');
+            selectorDiv.innerHTML = createInlineCurrencySelector(`roomCurrency${index}`);
+            priceEl.appendChild(selectorDiv.firstElementChild);
+        }
+    });
+    
+    // Add currency selector to booking summary
+    const bookingSummary = document.querySelector('.booking-summary');
+    if (bookingSummary && !bookingSummary.querySelector('.summary-currency-selector')) {
+        const summaryHeader = bookingSummary.querySelector('h3');
+        if (summaryHeader) {
+            const selectorDiv = document.createElement('div');
+            selectorDiv.className = 'summary-currency-selector';
+            selectorDiv.innerHTML = createInlineCurrencySelector('summaryCurrency');
+            summaryHeader.after(selectorDiv.firstElementChild);
+        }
     }
+    
+    // Setup event listeners for all currency selectors
+    document.querySelectorAll('.currency-select').forEach(select => {
+        select.addEventListener('change', (e) => {
+            const newCurrency = e.target.value;
+            currentCurrency = newCurrency;
+            localStorage.setItem('selectedCurrency', newCurrency);
+            
+            // Update all selectors to match
+            document.querySelectorAll('.currency-select').forEach(s => {
+                s.value = newCurrency;
+            });
+            
+            // Update all prices
+            updateAllPrices();
+        });
+    });
     
     // Update initial prices
     updateAllPrices();
