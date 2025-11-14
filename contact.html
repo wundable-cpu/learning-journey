@@ -172,8 +172,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="animations.js"></script>
-</body>
-</html>
+
+     <!-- EmailJS - Load and Initialize -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            try {
+                emailjs.init("nC__S45P_l_XaOAxg");
+                console.log('✅ EmailJS initialized successfully!');
+            } catch (error) {
+                console.error('❌ EmailJS initialization failed:', error);
+            }
+        })();
+    </script>
+    
+    <script src="print-receipt.js"></script>
 
 </body>
 </html>

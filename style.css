@@ -1043,25 +1043,16 @@ a.logo img,
     color: #666;
 }
 
-
-
 .booking-form-section {
-    width: 1400px;
-    display: flex;
-    flex-direction: row;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
     gap: 3rem;
     margin-bottom: 3rem;
 }
 
-.booking-form-main {
-    background: #fff;
-    padding: 3rem;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-}
-    gap: 3rem;{
-    margin-bottom: 3rem;
-}
+
 
 .booking-form-main {
     background: #fff;
@@ -1220,34 +1211,6 @@ a.logo img,
     transition: all 0.3s;
     font-family: 'Arial', sans-serif;
     margin-top: 1rem;
-}
-
-.submit-booking-btn:hover {
-    background: var(--dark-gold);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
-}
-
-
-.book-now-btn {
-    background: var(--gold);
-    color: var(--dark); /* Use your dark variable for consistency */
-    border: none;
-    padding: 0.75rem 1.5rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-family: 'Arial', sans-serif;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 4px; /* ✨ NEW: Slightly rounded corners */
-}
-
-.book-now-btn:hover {
-    background: #fff;
-    transform: translateY(-3px); /* Slightly stronger lift */
-    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4); /* Stronger, more dramatic shadow */
 }
 
 .submit-booking-btn:hover {
@@ -1486,6 +1449,8 @@ a.logo img,
 .contact-container {
     max-width: 1400px;
     margin: 0 auto;
+    text-align: center;
+    
 }
 
 .contact-info-section {
@@ -1706,6 +1671,8 @@ a.logo img,
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
 }
+}
+
 
 
 /* ================================
@@ -1720,11 +1687,21 @@ a.logo img,
     
     .booking-form-section {
         grid-template-columns: 1fr;
+        overflow-x: hidden;
     }
     
     .booking-summary {
         position: static;
     }
+
+    /* Ensure the grid is applied only where you intend it to be */
+@media (min-width: 992px) { /* Use a large breakpoint like 992px or 1200px for desktop */
+    .booking-form-section {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+    }
+}
 
 
 @media (max-width: 768px) 
@@ -1758,6 +1735,7 @@ a.logo img,
     
      .booking-form-section {
         grid-template-columns: 1fr;
+        width: 100%;
     }
 
      .booking-summary {
@@ -1765,9 +1743,18 @@ a.logo img,
     }
 
 
-    .form-grid,
-    .form-row {
+    .form-grid {
+        /* Set the grid to stack items vertically */
+        display: block; 
+        width: 100%;
+        /* OR use a single column */
+        /* display: grid; 
+           grid-template-columns: 1fr; */
+    }
+    
+    .form-group {
         grid-template-columns: 1fr;
+        margin-bottom: 20px;
     }
     
     .amenities-grid {
@@ -1780,6 +1767,11 @@ a.logo img,
 
      .rooms-grid-page {
         grid-template-columns: 1fr;
+    }
+
+    .contact-container {
+        grid-template-columns: 1fr;
+         overflow-x: hidden;
     }
     
     .gallery-grid {
@@ -1811,7 +1803,8 @@ a.logo img,
         grid-template-columns: 1fr;
         justify-content: center; /* Vertically centers the content */
     }
-}
+
+
 
 /* --- Mobile Menu Base (Hidden) --- */
 
