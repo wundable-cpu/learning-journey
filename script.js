@@ -390,6 +390,9 @@ if (document.readyState === 'loading') {
     initBookingCalculation();
 }
 
+
+
+
 // ============================================
 // GALLERY FILTER
 // ============================================
