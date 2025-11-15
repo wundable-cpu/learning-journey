@@ -133,6 +133,27 @@
                     </div>
 
                     <!-- Room Selection -->
+                     <div class="form-group">
+    <label for="roomType">Room Type <span class="required">*</span></label>
+    <select id="roomType" name="roomType" required>
+        <option value="">Select Room Type</option>
+        <option value="Standard Room">Standard Room - ₵550/night</option>
+        <option value="Executive Room">Executive Room - ₵800/night</option>
+        <option value="Deluxe Room">Deluxe Room - ₵1,500/night</option>
+        <option value="Royal Suite">Royal Suite - ₵2,500/night</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="checkIn">Check-in Date <span class="required">*</span></label>
+    <input type="date" id="checkIn" name="checkInDate" required>
+</div>
+
+<!-- Check-out Date -->
+<div class="form-group">
+    <label for="checkOut">Check-out Date <span class="required">*</span></label>
+    <input type="date" id="checkOut" name="checkOutDate" required>
+</div>
                     <div class="form-section">
                         <h3>Room Selection</h3>
                         <div class="room-selection">
@@ -197,9 +218,9 @@
                     <button type="submit" class="submit-booking-btn">Check Availability & Pricing</button>
                 </form>
 
-               <div class="booking-summary">
+              <div class="booking-summary">
     <h3>Booking Summary</h3>
-    <!-- Currency selector will be inserted here by currency.js -->
+    <!-- Currency selector will be inserted here -->
     
     <div class="summary-item">
         <span>Room Type:</span>
@@ -282,7 +303,7 @@
      <!-- Currency Converter -->
     <script src="currency.js"></script>
 
-    <script src="animations.js"></script>
+    
     
     <script src="print-receipt.js"></script>
     <script src="script.js"></script>
