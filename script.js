@@ -549,3 +549,50 @@ function updateBookingSummary() {
         updateAllPrices();
     }
 }
+
+// ================================
+// ATTACH BOOKING LISTENERS DIRECTLY
+// ================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const roomTypeSelect = document.getElementById('roomType');
+    const checkInInput = document.getElementById('checkIn');
+    const checkOutInput = document.getElementById('checkOut');
+    
+    console.log('🔍 Looking for booking fields...');
+    console.log('Room type:', roomTypeSelect);
+    console.log('Check-in:', checkInInput);
+    console.log('Check-out:', checkOutInput);
+    
+    if (roomTypeSelect) {
+        roomTypeSelect.addEventListener('change', function() {
+            console.log('🏨 Room type changed to:', this.value);
+            calculateBookingTotal();
+        });
+        console.log('✅ Room type listener attached');
+    } else {
+        console.error('❌ Room type field not found!');
+    }
+    
+    if (checkInInput) {
+        checkInInput.addEventListener('change', function() {
+            console.log('📅 Check-in changed to:', this.value);
+            calculateBookingTotal();
+        });
+        console.log('✅ Check-in listener attached');
+    } else {
+        console.error('❌ Check-in field not found!');
+    }
+    
+    if (checkOutInput) {
+        checkOutInput.addEventListener('change', function() {
+            console.log('📅 Check-out changed to:', this.value);
+            calculateBookingTotal();
+        });
+        console.log('✅ Check-out listener attached');
+    } else {
+        console.error('❌ Check-out field not found!');
+    }
+    
+    console.log('🎯 Booking initialization complete!');
+});
