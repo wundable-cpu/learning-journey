@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tima Sara Hotel Management</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body class="dashboard-page">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
+            <h2>TIMA SARA<br><span>HOTEL</span></h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span>Reservations</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Guests</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Rooms</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🧹</span>
+                <span>Housekeeping</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="current-datetime">
+                    <div class="time" id="currentTime">10:30 AM</div>
+                    <div class="date" id="currentDate">WED, OCT 26, 2024</div>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <div class="user-info">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="userName">Welcome, Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            
+            <!-- Room Status Card -->
+            <div class="dashboard-card room-status-card">
+                <h3>ROOM STATUS</h3>
+                <div class="status-list">
+                    <div class="status-item">
+                        <span class="status-dot available"></span>
+                        <span class="status-label">AVAILABLE</span>
+                        <span class="status-count" id="availableRooms">10</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot occupied"></span>
+                        <span class="status-label">OCCUPIED</span>
+                        <span class="status-count" id="occupiedRooms">18</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot cleaning"></span>
+                        <span class="status-label">CLEANING</span>
+                        <span class="status-count" id="cleaningRooms">2</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot maintenance"></span>
+                        <span class="status-label">MAINTENANCE</span>
+                        <span class="status-count" id="maintenanceRooms">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot reserved"></span>
+                        <span class="status-label">RESERVED</span>
+                        <span class="status-count" id="reservedRooms">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Occupancy Overview Card -->
+            <div class="dashboard-card occupancy-card">
+                <h3>OCCUPANCY OVERVIEW</h3>
+                <div class="occupancy-display">
+                    <div class="occupancy-fraction">
+                        <span class="occupied-count" id="occupiedCount">18</span>
+                        <span class="divider">/</span>
+                        <span class="total-count">28</span>
+                    </div>
+                    <div class="occupancy-chart">
+                        <svg class="progress-ring" width="120" height="120">
+                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                            <circle class="progress-ring-circle" cx="60" cy="60" r="54" id="progressCircle"></circle>
+                            <text x="60" y="70" class="progress-text" id="progressText">64%</text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="occupancy-details">
+                    <div class="detail-item">
+                        <span>ROOMS OCCUPIED</span>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <span>CHECK-INS TODAY:</span>
+                            <strong id="checkInsToday">5</strong>
+                            <span class="time">11:00 AM</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>CHECK-OUTS TIME</span>
+                            <strong id="checkOutsToday">3</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Card -->
+            <div class="dashboard-card revenue-card">
+                <h3>REVENUE AT A GLANCE</h3>
+                <div class="revenue-amount">
+                    <span class="currency">GHS</span>
+                    <span class="amount" id="todayRevenue">4,500.00</span>
+                </div>
+                <div class="revenue-label">TODAY'S REVENUE</div>
+                <div class="revenue-month">
+                    <span>MONTH-TO-DATE:</span>
+                    <strong id="monthRevenue">GHS 32,100.00</strong>
+                </div>
+            </div>
+
+            <!-- Upcoming Arrivals Card -->
+            <div class="dashboard-card arrivals-card">
+                <h3>UPCOMING ARRIVALS</h3>
+                <div class="arrivals-list" id="arrivalsList">
+                    <div class="arrival-item">
+                        <div class="arrival-info">
+                            <span class="guest-name">Guest: John Doe</span>
+                            <span class="room-number">Room: 101</span>
+                        </div>
+                        <div class="arrival-time">10:30 AM</div>
+                    </div>
+                    <div class="arrival-item">
+                        <div class="arrival-info">
+                            <span class="guest-name">Guest: Aisha Rahman</span>
+                            <span class="room-number">Room: 205</span>
+                        </div>
+                        <div class="arrival-time">12:30 PM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Departures Today Card -->
+            <div class="dashboard-card departures-card">
+                <h3>DEPARTURES TODAY</h3>
+                <div class="departures-list" id="departuresList">
+                    <div class="departure-item">
+                        <div class="departure-info">
+                            <span class="guest-name">Guest: John Do2</span>
+                            <span class="room-number">Room: 7</span>
+                        </div>
+                        <div class="departure-time">10:00 AM</div>
+                    </div>
+                    <div class="departure-item">
+                        <div class="departure-info">
+                            <span class="guest-name">Guest: Emeka Obi</span>
+                            <span class="room-number">Emeka Obi</span>
+                        </div>
+                        <div class="departure-time">10:30 PM</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js for future analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>
