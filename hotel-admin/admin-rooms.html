@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms - Tima Sara Hotel Management</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body class="dashboard-page">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
+            <h2>TIMA SARA<br><span>HOTEL</span></h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-reservations.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span>Reservations</span>
+            </a>
+            <a href="admin-guests.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Guests</span>
+            </a>
+            <a href="admin-rooms.html" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span>Rooms</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🧹</span>
+                <span>Housekeeping</span>
+            </a>
+            <a href="admin-analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="page-title">Room Management</h1>
+            </div>
+            <div class="top-bar-right">
+                <div class="user-info">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="userName">Welcome, Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Room Statistics -->
+        <div class="room-stats-grid">
+            <div class="stat-card stat-available">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h3 id="availableCount">10</h3>
+                    <p>Available</p>
+                </div>
+            </div>
+            <div class="stat-card stat-occupied">
+                <div class="stat-icon">🔑</div>
+                <div class="stat-info">
+                    <h3 id="occupiedCount">18</h3>
+                    <p>Occupied</p>
+                </div>
+            </div>
+            <div class="stat-card stat-cleaning">
+                <div class="stat-icon">🧹</div>
+                <div class="stat-info">
+                    <h3 id="cleaningCount">2</h3>
+                    <p>Cleaning</p>
+                </div>
+            </div>
+            <div class="stat-card stat-maintenance">
+                <div class="stat-icon">🔧</div>
+                <div class="stat-info">
+                    <h3 id="maintenanceCount">0</h3>
+                    <p>Maintenance</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="rooms-toolbar">
+            <div class="filter-group">
+                <label>Status:</label>
+                <button class="filter-tag active" data-status="all">All (28)</button>
+                <button class="filter-tag" data-status="available">Available</button>
+                <button class="filter-tag" data-status="occupied">Occupied</button>
+                <button class="filter-tag" data-status="cleaning">Cleaning</button>
+                <button class="filter-tag" data-status="maintenance">Maintenance</button>
+            </div>
+            <div class="filter-group">
+                <label>Room Type:</label>
+                <button class="filter-tag active" data-type="all">All Types</button>
+                <button class="filter-tag" data-type="Standard">Standard</button>
+                <button class="filter-tag" data-type="Executive">Executive</button>
+                <button class="filter-tag" data-type="Deluxe">Deluxe</button>
+                <button class="filter-tag" data-type="Royal">Royal Suite</button>
+            </div>
+        </div>
+
+        <!-- Rooms Grid -->
+        <div class="rooms-grid" id="roomsGrid">
+            <!-- Rooms will be loaded here by JavaScript -->
+            <div class="loading-container">
+                <div class="loading-spinner">Loading rooms...</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Room Details Modal -->
+    <div id="roomModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalRoomNumber">Room 101</h2>
+                <button class="modal-close" id="closeRoomModal">&times;</button>
+            </div>
+            <div class="modal-body" id="roomModalBody">
+                <!-- Room details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeRoomModalBtn">Close</button>
+                <div class="status-update-btns">
+                    <button class="status-update-btn btn-available" data-status="available">✅ Available</button>
+                    <button class="status-update-btn btn-cleaning" data-status="cleaning">🧹 Cleaning</button>
+                    <button class="status-update-btn btn-maintenance" data-status="maintenance">🔧 Maintenance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin-script.js"></script>
+    <script src="admin-rooms.js"></script>
+</body>
+</html>
