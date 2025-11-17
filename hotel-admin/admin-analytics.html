@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Tima Sara Hotel Management</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body class="dashboard-page">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
+            <h2>TIMA SARA<br><span>HOTEL</span></h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-reservations.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span>Reservations</span>
+            </a>
+            <a href="admin-guests.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Guests</span>
+            </a>
+            <a href="admin-rooms.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Rooms</span>
+            </a>
+            <a href="admin-housekeeping.html" class="nav-item">
+                <span class="nav-icon">🧹</span>
+                <span>Housekeeping</span>
+            </a>
+            <a href="admin-analytics.html" class="nav-item active">
+                <span class="nav-icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            <a href="admin-reports.html" class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span>Reports</span>
+            </a>
+            <a href="admin-invoices.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Invoices</span>
+            </a>
+            <a href="admin-communications.html" class="nav-item">
+                <span class="nav-icon">📧</span>
+                <span>Communications</span>
+            </a>
+            <a href="admin-settings.html" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="page-title">Analytics & Reports</h1>
+            </div>
+            <div class="top-bar-right">
+                <select id="dateRangeFilter" class="filter-select">
+                    <option value="week">Last 7 Days</option>
+                    <option value="month" selected>Last 30 Days</option>
+                    <option value="quarter">Last 3 Months</option>
+                    <option value="year">Last Year</option>
+                </select>
+                <div class="user-info">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="userName">Welcome, Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Key Metrics -->
+        <div class="analytics-metrics">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-label">Total Revenue</span>
+                    <span class="metric-trend up">↑ 12%</span>
+                </div>
+                <div class="metric-value" id="totalRevenue">GHS 0</div>
+                <div class="metric-footer">vs last period</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-label">Avg Occupancy</span>
+                    <span class="metric-trend up">↑ 8%</span>
+                </div>
+                <div class="metric-value" id="avgOccupancy">0%</div>
+                <div class="metric-footer">vs last period</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-label">Total Bookings</span>
+                    <span class="metric-trend up">↑ 15%</span>
+                </div>
+                <div class="metric-value" id="totalBookings">0</div>
+                <div class="metric-footer">vs last period</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-label">Avg Booking Value</span>
+                    <span class="metric-trend down">↓ 3%</span>
+                </div>
+                <div class="metric-value" id="avgBookingValue">GHS 0</div>
+                <div class="metric-footer">vs last period</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Revenue Chart -->
+            <div class="chart-card chart-large">
+                <div class="chart-header">
+                    <h3>Revenue Trend</h3>
+                    <button class="export-chart-btn">📥</button>
+                </div>
+                <canvas id="revenueChart"></canvas>
+            </div>
+
+            <!-- Occupancy Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Occupancy Rate</h3>
+                </div>
+                <canvas id="occupancyChart"></canvas>
+            </div>
+
+            <!-- Room Type Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Bookings by Room Type</h3>
+                </div>
+                <canvas id="roomTypeChart"></canvas>
+            </div>
+
+            <!-- Top Revenue Sources -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Top Performing Rooms</h3>
+                </div>
+                <div class="top-list" id="topRoomsList">
+                    <div class="loading-spinner">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Guest Statistics -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Guest Insights</h3>
+                </div>
+                <div class="insights-list">
+                    <div class="insight-item">
+                        <span class="insight-label">New Guests</span>
+                        <span class="insight-value" id="newGuestsCount">0</span>
+                    </div>
+                    <div class="insight-item">
+                        <span class="insight-label">Returning Guests</span>
+                        <span class="insight-value" id="returningGuestsCount">0</span>
+                    </div>
+                    <div class="insight-item">
+                        <span class="insight-label">Avg Stay Duration</span>
+                        <span class="insight-value" id="avgStayDuration">0 nights</span>
+                    </div>
+                    <div class="insight-item">
+                        <span class="insight-label">Guest Satisfaction</span>
+                        <span class="insight-value">4.8 ⭐</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Reports -->
+        <div class="reports-section">
+            <h3>Generate Reports</h3>
+            <div class="report-buttons">
+                <button class="report-btn" onclick="generateReport('revenue')">
+                    <span class="report-icon">💰</span>
+                    <span>Revenue Report</span>
+                </button>
+                <button class="report-btn" onclick="generateReport('occupancy')">
+                    <span class="report-icon">🏠</span>
+                    <span>Occupancy Report</span>
+                </button>
+                <button class="report-btn" onclick="generateReport('guests')">
+                    <span class="report-icon">👥</span>
+                    <span>Guest Report</span>
+                </button>
+                <button class="report-btn" onclick="generateReport('full')">
+                    <span class="report-icon">📊</span>
+                    <span>Full Analytics</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="admin-script.js"></script>
+    <script src="admin-analytics.js"></script>
+</body>
+</html>

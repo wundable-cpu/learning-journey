@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices - Tima Sara Hotel Management</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body class="dashboard-page">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
+            <h2>TIMA SARA<br><span>HOTEL</span></h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-reservations.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span>Reservations</span>
+            </a>
+            <a href="admin-guests.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Guests</span>
+            </a>
+            <a href="admin-rooms.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Rooms</span>
+            </a>
+            <a href="admin-housekeeping.html" class="nav-item">
+                <span class="nav-icon">🧹</span>
+                <span>Housekeeping</span>
+            </a>
+            <a href="admin-analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            <a href="admin-reports.html" class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span>Reports</span>
+            </a>
+            <a href="admin-invoices.html" class="nav-item active">
+                <span class="nav-icon">💰</span>
+                <span>Invoices</span>
+            </a>
+            <a href="admin-communications.html" class="nav-item">
+                <span class="nav-icon">📧</span>
+                <span>Communications</span>
+            </a>
+            <a href="admin-settings.html" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="page-title">Invoices & Billing</h1>
+            </div>
+            <div class="top-bar-right">
+                <div class="user-info">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="userName">Welcome, Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Invoice Statistics -->
+        <div class="invoice-stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(39, 174, 96, 0.1);">💵</div>
+                <div class="stat-info">
+                    <h3 id="totalInvoiced">GHS 0</h3>
+                    <p>Total Invoiced</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1);">✅</div>
+                <div class="stat-info">
+                    <h3 id="paidInvoices">0</h3>
+                    <p>Paid</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(243, 156, 18, 0.1);">⏳</div>
+                <div class="stat-info">
+                    <h3 id="pendingInvoices">0</h3>
+                    <p>Pending</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1);">⚠️</div>
+                <div class="stat-info">
+                    <h3 id="overdueInvoices">0</h3>
+                    <p>Overdue</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="invoices-toolbar">
+            <div class="search-box">
+                <input type="text" id="invoiceSearch" placeholder="Search by guest name or invoice number..." class="search-input">
+                <button class="search-btn">🔍</button>
+            </div>
+            <div class="filter-controls">
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Status</option>
+                    <option value="paid">Paid</option>
+                    <option value="pending">Pending</option>
+                    <option value="overdue">Overdue</option>
+                </select>
+                <button class="btn-primary" onclick="showCreateInvoice()">+ New Invoice</button>
+            </div>
+        </div>
+
+        <!-- Invoices Table -->
+        <div class="invoices-container">
+            <table class="invoices-table">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Guest Name</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="invoicesTableBody">
+                    <tr>
+                        <td colspan="7" class="loading-row">
+                            <div class="loading-spinner">Loading invoices...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Invoice View/Print Modal -->
+    <div id="invoiceModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Invoice Details</h2>
+                <button class="modal-close" id="closeInvoiceModal">&times;</button>
+            </div>
+            <div class="modal-body" id="invoiceModalBody">
+                <!-- Invoice will be displayed here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeInvoiceModalBtn">Close</button>
+                <button class="btn-primary" onclick="printInvoice()">🖨️ Print Invoice</button>
+                <button class="btn-primary" onclick="downloadInvoicePDF()">📥 Download PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Invoice Modal -->
+    <div id="createInvoiceModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Invoice</h2>
+                <button class="modal-close" onclick="closeCreateInvoice()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createInvoiceForm">
+                    <div class="form-group">
+                        <label>Select Booking</label>
+                        <select id="invoiceBooking" required>
+                            <option value="">Select a booking...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Items (Optional)</label>
+                        <div id="additionalItems">
+                            <div class="additional-item">
+                                <input type="text" placeholder="Item description" class="item-desc">
+                                <input type="number" placeholder="Amount" class="item-amount" min="0" step="0.01">
+                            </div>
+                        </div>
+                        <button type="button" class="btn-secondary" onclick="addInvoiceItem()" style="margin-top: 10px;">+ Add Item</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Status</label>
+                        <select id="invoiceStatus" required>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCreateInvoice()">Cancel</button>
+                <button class="btn-primary" onclick="generateInvoice()">Generate Invoice</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin-script.js"></script>
+    <script src="admin-invoices.js"></script>
+</body>
+</html>
