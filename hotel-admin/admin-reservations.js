@@ -257,3 +257,48 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 console.log('📅 Reservations module loaded');
+
+
+// Real-time subscription to new bookings
+const bookingSubscription = supabase
+    .channel('bookings-channel')
+    .on('postgres_changes', 
+        { event: 'INSERT', schema: 'public', table: 'bookings' },
+        (payload) => {
+            console.log('🔔 New booking received!', payload.new);
+            
+            // Show notification
+            showNotification('New Booking Received!', `${payload.new.full_name} - ${payload.new.room_type}`);
+            
+            // Reload bookings
+            loadBookings();
+        }
+    )
+    .subscribe();
+
+// Notification function
+function showNotification(title, message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: var(--success-green);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    notification.innerHTML = `
+        <strong style="display: block; margin-bottom: 5px;">${title}</strong>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}

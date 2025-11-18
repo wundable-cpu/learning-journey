@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Management - Tima Sara Hotel</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body class="dashboard-page">
+    
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
+            <h2>TIMA SARA<br><span>HOTEL</span></h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-pos.html" class="nav-item">
+                <span class="nav-icon">🍽️</span>
+                <span>Restaurant & Bar</span>
+            </a>
+            <a href="admin-reservations.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span>Reservations</span>
+            </a>
+            <a href="admin-pricing.html" class="nav-item active">
+                <span class="nav-icon">💵</span>
+                <span>Pricing</span>
+            </a>
+            <a href="admin-settings.html" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="page-title">💰 Price Management</h1>
+            </div>
+            <div class="top-bar-right">
+                <div class="user-info">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="userName">Manager</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Price Management Grid -->
+        <div class="pricing-container">
+            <div class="pricing-card">
+                <div class="alert-info" style="margin-bottom: 20px; padding: 15px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 8px;">
+                    <strong>⚠️ Important:</strong> Changes here will immediately affect the public website and all bookings.
+                </div>
+
+                <div id="pricingGrid" class="pricing-grid">
+                    <!-- Prices will load here -->
+                </div>
+
+                <div class="pricing-actions" style="margin-top: 30px;">
+                    <button class="btn-primary" onclick="savePrices()">💾 Save All Changes</button>
+                    <button class="btn-secondary" onclick="loadPrices()">🔄 Reload Prices</button>
+                </div>
+            </div>
+
+            <!-- Price History -->
+            <div class="pricing-card">
+                <h3>📊 Recent Price Changes</h3>
+                <div id="priceHistory">
+                    <p style="text-align: center; color: var(--text-light); padding: 40px;">
+                        Price change history will appear here
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin-script.js"></script>
+    <script src="admin-pricing.js"></script>
+</body>
+</html>

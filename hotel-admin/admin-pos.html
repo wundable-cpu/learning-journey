@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant & Bar POS - Tima Sara Hotel</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body class="dashboard-page">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
+            <h2>TIMA SARA<br><span>HOTEL</span></h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-reservations.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span>Reservations</span>
+            </a>
+            <a href="admin-guests.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Guests</span>
+            </a>
+            <a href="admin-rooms.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Rooms</span>
+            </a>
+            <a href="admin-housekeeping.html" class="nav-item">
+                <span class="nav-icon">🧹</span>
+                <span>Housekeeping</span>
+            </a>
+            <a href="admin-pos.html" class="nav-item active">
+                <span class="nav-icon">🍽️</span>
+                <span>Restaurant & Bar</span>
+            </a>
+            <a href="admin-analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            <a href="admin-invoices.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Invoices</span>
+            </a>
+            <a href="admin-settings.html" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="page-title">🍽️ Restaurant & Bar POS</h1>
+            </div>
+            <div class="top-bar-right">
+                <div class="user-info">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="userName">Restaurant Staff</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="pos-container">
+            
+            <!-- Menu & Items Selection (LEFT SIDE) -->
+            <div class="pos-menu-section">
+                <!-- Category Tabs -->
+                <div class="pos-tabs">
+                    <button class="pos-tab active" data-category="food" onclick="filterMenu('food')">
+                        🍴 Food
+                    </button>
+                    <button class="pos-tab" data-category="beverage" onclick="filterMenu('beverage')">
+                        ☕ Beverages
+                    </button>
+                    <button class="pos-tab" data-category="bar" onclick="filterMenu('bar')">
+                        🍺 Bar
+                    </button>
+                    <button class="pos-tab" data-category="room_service" onclick="filterMenu('room_service')">
+                        🛎️ Room Service
+                    </button>
+                </div>
+
+                <!-- Menu Items Grid -->
+                <div class="menu-items-grid" id="menuItemsGrid">
+                    <div class="loading-spinner">Loading menu...</div>
+                </div>
+            </div>
+
+            <!-- Current Order / Cart (RIGHT SIDE) -->
+            <div class="pos-order-section">
+                <div class="order-header">
+                    <h3>Current Order</h3>
+                    <button class="btn-secondary btn-sm" onclick="clearOrder()">Clear All</button>
+                </div>
+
+                <!-- Guest/Payment Selection -->
+                <div class="guest-selection">
+                    <label>
+                        <input type="radio" name="paymentType" value="room" checked onchange="toggleGuestSelect()">
+                        <span>Charge to Room</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="paymentType" value="cash" onchange="toggleGuestSelect()">
+                        <span>Cash Payment</span>
+                    </label>
+                </div>
+
+                <div id="roomSelectContainer" class="room-select-container">
+                    <label>Select Guest / Room</label>
+                    <select id="guestSelect" class="guest-select">
+                        <option value="">-- Select Guest --</option>
+                    </select>
+                </div>
+
+                <!-- Order Items List -->
+                <div class="order-items" id="orderItems">
+                    <p style="text-align: center; color: var(--text-light); padding: 40px;">
+                        No items added yet<br>
+                        <small>Click on menu items to add</small>
+                    </p>
+                </div>
+
+                <!-- Order Summary/Total -->
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="orderSubtotal">₵0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Service Charge (10%):</span>
+                        <span id="orderService">₵0.00</span>
+                    </div>
+                    <div class="summary-row total-row">
+                        <strong>Total:</strong>
+                        <strong id="orderTotal">₵0.00</strong>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="order-actions">
+                    <button class="btn-primary btn-large" onclick="processOrder()">
+                        💳 Process Order
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-body" style="text-align: center; padding: 40px;">
+                <div style="font-size: 64px; margin-bottom: 20px;">✅</div>
+                <h2 style="color: var(--success-green); margin-bottom: 15px;">Order Processed!</h2>
+                <p id="successMessage" style="font-size: 18px; margin-bottom: 30px;"></p>
+                <button class="btn-primary" onclick="closeSuccessModal()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin-script.js"></script>
+    <script src="admin-pos.js"></script>
+</body>
+</html>

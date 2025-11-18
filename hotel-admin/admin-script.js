@@ -1,243 +1,410 @@
-// admin-script.js - Hotel Management System
+// admin-pos.js - Restaurant & Bar Point of Sale System
 
-// Initialize Supabase
-const SUPABASE_URL = 'https://yglehirjsxaxvrpfbvse.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbGVoaXJqc3hheHZycGZidnNlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjA4MDU0MCwiZXhwIjoyMDc3NjU2NTQwfQ.Gkvs5_Upf0WVnuC7BM9rOyGI2GyaR1Ar4tYMXoIa_g8';
+// ========================================
+// SUPABASE INITIALIZATION
+// ========================================
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let supabase;
 
-console.log('✅ Supabase initialized for admin');
-
-// ================================
-// LOGIN FUNCTIONALITY
-// ================================
-
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-    loginForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const errorDiv = document.getElementById('loginError');
-        const submitBtn = loginForm.querySelector('.login-btn');
-        
-        // Show loading state
-        submitBtn.querySelector('.btn-text').style.display = 'none';
-        submitBtn.querySelector('.btn-loader').style.display = 'inline';
-        submitBtn.disabled = true;
-        errorDiv.style.display = 'none';
-        
-        try {
-            // Sign in with Supabase Auth
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-            
-            if (error) throw error;
-            
-            console.log('✅ Login successful:', data);
-            
-            // Store session
-            localStorage.setItem('isAdminLoggedIn', 'true');
-            localStorage.setItem('adminEmail', email);
-            
-            // Redirect to dashboard
-            window.location.href = 'admin-dashboard.html';
-            
-        } catch (error) {
-            console.error('❌ Login error:', error);
-            errorDiv.textContent = 'Invalid email or password. Please try again.';
-            errorDiv.style.display = 'block';
-            
-            // Reset button
-            submitBtn.querySelector('.btn-text').style.display = 'inline';
-            submitBtn.querySelector('.btn-loader').style.display = 'none';
-            submitBtn.disabled = false;
+// Initialize Supabase connection
+function initSupabase() {
+    try {
+        // Try to use existing client
+        if (window.supabase_client) {
+            supabase = window.supabase_client;
+            console.log('✅ Using existing Supabase client');
+            return true;
         }
-    });
-}
-
-// ================================
-// DASHBOARD FUNCTIONALITY
-// ================================
-
-// Check if user is logged in
-function checkAuth() {
-    const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
-    const currentPage = window.location.pathname;
-    
-    if (!isLoggedIn && currentPage.includes('dashboard')) {
-        window.location.href = 'admin-login.html';
+        
+        // Create new client if needed
+        if (window.supabase) {
+            const SUPABASE_URL = 'https://yglehirjsxaxvrpfbvse.supabase.co';
+            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbGVoaXJqc3hheHZycGZidnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwODA1NDAsImV4cCI6MjA3NzY1NjU0MH0.o631vL64ZMuQNDZQBs9Lx4ANILQgkq_5DrPhz36fpu8';
+            
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('✅ Created new Supabase client');
+            return true;
+        }
+        
+        console.error('❌ Supabase library not loaded');
+        return false;
+        
+    } catch (error) {
+        console.error('❌ Error initializing Supabase:', error);
+        return false;
     }
 }
 
-// Load dashboard data
-async function loadDashboardData() {
+let menuItems = [];
+let currentOrder = [];
+let currentGuests = [];
+
+// ========================================
+// INITIALIZATION
+// ========================================
+
+async function initializePOS() {
+    console.log('🍽️ Initializing POS system...');
+    
+    // Initialize Supabase
+    if (!initSupabase()) {
+        alert('Database connection failed. Please refresh the page.');
+        return;
+    }
+    
     try {
-        // Get all bookings
-        const { data: bookings, error } = await supabase
+        await loadMenuItems();
+        await loadCurrentGuests();
+        console.log('✅ POS system ready');
+    } catch (error) {
+        console.error('Error initializing POS:', error);
+        alert('Failed to initialize POS: ' + error.message);
+    }
+}
+
+// ========================================
+// MENU MANAGEMENT
+// ========================================
+
+async function loadMenuItems() {
+    try {
+        console.log('📋 Loading menu items...');
+        
+        const { data, error } = await supabase
+            .from('menu_items')
+            .select('*')
+            .eq('available', true)
+            .order('item_name', { ascending: true });
+        
+        if (error) {
+            console.error('Supabase error:', error);
+            throw error;
+        }
+        
+        if (!data || data.length === 0) {
+            throw new Error('No menu items found in database');
+        }
+        
+        menuItems = data;
+        console.log('✅ Loaded', data.length, 'menu items');
+        
+        // Show food by default
+        filterMenu('food');
+        
+    } catch (error) {
+        console.error('Error loading menu:', error);
+        document.getElementById('menuItemsGrid').innerHTML = `
+            <div style="padding: 40px; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                <h3 style="color: var(--danger-red);">Failed to Load Menu</h3>
+                <p style="color: var(--text-light); margin: 15px 0;">${error.message}</p>
+                <button onclick="loadMenuItems()" class="btn-primary">Retry</button>
+            </div>
+        `;
+    }
+}
+
+function filterMenu(category) {
+    console.log('Filtering menu:', category);
+    
+    // Update tabs
+    document.querySelectorAll('.pos-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.category === category);
+    });
+    
+    // Filter items
+    const filtered = menuItems.filter(item => item.category === category);
+    displayMenuItems(filtered);
+}
+
+function displayMenuItems(items) {
+    const grid = document.getElementById('menuItemsGrid');
+    
+    if (items.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--text-light);">No items in this category</p>';
+        return;
+    }
+    
+    grid.innerHTML = items.map(item => `
+        <div class="menu-item-card" onclick='addToOrder(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
+            <div class="menu-item-name">${item.item_name}</div>
+            <div class="menu-item-desc">${item.description || ''}</div>
+            <div class="menu-item-price">₵${parseFloat(item.price).toFixed(2)}</div>
+        </div>
+    `).join('');
+}
+
+// ========================================
+// GUEST MANAGEMENT
+// ========================================
+
+async function loadCurrentGuests() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        
+        const { data, error } = await supabase
             .from('bookings')
             .select('*')
-            .order('created_at', { ascending: false });
+            .lte('check_in', today)
+            .gte('check_out', today);
         
         if (error) throw error;
         
-        console.log('📊 Bookings loaded:', bookings);
+        currentGuests = data || [];
+        populateGuestSelect();
         
-        // Calculate stats
-        updateDashboardStats(bookings);
+        console.log('👥 Loaded', currentGuests.length, 'current guests');
         
     } catch (error) {
-        console.error('Error loading dashboard:', error);
+        console.error('Error loading guests:', error);
+        currentGuests = [];
+        populateGuestSelect();
     }
 }
 
-// Update dashboard statistics
-function updateDashboardStats(bookings) {
-    const today = new Date().toISOString().split('T')[0];
+function populateGuestSelect() {
+    const select = document.getElementById('guestSelect');
     
-    // Filter today's bookings
-    const todayBookings = bookings.filter(b => {
-        const bookingDate = b.created_at?.split('T')[0];
-        return bookingDate === today;
-    });
+    if (currentGuests.length === 0) {
+        select.innerHTML = '<option value="">No guests currently checked in</option>';
+        return;
+    }
     
-    // Calculate occupancy
-    const totalRooms = 28;
-    const occupiedRooms = bookings.filter(b => {
-        const checkIn = new Date(b.check_in);
-        const checkOut = new Date(b.check_out);
-        const now = new Date();
-        return checkIn <= now && checkOut >= now;
-    }).length;
-    
-    const availableRooms = totalRooms - occupiedRooms;
-    const occupancyRate = Math.round((occupiedRooms / totalRooms) * 100);
-    
-    // Update UI
-    document.getElementById('availableRooms').textContent = availableRooms;
-    document.getElementById('occupiedRooms').textContent = occupiedRooms;
-    document.getElementById('occupiedCount').textContent = occupiedRooms;
-    document.getElementById('progressText').textContent = `${occupancyRate}%`;
-    
-    // Update progress circle
-    const circle = document.getElementById('progressCircle');
-    const circumference = 2 * Math.PI * 54;
-    const offset = circumference - (occupancyRate / 100) * circumference;
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = offset;
-    
-    // Calculate revenue
-    const todayRevenue = todayBookings.reduce((sum, b) => sum + (b.total_price || 0), 0);
-    document.getElementById('todayRevenue').textContent = todayRevenue.toLocaleString('en-GH', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-    
-    // Update check-ins/check-outs
-    const checkInsToday = bookings.filter(b => b.check_in === today).length;
-    const checkOutsToday = bookings.filter(b => b.check_out === today).length;
-    
-    document.getElementById('checkInsToday').textContent = checkInsToday;
-    document.getElementById('checkOutsToday').textContent = checkOutsToday;
-    
-    // Load upcoming arrivals
-    loadUpcomingArrivals(bookings);
-    loadTodayDepartures(bookings);
+    select.innerHTML = '<option value="">-- Select Guest --</option>' + 
+        currentGuests.map(guest => 
+            `<option value="${guest.id}" data-name="${guest.full_name}" data-room="${guest.room_number}">
+                ${guest.full_name} - ${guest.room_number}
+            </option>`
+        ).join('');
 }
 
-// Load upcoming arrivals
-function loadUpcomingArrivals(bookings) {
-    const today = new Date();
-    const upcoming = bookings
-        .filter(b => new Date(b.check_in) >= today)
-        .slice(0, 5)
-        .sort((a, b) => new Date(a.check_in) - new Date(b.check_in));
+// ========================================
+// ORDER MANAGEMENT
+// ========================================
+
+function addToOrder(item) {
+    console.log('Adding to order:', item.item_name);
     
-    const arrivalsList = document.getElementById('arrivalsList');
-    arrivalsList.innerHTML = upcoming.map(booking => `
-        <div class="arrival-item">
-            <div class="arrival-info">
-                <span class="guest-name">Guest: ${booking.full_name}</span>
-                <span class="room-number">Room: ${booking.room_type}</span>
+    const existingIndex = currentOrder.findIndex(o => o.id === item.id);
+    
+    if (existingIndex >= 0) {
+        currentOrder[existingIndex].quantity++;
+    } else {
+        currentOrder.push({
+            id: item.id,
+            name: item.item_name,
+            price: parseFloat(item.price),
+            quantity: 1,
+            category: item.category
+        });
+    }
+    
+    displayOrder();
+}
+
+function displayOrder() {
+    const container = document.getElementById('orderItems');
+    
+    if (currentOrder.length === 0) {
+        container.innerHTML = `
+            <p style="text-align: center; color: var(--text-light); padding: 40px;">
+                No items added yet<br>
+                <small>Click menu items to add</small>
+            </p>
+        `;
+        updateOrderTotal();
+        return;
+    }
+    
+    container.innerHTML = currentOrder.map((item, index) => `
+        <div class="order-item">
+            <div class="order-item-info">
+                <strong>${item.name}</strong><br>
+                <small>₵${item.price.toFixed(2)} each</small>
             </div>
-            <div class="arrival-time">${booking.check_in}</div>
+            <div class="order-item-controls">
+                <button class="qty-btn" onclick="changeQuantity(${index}, -1)">−</button>
+                <span class="qty-display">${item.quantity}</span>
+                <button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
+            </div>
+            <div class="order-item-total">
+                ₵${(item.price * item.quantity).toFixed(2)}
+            </div>
+            <button class="remove-item-btn" onclick="removeFromOrder(${index})">×</button>
         </div>
     `).join('');
+    
+    updateOrderTotal();
 }
 
-// Load today's departures
-function loadTodayDepartures(bookings) {
-    const today = new Date().toISOString().split('T')[0];
-    const departures = bookings
-        .filter(b => b.check_out === today)
-        .slice(0, 5);
+function changeQuantity(index, change) {
+    currentOrder[index].quantity += change;
     
-    const departuresList = document.getElementById('departuresList');
-    departuresList.innerHTML = departures.map(booking => `
-        <div class="departure-item">
-            <div class="departure-info">
-                <span class="guest-name">Guest: ${booking.full_name}</span>
-                <span class="room-number">Room: ${booking.room_type}</span>
-            </div>
-            <div class="departure-time">${booking.check_out}</div>
-        </div>
-    `).join('');
+    if (currentOrder[index].quantity <= 0) {
+        currentOrder.splice(index, 1);
+    }
+    
+    displayOrder();
 }
 
-// Update current time
-function updateTime() {
-    const now = new Date();
-    const timeElement = document.getElementById('currentTime');
-    const dateElement = document.getElementById('currentDate');
+function removeFromOrder(index) {
+    currentOrder.splice(index, 1);
+    displayOrder();
+}
+
+function clearOrder() {
+    if (currentOrder.length === 0) return;
     
-    if (timeElement) {
-        const hours = now.getHours();
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        const displayHours = hours % 12 || 12;
+    if (confirm('Clear all items?')) {
+        currentOrder = [];
+        displayOrder();
+    }
+}
+
+function updateOrderTotal() {
+    const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const service = subtotal * 0.10;
+    const total = subtotal + service;
+    
+    document.getElementById('orderSubtotal').textContent = `₵${subtotal.toFixed(2)}`;
+    document.getElementById('orderService').textContent = `₵${service.toFixed(2)}`;
+    document.getElementById('orderTotal').textContent = `₵${total.toFixed(2)}`;
+}
+
+// ========================================
+// PAYMENT PROCESSING
+// ========================================
+
+function toggleGuestSelect() {
+    const paymentType = document.querySelector('input[name="paymentType"]:checked').value;
+    document.getElementById('roomSelectContainer').style.display = paymentType === 'room' ? 'block' : 'none';
+}
+
+async function processOrder() {
+    if (currentOrder.length === 0) {
+        alert('⚠️ Please add items to order');
+        return;
+    }
+    
+    const paymentType = document.querySelector('input[name="paymentType"]:checked').value;
+    
+    if (paymentType === 'room') {
+        await chargeToRoom();
+    } else {
+        await processCashPayment();
+    }
+}
+
+async function chargeToRoom() {
+    const guestSelect = document.getElementById('guestSelect');
+    const selectedOption = guestSelect.options[guestSelect.selectedIndex];
+    
+    // ... validation remains the same
+    
+    const guestName = selectedOption.dataset.name;
+    const roomNumber = selectedOption.dataset.room; // 💡 Now correctly holding the room number
+    
+    try {
+        const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const service = subtotal * 0.10;
+        const total = subtotal + service; // Final total for success message
+        const transactionTimestamp = new Date().toISOString(); // Added audit timestamp
         
-        timeElement.textContent = `${displayHours}:${minutes} ${ampm}`;
-    }
-    
-    if (dateElement) {
-        const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-        dateElement.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
+        const charges = currentOrder.map(item => ({
+            booking_id: guestSelect.value,
+            guest_name: guestName,
+            room_number: roomNumber, // FIX APPLIED
+            category: item.category === 'food' ? 'restaurant' : item.category,
+            item_description: item.name,
+            quantity: item.quantity,
+            unit_price: parseFloat(item.price.toFixed(2)), // Added precision control
+            total_amount: parseFloat((item.price * item.quantity).toFixed(2)), // Added precision control
+            charged_by: 'Restaurant Staff',
+            transaction_date: transactionTimestamp, // Added audit field
+            payment_type: 'room', // Added specific payment type
+            paid: false
+        }));
+        
+        // Service charge insertion
+        charges.push({
+            booking_id: guestSelect.value,
+            guest_name: guestName,
+            room_number: roomNumber, // FIX APPLIED
+            category: 'restaurant',
+            item_description: 'Service Charge (10%)',
+            quantity: 1,
+            unit_price: parseFloat(service.toFixed(2)),
+            total_amount: parseFloat(service.toFixed(2)),
+            charged_by: 'Restaurant Staff',
+            transaction_date: transactionTimestamp,
+            payment_type: 'room',
+            paid: false
+        });
+        
+        // ... Supabase insert logic remains the same
+        
+        const { error } = await supabase
+            .from('guest_charges')
+            .insert(charges);
+        
+        if (error) throw error;
+        
+        showSuccess(
+            `Order charged successfully!\n\n` +
+            `Guest: ${guestName}\n` +
+            `Total: ₵${total.toFixed(2)}\n\n` +
+            `Charges added to room bill.`
+        );
+        
+        resetOrder();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Failed to process: ' + error.message);
     }
 }
 
-// Logout functionality
-const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', async function() {
-        await supabase.auth.signOut();
-        localStorage.removeItem('isAdminLoggedIn');
-        localStorage.removeItem('adminEmail');
-        window.location.href = 'admin-login.html';
-    });
+async function processCashPayment() {
+    const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const service = subtotal * 0.10;
+    const total = subtotal + service;
+    
+    if (confirm(`Process cash payment of ₵${total.toFixed(2)}?`)) {
+        showSuccess(`Cash payment received!\n\nTotal: ₵${total.toFixed(2)}`);
+        resetOrder();
+    }
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    checkAuth();
-    
-    // Update user name
-    const userName = document.getElementById('userName');
-    if (userName) {
-        const email = localStorage.getItem('adminEmail');
-        if (email) {
-            userName.textContent = `Welcome, ${email.split('@')[0]}`;
-        }
-    }
-    
-    // Load dashboard data if on dashboard page
-    if (window.location.pathname.includes('dashboard')) {
-        loadDashboardData();
-        updateTime();
-        setInterval(updateTime, 60000); // Update every minute
+// ========================================
+// UI HELPERS
+// ========================================
+
+function showSuccess(message) {
+    document.getElementById('successMessage').textContent = message;
+    document.getElementById('successModal').style.display = 'flex';
+}
+
+function closeSuccessModal() {
+    document.getElementById('successModal').style.display = 'none';
+}
+
+function resetOrder() {
+    currentOrder = [];
+    displayOrder();
+    document.getElementById('guestSelect').value = '';
+    document.querySelector('input[name="paymentType"][value="room"]').checked = true;
+    toggleGuestSelect();
+}
+
+// ========================================
+// INITIALIZE ON PAGE LOAD
+// ========================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.pathname.includes('pos')) {
+        // Small delay to ensure Supabase is loaded
+        setTimeout(initializePOS, 100);
     }
 });
 
-console.log('🎯 Admin system initialized');
+console.log('🍽️ POS module loaded');

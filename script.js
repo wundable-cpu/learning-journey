@@ -1,3 +1,5 @@
+
+
 // ============================================
 // SUPABASE CONFIGURATION
 // ============================================
@@ -260,6 +262,10 @@ if (bookingForm) {
     });
     
     calculatePrice();
+
+    // Trail Insertion
+    
+
 }
 
 // ============================================
@@ -379,3 +385,52 @@ function setupContactForm() {
 
 // Call the function to set up the event listener when the page loads
 setupContactForm();
+
+
+
+// Fetch prices from database
+async function loadRoomPrices() {
+    try {
+        const { data, error } = await supabase
+            .from('room_pricing')
+            .select('*');
+        
+        if (error) throw error;
+        
+        // Store in global object
+        window.ROOM_PRICES = {};
+        data.forEach(room => {
+            window.ROOM_PRICES[room.room_type] = room.base_price;
+        });
+        
+        console.log('💰 Loaded dynamic prices:', window.ROOM_PRICES);
+        
+        // Update any displayed prices on the page
+        updateDisplayedPrices();
+        
+    } catch (error) {
+        console.error('Error loading prices:', error);
+        // Fallback to default prices if database fails
+        window.ROOM_PRICES = {
+            'Standard Room': 550,
+            'Executive Room': 800,
+            'Deluxe Room': 1500,
+            'Royal Suite': 2500
+        };
+    }
+}
+
+// Update prices displayed on page
+function updateDisplayedPrices() {
+    document.querySelectorAll('[data-room-price]').forEach(element => {
+        const roomType = element.dataset.roomPrice;
+        if (window.ROOM_PRICES[roomType]) {
+            element.textContent = `₵${window.ROOM_PRICES[roomType]}`;
+        }
+    });
+}
+
+// Call on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadRoomPrices();
+});
