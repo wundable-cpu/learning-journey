@@ -5,9 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservations - Tima Sara Hotel Management</title>
     <link rel="stylesheet" href="admin-style.css">
-</head>
-<body class="dashboard-page">
     
+
+<style>
+.view-switcher {
+    display: flex;
+    gap: 10px;
+}
+
+.view-btn {
+    padding: 10px 20px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.view-btn.active {
+    background: #667eea;
+    color: white;
+}
+</style>
+</head>
+<!-- View Switcher -->
+
+
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -74,8 +110,8 @@
     <main class="main-content">
         <!-- Top Bar -->
         <header class="top-bar">
-            <div class="top-bar-left">
-                <h1 class="page-title">Reservations</h1>
+            
+                <h1 class="page-title">Reservations - List View</h1>
             </div>
             <div class="top-bar-right">
                 <div class="user-info">
@@ -84,6 +120,16 @@
                 </div>
             </div>
         </header>
+
+        <!-- View Switcher -->
+        <div class="view-switcher">
+            <a href="admin-reservations.html" class="view-btn">
+                📋 List View
+            </a>
+            <a href="admin-reservations-calendar.html" class="view-btn active">
+                🗓️ Calendar View
+            </a>
+        </div>
 
         <!-- Search and Filters -->
         <div class="reservations-toolbar">
@@ -116,38 +162,35 @@
 
         <!-- Bookings Table -->
         <div class="bookings-container">
-            <table class="bookings-table">
-                <thead>
-                    <tr>
-                        <th>Booking Ref</th>
-                        <th>Guest Name</th>
-                        <th>Check-In</th>
-                        <th>Check-Out</th>
-                        <th>Room Type</th>
-                        <th>Guests</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="bookingsTableBody">
-                    <!-- Bookings will be loaded here by JavaScript -->
-                    <tr>
-                        <td colspan="9" class="loading-row">
-                            <div class="loading-spinner">Loading bookings...</div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <table class="bookings-table">
+        <thead>
+            <tr>
+                <th>REFERENCE</th>
+                <th>GUEST NAME</th>
+                <th>CHECK-IN</th>
+                <th>CHECK-OUT</th>
+                <th>ROOM TYPE</th>
+                <th>ROOM #</th>
+                <th>GUESTS</th>
+                <th>TOTAL</th>
+                <th>STATUS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="loading-row">
+                <td colspan="9" class="loading-spinner">Loading bookings...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <button class="pagination-btn" id="prevPage">← Previous</button>
-            <span class="pagination-info" id="paginationInfo">Page 1 of 1</span>
-            <button class="pagination-btn" id="nextPage">Next →</button>
-        </div>
-    </main>
+<!-- Pagination -->
+<div class="pagination">
+    <button id="prevBtn" class="pagination-btn">◀ Previous</button>
+    <span id="pageInfo" class="pagination-info">Page 1 of 1</span>
+    <button id="nextBtn" class="pagination-btn">Next ▶</button>
+</div>
+
 
     <!-- Booking Details Modal -->
     <div id="bookingModal" class="modal" style="display: none;">

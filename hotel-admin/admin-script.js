@@ -4,40 +4,18 @@
 // SUPABASE INITIALIZATION
 // ========================================
 
-let supabase;
+// At the top of admin-script.js
+const SUPABASE_URL = 'https://yglehirjsxaxvrpfbvse.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbGVoaXJqc3hheHZycGZidnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwODA1NDAsImV4cCI6MjA3NzY1NjU0MH0.o631vL64ZMuQNDZQBs9Lx4ANILQgkq_5DrPhz36fpu8';
 
-// Initialize Supabase connection
-function initSupabase() {
-    try {
-        // Try to use existing client
-        if (window.supabase_client) {
-            supabase = window.supabase_client;
-            console.log('✅ Using existing Supabase client');
-            return true;
-        }
-        
-        // Create new client if needed
-        if (window.supabase) {
-            const SUPABASE_URL = 'https://yglehirjsxaxvrpfbvse.supabase.co';
-            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbGVoaXJqc3hheHZycGZidnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwODA1NDAsImV4cCI6MjA3NzY1NjU0MH0.o631vL64ZMuQNDZQBs9Lx4ANILQgkq_5DrPhz36fpu8';
-            
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            console.log('✅ Created new Supabase client');
-            return true;
-        }
-        
-        console.error('❌ Supabase library not loaded');
-        return false;
-        
-    } catch (error) {
-        console.error('❌ Error initializing Supabase:', error);
-        return false;
-    }
-}
+// Initialize Supabase and make it globally available
+window.supabase_client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let menuItems = [];
-let currentOrder = [];
-let currentGuests = [];
+console.log('✅ Supabase initialized globally');
+
+
+        
+    
 
 // ========================================
 // INITIALIZATION
@@ -297,21 +275,22 @@ async function processOrder() {
 
 async function chargeToRoom() {
     const guestSelect = document.getElementById('guestSelect');
-    const selectedOption = guestSelect.options[guestSelect.selectedIndex];
     
-    // ... validation remains the same
+    // 1. Get the selected value
+    const selectedValue = guestSelect.value; 
     
-    const guestName = selectedOption.dataset.name;
-    const roomNumber = selectedOption.dataset.room; // 💡 Now correctly holding the room number
+    // 2. CHECK FOR EMPTY STRING (The Fix)
+    if (!selectedValue || selectedValue === "") {
+        alert('⚠️ Please select a valid guest/booking ID to charge the room.');
+        return; // Stop the function here
+    }
+    
+    // ... rest of the logic uses selectedValue for booking_id
     
     try {
-        const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const service = subtotal * 0.10;
-        const total = subtotal + service; // Final total for success message
-        const transactionTimestamp = new Date().toISOString(); // Added audit timestamp
-        
+        // ...
         const charges = currentOrder.map(item => ({
-            booking_id: guestSelect.value,
+            booking_id: guestSelect.value, // Use the validated value
             guest_name: guestName,
             room_number: roomNumber, // FIX APPLIED
             category: item.category === 'food' ? 'restaurant' : item.category,
@@ -321,7 +300,7 @@ async function chargeToRoom() {
             total_amount: parseFloat((item.price * item.quantity).toFixed(2)), // Added precision control
             charged_by: 'Restaurant Staff',
             transaction_date: transactionTimestamp, // Added audit field
-            payment_type: 'room', // Added specific payment type
+            
             paid: false
         }));
         
@@ -337,7 +316,7 @@ async function chargeToRoom() {
             total_amount: parseFloat(service.toFixed(2)),
             charged_by: 'Restaurant Staff',
             transaction_date: transactionTimestamp,
-            payment_type: 'room',
+            
             paid: false
         });
         
