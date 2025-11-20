@@ -1,5 +1,10 @@
 
 
+// EmailJS initialization (should be near the top of script.js)
+(function() {
+    emailjs.init("wbHMV-8Qv684zfidZ"); // Replace with your actual key
+})();
+
 // ============================================
 // SUPABASE CONFIGURATION
 // ============================================
@@ -197,8 +202,8 @@ if (bookingForm) {
             
             const emailParams = {
                 guest_name: fullName,
-                email: guestEmail,
-                phone: guestPhone,
+                guest_email: guestEmail,
+                guest_phone: guestPhone,
                 booking_reference: bookingRef,
                 checkin_date: checkinFormatted,
                 checkout_date: checkoutFormatted,
@@ -434,3 +439,38 @@ function updateDisplayedPrices() {
 document.addEventListener('DOMContentLoaded', () => {
     loadRoomPrices();
 });
+
+
+// Add this test function to script.js
+function testEmail() {
+    if (typeof emailjs === 'undefined') {
+        console.error('❌ EmailJS not loaded!');
+        return;
+    }
+    
+    console.log('📧 Testing EmailJS...');
+    
+    emailjs.send('service_cq4rt71', 'template_bbofvzz', {
+        guest_name: 'Test Guest',
+        guest_email: 'test@example.com',
+        guest_phone: '0241234567',
+        booking_reference: 'TEST-123',
+        checkin_date: '20 Nov 2025',
+        checkout_date: '22 Nov 2025',
+        room_type: 'Standard Room',
+        guests: '2 Adults',
+        nights: '2',
+        total_amount: '₵1,100',
+        from_email: 'wundable@gmail.com'
+    })
+    .then(() => {
+        console.log('✅ Test email sent!');
+        alert('Test email sent! Check your inbox.');
+    })
+    .catch((error) => {
+        console.error('❌ Test failed:', error);
+        alert('Test failed: ' + JSON.stringify(error));
+    });
+}
+
+// Run test in console: testEmail()

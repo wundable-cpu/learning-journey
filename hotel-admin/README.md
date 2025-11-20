@@ -1,77 +1,208 @@
-# Tima Sara Hotel - Management System
+# Tima Sara Hotel - Admin Management System
 
-Admin dashboard for managing hotel operations.
+Professional hotel management dashboard with 10 comprehensive modules.
 
-## Features
-- Staff authentication
-- Real-time occupancy tracking
-- Booking management
-- Revenue analytics
-- Room status management
+## 🔐 Access
 
-## Setup
-1. Open `admin-login.html` in browser
-2. Login with staff credentials
-3. Access dashboard
+**Live Demo:** https://wundable-cpu.github.io/tima-sara-admin/admin-login.html
 
-## Default Login (for testing)
-Create a test user in Supabase Auth dashboard.
+**Default Credentials:**
+- Email: admin@timasarahotel.com
+- Password: [Contact for access]
 
-✅ Day 22: Login & Dashboard
+---
 
-✅ Day 23:  Booking Management
-    - ✅ Reservations page fully functional
-    - ✅ View all bookings in a table
-    - ✅ Search bookings by name/email/reference
-    - ✅ Filter by status (confirmed, checked-in, etc.)
-    - ✅ Click booking to view full details modal
-    - ✅ Export bookings to CSV
-    - ✅ Pagination working
-    - ✅ Professional table design
-    - ✅ Update to actual Tima Sara room layout with beautiful border colors
+## 📊 Modules Overview
 
-✅ Day 24: Room Management (with beautiful design!)
-    - ✅ 28 rooms displayed in actual Tima Sara layout
-    - ✅ Beautiful color-coded borders for each status
-    - ✅ Gradient backgrounds for visual appeal
-    - ✅ Room type color accents (Green/Blue/Purple/Gold numbers)
-    - ✅ Real-time status updates
-    - ✅ Guest assignment tracking
-    - ✅ Click-to-view room details
-    - ✅ One-click status changes
-    - ✅ Filter by status and room type
-    - ✅ Live statistics dashboard
+### 1. Dashboard
+- Real-time occupancy overview
+- Revenue at a glance
+- Upcoming arrivals and departures
+- Room status breakdown
+- Quick statistics
 
-✅ Day 25: Add guest management and analytics dashboard with charts
-    - ✅ View all guests with complete profiles
-    - ✅ Search guests by name, email, phone
-    - ✅ See booking history for each guest
-    - ✅ Track VIP guests (spending > ₵10,000)
-    - ✅ Identify returning guests
-    - ✅ See currently checked-in guests
-    - ✅ Export guest data to CSV
-    - ✅ View revenue trends with interactive charts
-    - ✅ Analyze occupancy rates
-    - ✅ See room type distribution
-    - ✅ Track top performing rooms
-    - ✅ Guest insights and statistics
-    - ✅ Generate reports for different metrics
+### 2. Reservations Management
+- View all bookings
+- Search by name, email, reference
+- Filter by status and date
+- Booking details modal
+- Export to CSV
+- Pagination
 
-✅ Day 26: Add housekeeping management and settings page - HMS complete!
-    - ✅ Dashboard - Real-time overview
-    - ✅ Reservations - Search, filter, manage bookings
-    - ✅ Guests - Complete guest profiles and history
-    - ✅ Rooms - Visual room management with status updates
-    - ✅ Housekeeping - Task management and assignments
-    - ✅ Analytics - Charts, reports, insights
-    - ✅ Settings - Hotel configuration and info  
+### 3. Guest Management
+- Complete guest database
+- Guest profiles with history
+- Preferences and notes system
+- VIP tracking
+- Lifetime value calculation
+- Search and filter
 
-✅ DAY 27: Professional Features - Quick Wins!
-    - ✅ Enhanced Guest Profiles with Notes & Preferences
-    - ✅ Bulk Email Communication Tool
-    - 
-✅ DAY 27: Part 2 - Invoice Generator & Extended Reports 
-    - ✅ Enhanced Guest Profiles with preferences, notes, and insights
-    - ✅ Bulk Email Communications with templates
-    - ✅ Professional Invoice Generator with print/PDF
-    - ✅ Extended Reports System with 6 report types
+### 4. Room Management
+- Visual room grid (28 rooms)
+- Color-coded status
+- One-click status updates
+- Room details
+- Guest assignments
+- Filter by status/type
+
+### 5. Housekeeping
+- Task management
+- Priority system
+- Maintenance requests
+- Status tracking
+- Staff assignments
+- Daily operations
+
+### 6. Analytics Dashboard
+- Revenue trends (Chart.js)
+- Occupancy rates
+- Room type distribution
+- Guest insights
+- Top performing rooms
+- Date range filtering
+
+### 7. Detailed Reports
+- Daily Audit Report
+- Occupancy Forecast
+- Source of Business
+- Revenue by Room Type
+- Guest Analysis
+- Financial Summary
+
+### 8. Invoice & Billing
+- Professional invoice generation
+- Add incidentals
+- Print invoices
+- PDF export ready
+- Payment tracking
+- Search and filter
+
+### 9. Guest Communications
+- Bulk email system
+- Pre-built templates
+- Recipient segmentation
+- Email preview
+- Communication history
+- Personalization
+
+### 10. Settings
+- Hotel information
+- Room pricing
+- Booking settings
+- System information
+- Quick links
+- Developer info
+
+---
+
+## 🛠️ Technology
+
+- **Frontend:** HTML5, CSS3, JavaScript
+- **Database:** Supabase (PostgreSQL)
+- **Charts:** Chart.js
+- **Authentication:** Supabase Auth
+- **Email:** EmailJS
+- **Hosting:** GitHub Pages
+
+---
+
+## 📱 Features
+
+### Security
+- Secure login system
+- Session management
+- Protected routes
+- Input validation
+
+### User Experience
+- Intuitive navigation
+- Responsive design
+- Fast loading
+- Clean interface
+
+### Data Management
+- Real-time updates
+- Search functionality
+- Export capabilities
+- Data visualization
+
+---
+
+## 🚀 Setup Instructions
+
+1. Clone repository
+2. Configure Supabase credentials
+3. Set up admin user in Supabase Auth
+4. Open admin-login.html
+5. Login with credentials
+
+---
+
+## 📈 Usage Guide
+
+### For Hotel Managers
+- Monitor daily operations from Dashboard
+- Review bookings in Reservations
+- Check room status in Rooms
+- Generate reports in Reports section
+
+### For Front Desk
+- Check-in guests via Reservations
+- Update room status in Rooms
+- View guest information in Guests
+- Create invoices in Invoices
+
+### For Housekeeping
+- View tasks in Housekeeping
+- Report issues via Maintenance
+- Update room status
+- Check daily assignments
+
+### For Marketing
+- Send emails via Communications
+- Analyze guest data in Analytics
+- Review reports in Reports
+- Track booking sources
+
+---
+
+## 🎨 Design System
+
+### Colors
+- Primary: #2c3e50
+- Gold Accent: #d4af37
+- Success: #27ae60
+- Warning: #f39c12
+- Danger: #e74c3c
+- Info: #3498db
+
+### Components
+- Cards with shadows
+- Color-coded status badges
+- Interactive modals
+- Responsive tables
+- Beautiful charts
+
+---
+
+## 📊 Performance
+
+- Load time: < 2 seconds
+- Real-time data updates
+- Optimized queries
+- Efficient rendering
+
+---
+
+## 🔜 Future Features
+
+- Mobile app version
+- Push notifications
+- Advanced analytics
+- Multi-property support
+- Staff scheduling
+- Inventory management
+
+---
+
+*Professional hotel management made simple* ✨

@@ -21,9 +21,9 @@ async function loadGuests() {
             
             if (!guestsMap.has(key)) {
                 guestsMap.set(key, {
-                    name: booking.full_name,
-                    email: booking.email,
-                    phone: booking.phone,
+                    name: booking.guest_name,
+                    email: booking.guest_email,
+                    phone: booking.guest_phone,
                     bookings: [],
                     totalSpent: 0,
                     isVIP: false
@@ -39,7 +39,7 @@ async function loadGuests() {
         
         // Store bookings by guest for quick access
         allGuests.forEach(guest => {
-            guestBookings.set(guest.email, guest.bookings);
+            guestBookings.set(guest.guest_email, guest.bookings);
         });
         
         console.log('👥 Loaded guests:', allGuests.length);
@@ -90,13 +90,13 @@ function displayGuests(filtered = allGuests) {
         const isCurrentlyStaying = isGuestCurrentlyStaying(guest);
         
         return `
-            <tr onclick="viewGuestProfile('${guest.email}')">
+            <tr onclick="viewGuestProfile('${guest.guest_email}')">
                 <td>
-                    <strong>${guest.name}</strong>
+                    <strong>${guest.guest_name}</strong>
                     ${isVIP ? '<span class="guest-vip-badge">⭐ VIP</span>' : ''}
                 </td>
-                <td>${guest.email}</td>
-                <td>${guest.phone}</td>
+                <td>${guest.guest_email}</td>
+                <td>${guest.guest_phone}</td>
                 <td><strong>${guest.bookings.length}</strong></td>
                 <td><strong>₵${guest.totalSpent.toLocaleString()}</strong></td>
                 <td>${formatDate(lastBooking.check_in)}</td>
@@ -127,13 +127,13 @@ function isGuestCurrentlyStaying(guest) {
 
 // Enhanced view guest profile with preferences
 function viewGuestProfile(email) {
-    const guest = allGuests.find(g => g.email === email);
+    const guest = allGuests.find(g => g.guest_email === email);
     if (!guest) return;
     
     const modal = document.getElementById('guestModal');
     const modalBody = document.getElementById('guestModalBody');
     
-    document.getElementById('guestModalName').textContent = guest.name;
+    document.getElementById('guestModalName').textContent = guest.guest_name;
     
     const isVIP = guest.isVIP || guest.totalSpent > 10000;
     const returningGuest = guest.bookings.length > 1;
@@ -157,7 +157,7 @@ function viewGuestProfile(email) {
         <div style="background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); padding: 20px; border-radius: 10px; color: white; margin-bottom: 25px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h3 style="margin: 0; color: white;">${guest.name}</h3>
+                    <h3 style="margin: 0; color: white;">${guest.guest_name}</h3>
                     <p style="margin: 5px 0 0 0; opacity: 0.9;">
                         ${isVIP ? '⭐ VIP Guest' : returningGuest ? '🔄 Returning Guest' : '🆕 New Guest'}
                     </p>
@@ -175,11 +175,11 @@ function viewGuestProfile(email) {
         <div class="guest-profile-grid">
             <div class="detail-group">
                 <h4>Email Address</h4>
-                <p>${guest.email}</p>
+                <p>${guest.guest_email}</p>
             </div>
             <div class="detail-group">
                 <h4>Phone Number</h4>
-                <p>${guest.phone}</p>
+                <p>${guest.guest_phone}</p>
             </div>
             <div class="detail-group">
                 <h4>Loyalty Status</h4>
@@ -220,7 +220,7 @@ function viewGuestProfile(email) {
                     <textarea id="guestSpecialNotes" placeholder="e.g., Anniversary, birthday, business traveler, language preferences..." 
                         style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; min-height: 80px;">${guest.preferences?.notes || ''}</textarea>
                 </div>
-                <button onclick="saveGuestPreferences('${guest.email}')" class="btn-primary" style="width: 100%; padding: 12px;">
+                <button onclick="saveGuestPreferences('${guest.guest_email}')" class="btn-primary" style="width: 100%; padding: 12px;">
                     💾 Save Preferences
                 </button>
             </div>
@@ -250,7 +250,7 @@ function viewGuestProfile(email) {
 
 // Save guest preferences
 function saveGuestPreferences(email) {
-    const guest = allGuests.find(g => g.email === email);
+    const guest = allGuests.find(g => g.guest_email === email);
     if (!guest) return;
     
     if (!guest.preferences) guest.preferences = {};
@@ -287,9 +287,9 @@ document.getElementById('guestSearch')?.addEventListener('input', function(e) {
     const search = e.target.value.toLowerCase();
     
     const filtered = allGuests.filter(guest => {
-        return guest.name.toLowerCase().includes(search) ||
-               guest.email.toLowerCase().includes(search) ||
-               guest.phone.includes(search);
+        return guest.guest_name.toLowerCase().includes(search) ||
+               guest.guest_email.toLowerCase().includes(search) ||
+               guest.guest_phone.includes(search);
     });
     
     displayGuests(filtered);
@@ -316,9 +316,9 @@ function exportGuests() {
     const csv = [
         ['Name', 'Email', 'Phone', 'Total Bookings', 'Total Spent', 'Last Visit', 'Status'],
         ...allGuests.map(g => [
-            g.name,
-            g.email,
-            g.phone,
+            g.guest_name,
+            g.guest_email,
+            g.guest_phone,
             g.bookings.length,
             g.totalSpent,
             formatDate(g.bookings[0].check_in),

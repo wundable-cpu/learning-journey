@@ -142,7 +142,7 @@ async function loadCurrentGuests() {
         posCurrentGuests = data || [];
         populateGuestSelect();
         
-        console.log('👥 Loaded', posCurrentGuests.length, 'guests');
+        console.log('👥 Loaded', posCurrentGuests.length, 'current guests');
         
     } catch (error) {
         console.error('Guest load error:', error);
@@ -155,14 +155,14 @@ function populateGuestSelect() {
     const select = document.getElementById('guestSelect');
     
     if (posCurrentGuests.length === 0) {
-        select.innerHTML = '<option>No guests checked in</option>';
+        select.innerHTML = '<option>No guests currently checked in</option>';
         return;
     }
     
     select.innerHTML = '<option value="">-- Select Guest --</option>' + 
         posCurrentGuests.map(g => 
-            `<option value="${g.id}" data-name="${g.full_name}" data-room="${g.room_type}">
-                ${g.full_name} - ${g.room_type}
+            `<option value="${g.id}" data-name="${g.guest_name}" data-room="${g.room_type}">
+                ${g.guest_name} - ${g.room_type}
             </option>`
         ).join('');
 }
