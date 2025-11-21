@@ -88,6 +88,7 @@
         <!-- Guest Statistics -->
         <div class="guest-stats-grid">
             <div class="stat-card">
+                <div id="totalGuestsCount">0</div>
                 <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1);">👥</div>
                 <div class="stat-info">
                     <h3 id="totalGuests">0</h3>
@@ -95,6 +96,7 @@
                 </div>
             </div>
             <div class="stat-card">
+                <div id="vipGuestsCount">0</div>
                 <div class="stat-icon" style="background: rgba(39, 174, 96, 0.1);">⭐</div>
                 <div class="stat-info">
                     <h3 id="vipGuests">0</h3>
@@ -102,6 +104,7 @@
                 </div>
             </div>
             <div class="stat-card">
+                <div id="returningGuestsCount">0</div>
                 <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1);">🔄</div>
                 <div class="stat-info">
                     <h3 id="returningGuests">0</h3>
@@ -109,6 +112,7 @@
                 </div>
             </div>
             <div class="stat-card">
+                <div id="currentGuestsCount">0</div>
                 <div class="stat-icon" style="background: rgba(241, 196, 15, 0.1);">📅</div>
                 <div class="stat-info">
                     <h3 id="currentGuests">0</h3>
@@ -120,17 +124,19 @@
         <!-- Search and Filters -->
         <div class="guests-toolbar">
             <div class="search-box">
-                <input type="text" id="guestSearch" placeholder="Search by name, email, or phone..." class="search-input">
-                <button class="search-btn">🔍</button>
+                <input type="text" id="searchInput" placeholder="Search by name, email, or phone...">
+                <button id="searchBtn" class="btn-primary">🔍 Search</button>
             </div>
-            <div class="filter-controls">
-                <select id="guestTypeFilter" class="filter-select">
+            <div class="filter-box">
+                <select id="statusFilter" class="filter-dropdown">
                     <option value="all">All Guests</option>
-                    <option value="vip">VIP Only</option>
-                    <option value="returning">Returning Guests</option>
-                    <option value="new">New Guests</option>
+                    <option value="current">🏨 Current Guests</option>
+                    <option value="past">Past Guests</option>
+                    <option value="vip">⭐ VIP Guests (3+)</option>
+                    <option value="returning">🔄 Returning Guests (2+)</option>
+                    <option value="new">🆕 New Guests (1)</option>
                 </select>
-                <button class="export-btn" onclick="exportGuests()">📥 Export</button>
+                <button id="exportBtn" class="btn-secondary">📥 Export CSV</button>
             </div>
         </div>
 
@@ -150,10 +156,9 @@
                     </tr>
                 </thead>
                 <tbody id="guestsTableBody">
-                    <tr>
-                        <td colspan="8" class="loading-row">
-                            <div class="loading-spinner">Loading guests...</div>
-                        </td>
+                    <tbody>
+                        <tr class="loading-row">
+                        <td colspan="6">Loading guests...</td>
                     </tr>
                 </tbody>
             </table>
@@ -164,8 +169,8 @@
     <div id="guestModal" class="modal" style="display: none;">
         <div class="modal-content modal-large">
             <div class="modal-header">
-                <h2 id="guestModalName">Guest Profile</h2>
-                <button class="modal-close" id="closeGuestModal">&times;</button>
+                <h2 id="modalTitle">Guest Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body" id="guestModalBody">
                 <!-- Guest details will be loaded here -->
