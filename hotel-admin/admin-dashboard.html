@@ -11,7 +11,12 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
+            <a href="https://timasarahotel.com" target="_blank" style="text-decoration: none; color: inherit;">
+            <div class="hotel-logo-small" style="cursor: pointer; transition: transform 0.3s ease;">
+            <h2>TIMA SARA</h2>
+            <p>HOTEL</p>
+        </div>
+    </a>
             <h2>TIMA SARA<br><span>HOTEL</span></h2>
         </div>
 
@@ -216,12 +221,109 @@
             </div>
 
         </div>
+        <!-- Existing Stats Cards -->
+<!-- Your current occupancy, check-ins, etc. -->
+
+<!-- NEW: F&B Revenue Section -->
+<div class="dashboard-section" style="margin-top: 40px;">
+    <h2 style="color: var(--primary-blue); margin-bottom: 20px;">
+        🍽️ Restaurant & Bar Revenue
+    </h2>
+    
+    <div class="stats-grid">
+        <!-- Today's F&B Revenue -->
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #ffd700, #ffed4e);">
+                💰
+            </div>
+            <div class="stat-details">
+                <h3>Today's F&B</h3>
+                <p class="stat-number" id="todayFBRevenue">₵0</p>
+                <span class="stat-label">Revenue Today</span>
+            </div>
+        </div>
+        
+        <!-- This Week's F&B Revenue -->
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #48bb78, #38a169);">
+                📊
+            </div>
+            <div class="stat-details">
+                <h3>This Week</h3>
+                <p class="stat-number" id="weekFBRevenue">₵0</p>
+                <span class="stat-label">F&B Revenue</span>
+            </div>
+        </div>
+        
+        <!-- This Month's F&B Revenue -->
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                📈
+            </div>
+            <div class="stat-details">
+                <h3>This Month</h3>
+                <p class="stat-number" id="monthFBRevenue">₵0</p>
+                <span class="stat-label">F&B Revenue</span>
+            </div>
+        </div>
+        
+        <!-- Total Orders Today -->
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #f6ad55, #ed8936);">
+                🧾
+            </div>
+            <div class="stat-details">
+                <h3>Orders Today</h3>
+                <p class="stat-number" id="todayOrders">0</p>
+                <span class="stat-label">F&B Transactions</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Breakdown Section -->
+<div class="dashboard-section" style="margin-top: 40px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        
+        <!-- Category Breakdown -->
+        <div class="card">
+            <h3 style="color: var(--primary-blue); margin-bottom: 20px;">
+                Revenue by Category
+            </h3>
+            <div id="categoryBreakdown">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Top Selling Items -->
+        <div class="card">
+            <h3 style="color: var(--primary-blue); margin-bottom: 20px;">
+                🏆 Top 5 Selling Items
+            </h3>
+            <div id="topItems">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Comparison Chart -->
+<div class="dashboard-section" style="margin-top: 40px;">
+    <div class="card">
+        <h3 style="color: var(--primary-blue); margin-bottom: 20px;">
+            📊 Revenue Comparison (Last 7 Days)
+        </h3>
+        <canvas id="revenueComparisonChart" style="max-height: 400px;"></canvas>
+    </div>
+</div>
     </main>
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Chart.js for future analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="admin-script.js"></script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="js/admin-script.js"></script>
+    <script src="js/admin-dashboard.js"></script>
 </body>
 </html>
