@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Housekeeping - Tima Sara Hotel Management</title>
+    <title>Housekeeping Management - Tima Sara Hotel</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
-<body class="dashboard-page">
-    
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+<body>
+     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="https://timasarahotel.com" target="_blank" style="text-decoration: none; color: inherit;">
             <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
@@ -56,6 +54,10 @@
                 <span class="nav-icon">💰</span>
                 <span>Invoices</span>
             </a>
+            <a href="admin-communications.html" class="nav-item">
+                <span class="nav-icon">📧</span>
+                <span>Communications</span>
+            </a>
             <a href="admin-settings.html" class="nav-item">
                 <span class="nav-icon">⚙️</span>
                 <span>Settings</span>
@@ -75,144 +77,160 @@
         <!-- Top Bar -->
         <header class="top-bar">
             <div class="top-bar-left">
-                <h1 class="page-title">Housekeeping Management</h1>
+                <h1 class="page-title">Housekeeping</h1>
             </div>
             <div class="top-bar-right">
-                <button class="btn-primary" onclick="assignAllRooms()">
-                    🧹 Auto-Assign Rooms
-                </button>
                 <div class="user-info">
                     <span class="user-icon">👤</span>
                     <span class="user-name" id="userName">Welcome, Admin</span>
                 </div>
             </div>
         </header>
-
-        <!-- Housekeeping Statistics -->
-        <div class="housekeeping-stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(243, 156, 18, 0.1);">⏳</div>
-                <div class="stat-info">
-                    <h3 id="pendingTasks">0</h3>
-                    <p>Pending Tasks</p>
+            
+            <!-- Quick Stats -->
+            <div class="stats-grid" style="margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e6f7ff;">🧹</div>
+                    <div class="stat-details">
+                        <div class="stat-label">Pending Tasks</div>
+                        <div class="stat-value" id="pendingTasks">-</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff3e0;">⏳</div>
+                    <div class="stat-details">
+                        <div class="stat-label">In Progress</div>
+                        <div class="stat-value" id="inProgressTasks">-</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e8f5e9;">✅</div>
+                    <div class="stat-details">
+                        <div class="stat-label">Completed Today</div>
+                        <div class="stat-value" id="completedToday">-</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ffebee;">⚠️</div>
+                    <div class="stat-details">
+                        <div class="stat-label">High Priority</div>
+                        <div class="stat-value" id="highPriority">-</div>
+                    </div>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1);">🔄</div>
-                <div class="stat-info">
-                    <h3 id="inProgressTasks">0</h3>
-                    <p>In Progress</p>
+
+            <!-- Action Bar -->
+            <div class="card" style="margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <select id="statusFilter" style="padding: 12px 20px; border: 2px solid var(--border-color); border-radius: 8px;">
+                            <option value="all">All Status</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="in_progress">🔄 In Progress</option>
+                            <option value="completed">✅ Completed</option>
+                            <option value="verified">✓✓ Verified</option>
+                        </select>
+                        
+                        <select id="priorityFilter" style="padding: 12px 20px; border: 2px solid var(--border-color); border-radius: 8px;">
+                            <option value="all">All Priority</option>
+                            <option value="urgent">🚨 Urgent</option>
+                            <option value="high">⚠️ High</option>
+                            <option value="normal">➖ Normal</option>
+                            <option value="low">⬇️ Low</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="openNewTaskModal()" class="btn-primary">
+                        ➕ New Housekeeping Task
+                    </button>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(39, 174, 96, 0.1);">✅</div>
-                <div class="stat-info">
-                    <h3 id="completedTasks">0</h3>
-                    <p>Completed Today</p>
+
+            <!-- Room Status Overview -->
+            <div class="card" style="margin-bottom: 30px;">
+                <h2 style="margin-bottom: 20px;">Room Status Overview</h2>
+                <div id="roomStatusGrid" class="room-status-grid">
+                    <div style="text-align: center; padding: 20px; color: var(--text-light);">
+                        Loading room status...
+                    </div>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1);">🔧</div>
-                <div class="stat-info">
-                    <h3 id="maintenanceIssues">0</h3>
-                    <p>Maintenance Issues</p>
+
+            <!-- Housekeeping Tasks -->
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">Housekeeping Tasks</h2>
+                <div id="tasksContainer">
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        Loading tasks...
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Filter Tabs -->
-        <div class="housekeeping-tabs">
-            <button class="tab-btn active" data-tab="all">All Tasks</button>
-            <button class="tab-btn" data-tab="priority">Priority</button>
-            <button class="tab-btn" data-tab="checkout">Checkout Rooms</button>
-            <button class="tab-btn" data-tab="maintenance">Maintenance</button>
-        </div>
-
-        <!-- Tasks Grid -->
-        <div class="tasks-grid" id="tasksGrid">
-            <div class="loading-container">
-                <div class="loading-spinner">Loading tasks...</div>
-            </div>
-        </div>
-
-        <!-- Maintenance Section -->
-        <div class="maintenance-section">
-            <div class="section-header">
-                <h3>🔧 Maintenance Requests</h3>
-                <button class="btn-secondary" onclick="showMaintenanceForm()">+ New Request</button>
-            </div>
-            <div class="maintenance-list" id="maintenanceList">
-                <!-- Maintenance items will be loaded here -->
-            </div>
         </div>
     </main>
 
-    <!-- Task Detail Modal -->
+    <!-- New Task Modal -->
     <div id="taskModal" class="modal" style="display: none;">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
-                <h2 id="taskModalTitle">Room Cleaning Task</h2>
-                <button class="modal-close" id="closeTaskModal">&times;</button>
+                <h2 id="modalTitle">Create Housekeeping Task</h2>
+                <button class="modal-close" onclick="closeTaskModal()">&times;</button>
             </div>
-            <div class="modal-body" id="taskModalBody">
-                <!-- Task details will be loaded here -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" id="closeTaskModalBtn">Close</button>
-                <button class="btn-primary" id="markTaskCompleteBtn">✅ Mark Complete</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Maintenance Form Modal -->
-    <div id="maintenanceModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>New Maintenance Request</h2>
-                <button class="modal-close" onclick="closeMaintenanceForm()">&times;</button>
-            </div>
+            
             <div class="modal-body">
-                <form id="maintenanceForm">
+                <form id="taskForm">
+                    <input type="hidden" id="taskId">
+                    
                     <div class="form-group">
-                        <label>Room Number</label>
-                        <select id="maintenanceRoom" required>
-                            <option value="">Select Room</option>
-                        </select>
+                        <label for="taskRoom">Room Number *</label>
+                        <input type="text" id="taskRoom" required placeholder="e.g., G01">
                     </div>
-                    <div class="form-group">
-                        <label>Issue Type</label>
-                        <select id="maintenanceType" required>
-                            <option value="">Select Type</option>
-                            <option value="plumbing">Plumbing</option>
-                            <option value="electrical">Electrical</option>
-                            <option value="hvac">HVAC</option>
-                            <option value="furniture">Furniture</option>
-                            <option value="other">Other</option>
-                        </select>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskType">Task Type *</label>
+                            <select id="taskType" required>
+                                <option value="checkout_cleaning">Checkout Cleaning</option>
+                                <option value="daily_service">Daily Service</option>
+                                <option value="deep_clean">Deep Clean</option>
+                                <option value="inspection">Inspection</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taskPriority">Priority *</label>
+                            <select id="taskPriority" required>
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label>Priority</label>
-                        <select id="maintenancePriority" required>
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                            <option value="urgent">Urgent</option>
-                        </select>
+                        <label for="taskAssignedTo">Assign To</label>
+                        <input type="text" id="taskAssignedTo" placeholder="Staff member name">
                     </div>
+                    
                     <div class="form-group">
-                        <label>Description</label>
-                        <textarea id="maintenanceDescription" rows="4" required></textarea>
+                        <label for="taskNotes">Notes</label>
+                        <textarea id="taskNotes" rows="3" placeholder="Additional instructions or notes"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">💾 Create Task</button>
+                        <button type="button" onclick="closeTaskModal()" class="btn-secondary">Cancel</button>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeMaintenanceForm()">Cancel</button>
-                <button class="btn-primary" onclick="submitMaintenanceRequest()">Submit Request</button>
-            </div>
         </div>
     </div>
 
-    <!-- Supabase -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/admin-script.js"></script>
     <script src="js/admin-housekeeping.js"></script>

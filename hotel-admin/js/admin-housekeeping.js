@@ -1,352 +1,412 @@
-// admin-housekeeping.js - Housekeeping Management
+console.log('🧹 Housekeeping module loading...');
 
-let housekeepingTasks = [];
-let maintenanceRequests = [];
-let currentTab = 'all';
+const supabase = window.supabase_client;
 
-// Sample room numbers
-const ALL_ROOMS = [4, 5, 101, 102, 103, 104, 105, 106, 107, 108, 201, 202, 203, 204, 205, 206, 207, 208, 301, 302, 303, 304, 305, 306, 307, 308];
+let allTasks = [];
+let allRoomStatus = [];
 
-// Initialize housekeeping
-async function initializeHousekeeping() {
-    // Generate sample tasks
-    generateSampleTasks();
+// Initialize
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('✅ Housekeeping page loaded');
     
-    // Load maintenance requests
-    loadMaintenanceRequests();
+    if (!supabase) {
+        alert('Database connection failed. Please refresh.');
+        return;
+    }
     
-    // Update stats
-    updateHousekeepingStats();
-    
-    // Display tasks
-    displayTasks();
-    
-    // Populate room dropdown
-    populateRoomDropdown();
+    await loadData();
+    setupFilters();
+    setupForm();
+});
+
+// Load all data
+async function loadData() {
+    await Promise.all([
+        loadTasks(),
+        loadRoomStatus(),
+        updateStats()
+    ]);
 }
 
-// Generate sample cleaning tasks
-function generateSampleTasks() {
-    housekeepingTasks = [
-        {
-            id: 1,
-            room: 108,
-            type: 'Checkout Cleaning',
-            priority: 'high',
-            status: 'pending',
-            assignedTo: 'Staff 1',
-            notes: 'Guest checked out at 11:00 AM'
-        },
-        {
-            id: 2,
-            room: 208,
-            type: 'Daily Cleaning',
-            priority: 'medium',
-            status: 'in-progress',
-            assignedTo: 'Staff 2',
-            notes: 'Guest requested extra towels'
-        },
-        {
-            id: 3,
-            room: 308,
-            type: 'Deep Cleaning',
-            priority: 'low',
-            status: 'pending',
-            assignedTo: 'Staff 3',
-            notes: 'Scheduled deep clean'
-        },
-        {
-            id: 4,
-            room: 107,
-            type: 'Checkout Cleaning',
-            priority: 'high',
-            status: 'completed',
-            assignedTo: 'Staff 1',
-            notes: 'Completed at 2:30 PM'
-        },
-        {
-            id: 5,
-            room: 207,
-            type: 'Turndown Service',
-            priority: 'medium',
-            status: 'pending',
-            assignedTo: 'Staff 4',
-            notes: 'Scheduled for 7:00 PM'
-        }
-    ];
+// Load housekeeping tasks
+async function loadTasks() {
+    console.log('📡 Loading housekeeping tasks...');
+    
+    try {
+        const { data: tasks, error } = await supabase
+            .from('housekeeping_tasks')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        allTasks = tasks || [];
+        console.log(`✅ Loaded ${allTasks.length} tasks`);
+        
+        displayTasks(allTasks);
+        
+    } catch (error) {
+        console.error('❌ Error loading tasks:', error);
+        document.getElementById('tasksContainer').innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #e53e3e;">
+                <p>Failed to load tasks: ${error.message}</p>
+            </div>
+        `;
+    }
 }
 
-// Load maintenance requests
-function loadMaintenanceRequests() {
-    maintenanceRequests = [
-        {
-            id: 1,
-            room: 105,
-            type: 'Plumbing',
-            priority: 'urgent',
-            description: 'Leaking faucet in bathroom',
-            status: 'open',
-            reportedAt: new Date().toISOString()
-        },
-        {
-            id: 2,
-            room: 203,
-            type: 'Electrical',
-            priority: 'high',
-            description: 'Light fixture not working',
-            status: 'in-progress',
-            reportedAt: new Date(Date.now() - 86400000).toISOString()
-        }
-    ];
+// Load room status
+async function loadRoomStatus() {
+    console.log('📡 Loading room status...');
     
-    displayMaintenanceRequests();
+    try {
+        const { data: rooms, error } = await supabase
+            .from('room_status')
+            .select('*')
+            .order('room_number');
+        
+        if (error) throw error;
+        
+        allRoomStatus = rooms || [];
+        console.log(`✅ Loaded ${allRoomStatus.length} room statuses`);
+        
+        displayRoomStatus();
+        
+    } catch (error) {
+        console.error('❌ Error loading room status:', error);
+    }
 }
 
-// Update statistics
-function updateHousekeepingStats() {
-    const stats = {
-        pending: housekeepingTasks.filter(t => t.status === 'pending').length,
-        inProgress: housekeepingTasks.filter(t => t.status === 'in-progress').length,
-        completed: housekeepingTasks.filter(t => t.status === 'completed').length,
-        maintenance: maintenanceRequests.filter(r => r.status === 'open').length
-    };
+// Display room status
+function displayRoomStatus() {
+    const grid = document.getElementById('roomStatusGrid');
     
-    document.getElementById('pendingTasks').textContent = stats.pending;
-    document.getElementById('inProgressTasks').textContent = stats.inProgress;
-    document.getElementById('completedTasks').textContent = stats.completed;
-    document.getElementById('maintenanceIssues').textContent = stats.maintenance;
+    if (allRoomStatus.length === 0) {
+        grid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-light);">No rooms found</div>';
+        return;
+    }
+    
+    grid.innerHTML = allRoomStatus.map(room => `
+        <div class="room-status-card ${room.status}" onclick="changeRoomStatus('${room.room_number}', '${room.status}')">
+            <div class="room-number">${room.room_number}</div>
+            <div class="room-status-badge">${getStatusIcon(room.status)} ${formatStatus(room.status)}</div>
+            ${room.notes ? `<div class="room-notes">${room.notes}</div>` : ''}
+        </div>
+    `).join('');
 }
 
 // Display tasks
-function displayTasks() {
-    const grid = document.getElementById('tasksGrid');
+// Display tasks
+function displayTasks(tasks) {
+    const container = document.getElementById('tasksContainer');
     
-    let filteredTasks = housekeepingTasks;
-    
-    if (currentTab === 'priority') {
-        filteredTasks = housekeepingTasks.filter(t => t.priority === 'high' || t.priority === 'urgent');
-    } else if (currentTab === 'checkout') {
-        filteredTasks = housekeepingTasks.filter(t => t.type.includes('Checkout'));
-    } else if (currentTab === 'maintenance') {
-        displayMaintenanceOnly();
+    if (tasks.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🧹</div>
+                <div class="empty-state-title">No Tasks Found</div>
+                <div class="empty-state-description">Click "New Housekeeping Task" to create your first task</div>
+            </div>
+        `;
         return;
     }
     
-    if (filteredTasks.length === 0) {
-        grid.innerHTML = '<div class="loading-container">No tasks found</div>';
-        return;
-    }
-    
-    grid.innerHTML = filteredTasks.map(task => `
-        <div class="task-card priority-${task.priority}" onclick="viewTaskDetails(${task.id})">
-            <div class="task-header">
-                <div class="task-room-number">Room ${task.room}</div>
-                <span class="task-priority-badge ${task.priority}">${task.priority}</span>
-            </div>
-            <div class="task-type">${task.type}</div>
-            <div class="task-status ${task.status}">
-                ${getStatusIcon(task.status)} ${formatStatus(task.status)}
-            </div>
-            ${task.notes ? `<p style="margin-top: 10px; font-size: 13px; color: var(--text-light);">${task.notes}</p>` : ''}
-        </div>
-    `).join('');
-}
-
-// Display maintenance requests
-function displayMaintenanceRequests() {
-    const list = document.getElementById('maintenanceList');
-    
-    if (maintenanceRequests.length === 0) {
-        list.innerHTML = '<p style="text-align: center; color: var(--text-light);">No maintenance requests</p>';
-        return;
-    }
-    
-    list.innerHTML = maintenanceRequests.map(req => `
-        <div class="maintenance-item">
-            <div class="maintenance-header">
-                <span class="maintenance-room">Room ${req.room}</span>
-                <span class="task-priority-badge ${req.priority}">${req.priority}</span>
-            </div>
-            <div class="maintenance-type">${req.type}</div>
-            <div class="maintenance-description">${req.description}</div>
-            <div class="maintenance-meta">
-                <span>Status: ${req.status}</span>
-                <span>${formatDate(req.reportedAt)}</span>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Display maintenance tab
-function displayMaintenanceOnly() {
-    const grid = document.getElementById('tasksGrid');
-    grid.innerHTML = '<div class="loading-container">View maintenance requests below</div>';
-}
-
-// Format status
-function formatStatus(status) {
-    return status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-}
-
-// Get status icon
-function getStatusIcon(status) {
-    const icons = {
-        'pending': '⏳',
-        'in-progress': '🔄',
-        'completed': '✅'
-    };
-    return icons[status] || '❓';
-}
-
-// Format date
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB', { 
-        day: '2-digit', 
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-// View task details
-function viewTaskDetails(taskId) {
-    const task = housekeepingTasks.find(t => t.id === taskId);
-    if (!task) return;
-    
-    const modal = document.getElementById('taskModal');
-    const modalBody = document.getElementById('taskModalBody');
-    
-    document.getElementById('taskModalTitle').textContent = `Room ${task.room} - ${task.type}`;
-    
-    modalBody.innerHTML = `
-        <div class="booking-detail-grid">
-            <div class="detail-group">
-                <h4>Room Number</h4>
-                <p>${task.room}</p>
-            </div>
-            <div class="detail-group">
-                <h4>Task Type</h4>
-                <p>${task.type}</p>
-            </div>
-            <div class="detail-group">
-                <h4>Priority</h4>
-                <p><span class="task-priority-badge ${task.priority}">${task.priority}</span></p>
-            </div>
-            <div class="detail-group">
-                <h4>Status</h4>
-                <p><span class="task-status ${task.status}">${getStatusIcon(task.status)} ${formatStatus(task.status)}</span></p>
-            </div>
-            <div class="detail-group">
-                <h4>Assigned To</h4>
-                <p>${task.assignedTo}</p>
-            </div>
-            <div class="detail-group" style="grid-column: 1 / -1;">
-                <h4>Notes</h4>
-                <p>${task.notes || 'No additional notes'}</p>
-            </div>
+    container.innerHTML = `
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Room</th>
+                        <th>Task Type</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Assigned To</th>
+                        <th>Created</th>
+                        <th>Notes</th>
+                        <th style="text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tasks.map(task => `
+                        <tr>
+                            <td><strong>${task.room_number}</strong></td>
+                            <td>${formatTaskType(task.task_type)}</td>
+                            <td><span class="badge badge-${task.status}">${getStatusIcon(task.status)} ${formatStatus(task.status)}</span></td>
+                            <td><span class="badge badge-priority-${task.priority}">${getPriorityIcon(task.priority)} ${task.priority.toUpperCase()}</span></td>
+                            <td>${task.assigned_to || '<em>Unassigned</em>'}</td>
+                            <td>${new Date(task.created_at).toLocaleDateString('en-GB', { 
+                                day: '2-digit', 
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })}</td>
+                            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${task.notes || ''}">${task.notes || '<em>No notes</em>'}</td>
+                            <td>
+                                <div style="justify-content: center;">
+                                    ${task.status === 'pending' ? `
+                                        <button onclick="updateTaskStatus('${task.id}', 'in_progress')" class="btn-icon btn-sm" style="background: linear-gradient(135deg, #4CAF50, #45a049);">
+                                            ▶️ Start
+                                        </button>
+                                    ` : ''}
+                                    ${task.status === 'in_progress' ? `
+                                        <button onclick="updateTaskStatus('${task.id}', 'completed')" class="btn-icon btn-sm" style="background: linear-gradient(135deg, #2196F3, #1976D2); color: white;">
+                                            ✅ Complete
+                                        </button>
+                                    ` : ''}
+                                    ${task.status === 'completed' ? `
+                                        <button onclick="updateTaskStatus('${task.id}', 'verified')" class="btn-icon btn-sm" style="background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white;">
+                                            ✓✓ Verify
+                                        </button>
+                                    ` : ''}
+                                    ${task.status === 'verified' ? `
+                                        <span class="badge badge-verified">✓ Verified</span>
+                                    ` : ''}
+                                    <button onclick="deleteTask('${task.id}')" class="btn-icon btn-sm delete" title="Delete task">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
         </div>
     `;
-    
-    modal.dataset.taskId = taskId;
-    modal.style.display = 'flex';
 }
 
-// Mark task complete
-document.getElementById('markTaskCompleteBtn')?.addEventListener('click', function() {
-    const modal = document.getElementById('taskModal');
-    const taskId = parseInt(modal.dataset.taskId);
-    const task = housekeepingTasks.find(t => t.id === taskId);
-    
-    if (task) {
-        task.status = 'completed';
-        updateHousekeepingStats();
-        displayTasks();
-        modal.style.display = 'none';
-        alert('Task marked as complete!');
+// Update stats
+async function updateStats() {
+    try {
+        const pending = allTasks.filter(t => t.status === 'pending').length;
+        const inProgress = allTasks.filter(t => t.status === 'in_progress').length;
+        const highPriority = allTasks.filter(t => t.priority === 'high' || t.priority === 'urgent').length;
+        
+        const today = new Date().toISOString().split('T')[0];
+        const completedToday = allTasks.filter(t => 
+            t.completed_at && t.completed_at.startsWith(today)
+        ).length;
+        
+        document.getElementById('pendingTasks').textContent = pending;
+        document.getElementById('inProgressTasks').textContent = inProgress;
+        document.getElementById('completedToday').textContent = completedToday;
+        document.getElementById('highPriority').textContent = highPriority;
+        
+    } catch (error) {
+        console.error('Error updating stats:', error);
     }
-});
+}
 
-// Tab switching
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        currentTab = this.dataset.tab;
-        displayTasks();
+// Setup filters
+function setupFilters() {
+    document.getElementById('statusFilter').addEventListener('change', applyFilters);
+    document.getElementById('priorityFilter').addEventListener('change', applyFilters);
+}
+
+function applyFilters() {
+    const statusFilter = document.getElementById('statusFilter').value;
+    const priorityFilter = document.getElementById('priorityFilter').value;
+    
+    let filtered = allTasks;
+    
+    if (statusFilter !== 'all') {
+        filtered = filtered.filter(t => t.status === statusFilter);
+    }
+    
+    if (priorityFilter !== 'all') {
+        filtered = filtered.filter(t => t.priority === priorityFilter);
+    }
+    
+    displayTasks(filtered);
+}
+
+// Setup form
+function setupForm() {
+    document.getElementById('taskForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await saveTask();
     });
-});
-
-// Auto-assign rooms
-function assignAllRooms() {
-    alert('Auto-assigning cleaning tasks to available staff...');
-    // In production, this would intelligently assign rooms to staff
 }
 
-// Populate room dropdown
-function populateRoomDropdown() {
-    const select = document.getElementById('maintenanceRoom');
-    if (!select) return;
+// Open new task modal
+function openNewTaskModal() {
+    document.getElementById('modalTitle').textContent = 'Create Housekeeping Task';
+    document.getElementById('taskForm').reset();
+    document.getElementById('taskId').value = '';
+    document.getElementById('taskModal').style.display = 'flex';
+}
+
+// Close modal
+function closeTaskModal() {
+    document.getElementById('taskModal').style.display = 'none';
+}
+
+// Save task
+async function saveTask() {
+    const room = document.getElementById('taskRoom').value;
+    const type = document.getElementById('taskType').value;
+    const priority = document.getElementById('taskPriority').value;
+    const assignedTo = document.getElementById('taskAssignedTo').value;
+    const notes = document.getElementById('taskNotes').value;
     
-    select.innerHTML = '<option value="">Select Room</option>' + 
-        ALL_ROOMS.map(room => `<option value="${room}">Room ${room}</option>`).join('');
-}
-
-// Show maintenance form
-function showMaintenanceForm() {
-    document.getElementById('maintenanceModal').style.display = 'flex';
-}
-
-// Close maintenance form
-function closeMaintenanceForm() {
-    document.getElementById('maintenanceModal').style.display = 'none';
-    document.getElementById('maintenanceForm').reset();
-}
-
-// Submit maintenance request
-function submitMaintenanceRequest() {
-    const room = document.getElementById('maintenanceRoom').value;
-    const type = document.getElementById('maintenanceType').value;
-    const priority = document.getElementById('maintenancePriority').value;
-    const description = document.getElementById('maintenanceDescription').value;
-    
-    if (!room || !type || !description) {
-        alert('Please fill in all required fields');
-        return;
-    }
-    
-    const newRequest = {
-        id: maintenanceRequests.length + 1,
-        room: parseInt(room),
-        type: type,
+    const taskData = {
+        room_number: room,
+        task_type: type,
         priority: priority,
-        description: description,
-        status: 'open',
-        reportedAt: new Date().toISOString()
+        assigned_to: assignedTo || null,
+        notes: notes || null,
+        status: 'pending',
+        created_by: JSON.parse(localStorage.getItem('hms_user') || '{}').name || 'Admin'
     };
     
-    maintenanceRequests.push(newRequest);
-    displayMaintenanceRequests();
-    updateHousekeepingStats();
-    closeMaintenanceForm();
-    
-    alert('Maintenance request submitted successfully!');
+    try {
+        const { error } = await supabase
+            .from('housekeeping_tasks')
+            .insert([taskData]);
+        
+        if (error) throw error;
+        
+        console.log('✅ Task created');
+        closeTaskModal();
+        await loadData();
+        
+    } catch (error) {
+        console.error('❌ Error creating task:', error);
+        alert('Failed to create task: ' + error.message);
+    }
 }
 
-// Close task modal
-document.getElementById('closeTaskModal')?.addEventListener('click', () => {
-    document.getElementById('taskModal').style.display = 'none';
-});
+// Update task status
+async function updateTaskStatus(taskId, newStatus) {
+    try {
+        const updateData = { 
+            status: newStatus,
+            updated_at: new Date().toISOString()
+        };
+        
+        if (newStatus === 'completed') {
+            updateData.completed_at = new Date().toISOString();
+        }
+        
+        const { error } = await supabase
+            .from('housekeeping_tasks')
+            .update(updateData)
+            .eq('id', taskId);
+        
+        if (error) throw error;
+        
+        console.log(`✅ Task updated to ${newStatus}`);
+        await loadData();
+        
+    } catch (error) {
+        console.error('❌ Error updating task:', error);
+        alert('Failed to update task: ' + error.message);
+    }
+}
 
-document.getElementById('closeTaskModalBtn')?.addEventListener('click', () => {
-    document.getElementById('taskModal').style.display = 'none';
-});
+// Delete task
+async function deleteTask(taskId) {
+    if (!confirm('Delete this task?')) return;
+    
+    try {
+        const { error } = await supabase
+            .from('housekeeping_tasks')
+            .delete()
+            .eq('id', taskId);
+        
+        if (error) throw error;
+        
+        console.log('✅ Task deleted');
+        await loadData();
+        
+    } catch (error) {
+        console.error('❌ Error deleting task:', error);
+        alert('Failed to delete task: ' + error.message);
+    }
+}
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.pathname.includes('housekeeping')) {
-        initializeHousekeeping();
+// Change room status
+async function changeRoomStatus(roomNumber, currentStatus) {
+    const statuses = ['clean', 'dirty', 'in_progress', 'inspected', 'out_of_service'];
+    const currentIndex = statuses.indexOf(currentStatus);
+    const newStatus = statuses[(currentIndex + 1) % statuses.length];
+    
+    try {
+        const updateData = {
+            status: newStatus,
+            updated_at: new Date().toISOString()
+        };
+        
+        if (newStatus === 'clean') {
+            updateData.last_cleaned = new Date().toISOString();
+        } else if (newStatus === 'inspected') {
+            updateData.last_inspected = new Date().toISOString();
+        }
+        
+        const { error } = await supabase
+            .from('room_status')
+            .update(updateData)
+            .eq('room_number', roomNumber);
+        
+        if (error) throw error;
+        
+        console.log(`✅ Room ${roomNumber} status: ${newStatus}`);
+        await loadRoomStatus();
+        
+    } catch (error) {
+        console.error('❌ Error updating room status:', error);
+    }
+}
+
+// Helper functions
+function getStatusIcon(status) {
+    const icons = {
+        pending: '⏳',
+        in_progress: '🔄',
+        completed: '✅',
+        verified: '✓✓',
+        clean: '✨',
+        dirty: '🧹',
+        inspected: '👁️',
+        out_of_service: '🚫'
+    };
+    return icons[status] || '•';
+}
+
+function getPriorityIcon(priority) {
+    const icons = {
+        low: '⬇️',
+        normal: '➖',
+        high: '⚠️',
+        urgent: '🚨'
+    };
+    return icons[priority] || '•';
+}
+
+function formatStatus(status) {
+    return status.replace('_', ' ').split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+function formatTaskType(type) {
+    return type.replace('_', ' ').split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+// Close modal on outside click
+document.getElementById('taskModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeTaskModal();
     }
 });
 
-console.log('🧹 Housekeeping module loaded');
+// Logout
+document.getElementById('logoutBtn')?.addEventListener('click', function() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('hms_user');
+        window.location.href = 'admin-login.html';
+    }
+});
+
+console.log('✅ Housekeeping module loaded');
