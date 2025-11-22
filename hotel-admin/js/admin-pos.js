@@ -299,14 +299,17 @@ async function chargeToRoom() {
         }));
         
         charges.push({
-            guest_name: option.dataset.name,
-            room_number: option.dataset.room,
-            category: 'restaurant',
-            item_description: 'Service Charge (10%)',
-            quantity: 1,
-            unit_price: service,
-            total_amount: service,
+            booking_id: guestSelect.value,
+            guest_name: guestName,
+            room_number: roomNumber,
+            category: item.category,
+            item_description: item.name,
+            quantity: item.quantity,
+            unit_price: parseFloat(item.price.toFixed(2)),
+            total_amount: parseFloat((item.price * item.quantity).toFixed(2)),
             charged_by: 'Restaurant Staff',
+            charge_date: new Date().toISOString(),  // ← Business date
+            created_at: new Date().toISOString(),   // ← System date (optional - DB sets this)
             paid: false
         });
         

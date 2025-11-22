@@ -1,0 +1,309 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #2e3b4e; /* Dark background similar to the image */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top for longer content */
+    min-height: 100vh;
+    color: #e0e6ed;
+}
+
+.hms-container {
+    background-color: #242c38; /* Darker main container background */
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 25px 30px;
+    width: 95%; /* Adjust width as needed */
+    max-width: 1300px; /* Max width to keep it manageable */
+}
+
+/* Header Styling (similar to dashboard) */
+.hms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.header-info {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+}
+
+.current-time {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.page-title {
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #7c889a;
+    padding: 4px 10px;
+    background-color: #3b82f6; /* Accent color for the page title */
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.welcome-message {
+    font-size: 0.9em;
+    color: #a0aec0;
+}
+
+.add-reservation-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.add-reservation-btn:hover {
+    background-color: #2563eb;
+}
+
+/* Calendar Specific Styling */
+.calendar-module {
+    background-color: #1e2531; /* Slightly lighter background for the calendar itself */
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #e0e6ed;
+}
+
+.nav-arrow {
+    background: none;
+    border: 1px solid #4a5568;
+    color: #e0e6ed;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s;
+}
+
+.nav-arrow:hover {
+    background-color: #3a4a60;
+}
+
+.month-year {
+    font-size: 1.3em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.legend {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85em;
+    color: #a0aec0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.color-box {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.color-box.available { background-color: #81e6d9; } /* Teal/Cyan */
+.color-box.confirmed { background-color: #3b82f6; } /* Blue */
+.color-box.pending { background-color: #f6ad55; } /* Orange */
+.color-box.checked-out { background-color: #a0aec0; } /* Gray */
+
+
+.calendar-grid {
+    border: 1px solid #3a4a60;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures borders look clean */
+    background-color: #2e3b4e; /* Slightly different background for the grid itself */
+}
+
+.grid-header, .calendar-room-row {
+    display: flex;
+    border-bottom: 1px solid #3a4a60;
+}
+
+.grid-header {
+    background-color: #3a4a60; /* Darker header for weekdays */
+    font-weight: 600;
+    color: #e0e6ed;
+}
+
+.grid-cell {
+    flex-grow: 1;
+    flex-basis: 0; /* Important for equal width distribution */
+    padding: 12px 8px;
+    text-align: center;
+    min-width: 50px; /* Minimum width for cells */
+    border-right: 1px solid #3a4a60;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-cell:last-child {
+    border-right: none;
+}
+
+.room-label-col {
+    flex-basis: 150px; /* Fixed width for room numbers */
+    flex-grow: 0;
+    background-color: #2e3b4e;
+    font-weight: 500;
+    justify-content: flex-start;
+    padding-left: 15px;
+}
+
+.day-label {
+    font-size: 0.85em;
+    text-transform: uppercase;
+}
+
+.calendar-body {
+    max-height: 500px; /* Scrollable body for many rooms */
+    overflow-y: auto;
+}
+
+.calendar-room-row {
+    background-color: #2e3b4e;
+}
+
+.calendar-room-row:last-child {
+    border-bottom: none;
+}
+
+.room-number-cell {
+    flex-basis: 150px;
+    flex-grow: 0;
+    background-color: #242c38; /* Background for room numbers in the body */
+    justify-content: flex-start;
+    padding-left: 15px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.date-cell {
+    position: relative;
+    height: 70px; /* Fixed height for date cells to accommodate bookings */
+    align-items: flex-start;
+    padding: 5px;
+    font-size: 0.9em;
+    color: #a0aec0;
+}
+
+.date-num {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-weight: 500;
+    font-size: 0.8em;
+    color: #a0aec0;
+}
+
+.booking-strip {
+    position: absolute;
+    height: 25px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 0.75em;
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    top: 30px; /* Position below the date number */
+    left: 5px;
+    right: 5px;
+    z-index: 10;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Booking colors */
+.booking-strip.confirmed { background-color: #3b82f6; }
+.booking-strip.pending { background-color: #f6ad55; }
+.booking-strip.checked-out { background-color: #a0aec0; }
+.booking-strip.available { background-color: #81e6d9; } /* While a room is available, you wouldn't show a 'booking' strip, but if you wanted to indicate a block for cleaning, etc. */
+
+
+/* Helper to show multi-day bookings across cells */
+.start-booking {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.end-booking {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* For multi-day bookings spanning multiple cells */
+.booking-segment {
+    top: 30px; /* Match booking-strip top */
+    height: 25px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    font-size: 0.75em;
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    z-index: 9; /* Slightly lower z-index than .booking-strip if you put text on first day */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.booking-segment.confirmed { background-color: #3b82f6; }
+.booking-segment.pending { background-color: #f6ad55; }
+.booking-segment.checked-out { background-color: #a0aec0; }
+
+.day-off-month {
+    color: #5a6575; /* Faded color for days not in the current month */
+}

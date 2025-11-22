@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tima Sara Hotel - Reservations Calendar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="hms-container">
+        <header class="hms-header">
+            <div class="logo">
+                <img src="https://via.placeholder.com/40" alt="Tima Sara Hotel Logo"> <span>RESERVATIONS - Calender View</span>
+            </div>
+            <div class="header-info">
+                <span class="current-time">10:30 AM</span>
+                
+            </div>
+            <div class="user-actions">
+                <span class="welcome-message">Welcome, Fatima</span>
+                <button class="add-reservation-btn">+ ADD RESERVATION</button>
+            </div>
+        </header>
+
+        <div class="calendar-module">
+            <div class="calendar-nav">
+                <button class="nav-arrow">&lt;</button>
+                <span class="month-year">OCTOBER 2024</span>
+                <button class="nav-arrow">&gt;</button>
+                <div class="legend">
+                    <span class="legend-item"><span class="color-box available"></span> Occupied</span>
+                    <span class="legend-item"><span class="color-box available"></span> Available</span>
+                    <span class="legend-item"><span class="color-box confirmed"></span> Confirmed</span>
+                    <span class="legend-item"><span class="color-box pending"></span> Pending</span>
+                    <span class="legend-item"><span class="color-box checked-out"></span> Checked-Out</span>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="grid-header">
+                    <div class="grid-cell room-label-col">ROOM NO</div>
+                    <div class="grid-cell day-label">MON</div>
+                    <div class="grid-cell day-label">TUE</div>
+                    <div class="grid-cell day-label">WED</div>
+                    <div class="grid-cell day-label">THU</div>
+                    <div class="grid-cell day-label">FRI</div>
+                    <div class="grid-cell day-label">SAT</div>
+                    <div class="grid-cell day-label">SUN</div>
+                </div>
+                <div class="calendar-body" id="calendarBody">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
