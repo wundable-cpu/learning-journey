@@ -15,104 +15,82 @@ if (window.supabase) {
 }
 
 // ============================================
-// ROLE-BASED ACCESS CONTROL
+// AUTHENTICATION CHECK
 // ============================================
-function setupRoleBasedAccess() {
-    const user = JSON.parse(localStorage.getItem('hms_user') || '{}');
-    const role = user.role || null;
-    
-    if (!role) {
-        // No user logged in - redirect to login
-        if (!window.location.pathname.includes('admin-login.html')) {
-            window.location.href = 'admin-login.html';
-        }
-        return;
-    }
-    
-    console.log('👤 User:', user.name, '| Role:', role);
-    
-    // Update welcome message if element exists
-    const userInfo = document.querySelector('.user-info span');
-    if (userInfo) {
-        userInfo.textContent = `👤 ${user.name} (${role})`;
-    }
-    
-    // Define access control
-    const accessControl = {
-        'admin': ['all'], // Admins see everything
-        'manager': ['dashboard', 'reservations', 'guests', 'rooms', 'analytics', 'invoices', 'reports', 'communications'],
-        'front_desk': ['dashboard', 'reservations', 'guests', 'rooms', 'housekeeping', 'invoices'],
-        'restaurant': ['pos'],
-        'housekeeping': ['housekeeping', 'rooms'],
-        'marketing': ['dashboard', 'guests', 'communications', 'analytics']
-    };
-    
-    const allowedPages = accessControl[role] || [];
-    
-    // Menu item selectors
-    const menuItems = {
-        'dashboard': 'a[href="admin-dashboard.html"]',
-        'reservations': 'a[href="admin-reservations.html"]',
-        'guests': 'a[href="admin-guests.html"]',
-        'rooms': 'a[href="admin-rooms.html"]',
-        'housekeeping': 'a[href="admin-housekeeping.html"]',
-        'pos': 'a[href="admin-pos.html"]',
-        'analytics': 'a[href="admin-analytics.html"]',
-        'invoices': 'a[href="admin-invoices.html"]',
-        'communications': 'a[href="admin-bulk-email.html"]',
-        'reports': 'a[href="admin-reports.html"]',
-        'settings': 'a[href="admin-settings.html"]'
-    };
-    
-    // Hide unauthorized menu items
-    Object.keys(menuItems).forEach(page => {
-        if (!allowedPages.includes('all') && !allowedPages.includes(page)) {
-            const menuItem = document.querySelector(menuItems[page]);
-            if (menuItem && menuItem.parentElement) {
-                menuItem.parentElement.style.display = 'none';
-            }
-        }
-    });
-    
-    // Check if current page is allowed
+function checkLoginStatus() {
     const currentPage = window.location.pathname.split('/').pop();
     
     // Skip check for login page
-    if (currentPage === 'admin-login.html') return;
-    
-    const pageKey = Object.keys(menuItems).find(key => 
-        menuItems[key].includes(currentPage)
-    );
-    
-    if (pageKey && !allowedPages.includes('all') && !allowedPages.includes(pageKey)) {
-        alert('⛔ Access Denied: You do not have permission to view this page.');
-        
-        // Redirect to their home page
-        const redirects = {
-            'manager': 'admin-dashboard.html',
-            'front_desk': 'admin-reservations.html',
-            'restaurant': 'admin-pos.html',
-            'housekeeping': 'admin-housekeeping.html'
-        };
-        
-        window.location.href = redirects[role] || 'admin-login.html';
-    }
-}
-
-// ============================================
-// CHECK LOGIN STATUS
-// ============================================
-function checkLoginStatus() {
-    const user = JSON.parse(localStorage.getItem('hms_user') || '{}');
-    
-    // Skip check for login page
-    if (window.location.pathname.includes('admin-login.html')) {
+    if (currentPage === 'admin-login.html') {
         return;
     }
+    
+    const user = JSON.parse(localStorage.getItem('hms_user') || '{}');
     
     if (!user.email) {
         console.log('⚠️ No user logged in, redirecting to login...');
         window.location.href = 'admin-login.html';
+        return;
+    }
+    
+    console.log('👤 User:', user.name || user.email, '| Role:', user.role || 'N/A');
+    
+    // Update user info display if element exists
+    const userInfo = document.querySelector('.user-info span');
+    if (userInfo) {
+        userInfo.textContent = `👤 ${user.name || user.email}`;
+    }
+}
+
+// ============================================
+// ROLE-BASED ACCESS CONTROL
+// ============================================
+function setupRoleBasedAccess() {
+    const user = JSON.parse(localStorage.getItem('hms_user') || '{}');
+    const role = user.role;
+    
+    // If no role, don't hide anything (backward compatibility)
+    if (!role) {
+        return;
+    }
+    
+    // Define access control
+    const accessControl = {
+        'admin': ['all'],
+        'manager': ['dashboard', 'reservations', 'guests', 'rooms', 'analytics', 'invoices', 'reports', 'communications', 'menu'],
+        'front_desk': ['dashboard', 'reservations', 'guests', 'rooms', 'housekeeping', 'invoices'],
+        'restaurant': ['pos', 'menu'],
+        'housekeeping': ['housekeeping', 'rooms']
+    };
+    
+    const allowedPages = accessControl[role] || [];
+    
+    // Menu items to check
+    const menuItems = {
+        'dashboard': 'a[href="admin-dashboard.html"]',
+        'reservations': 'a[href="admin-reservations.html"]',
+        'calendar': 'a[href="admin-reservations-calendar.html"]',
+        'guests': 'a[href="admin-guests.html"]',
+        'rooms': 'a[href="admin-rooms.html"]',
+        'housekeeping': 'a[href="admin-housekeeping.html"]',
+        'pos': 'a[href="admin-pos.html"]',
+        'menu': 'a[href="admin-menu.html"]',
+        'analytics': 'a[href="admin-analytics.html"]',
+        'invoices': 'a[href="admin-invoices.html"]',
+        'communications': 'a[href="admin-bulk-email.html"]',
+        'reports': 'a[href="admin-reports.html"]'
+    };
+    
+    // Hide unauthorized menu items
+    if (!allowedPages.includes('all')) {
+        Object.keys(menuItems).forEach(page => {
+            if (!allowedPages.includes(page)) {
+                const menuItem = document.querySelector(menuItems[page]);
+                if (menuItem && menuItem.parentElement) {
+                    menuItem.parentElement.style.display = 'none';
+                }
+            }
+        });
     }
 }
 
@@ -124,4 +102,14 @@ document.addEventListener('DOMContentLoaded', function() {
     setupRoleBasedAccess();
 });
 
-console.log('✅ Admin script loaded with role-based access control');
+// ============================================
+// LOGOUT FUNCTIONALITY
+// ============================================
+document.getElementById('logoutBtn')?.addEventListener('click', function() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('hms_user');
+        window.location.href = 'admin-login.html';
+    }
+});
+
+console.log('✅ Admin script loaded');

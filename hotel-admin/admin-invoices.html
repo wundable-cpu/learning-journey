@@ -33,7 +33,7 @@
         /* SIDEBAR */
         .admin-nav {
             width: 260px;
-            background: linear-gradient(180deg, var(--primary-blue), var(--secondary-blue));
+            background: var(--primary-blue);
             color: white;
             display: flex;
             flex-direction: column;
@@ -41,18 +41,35 @@
             height: 100vh;
             overflow-y: auto;
         }
+
+        
         
         .nav-header {
             padding: 30px 20px;
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
+
+        .hotel-logo-small img {
+            width: 80px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
         
         .hotel-logo-small h2 {
-            color: var(--accent-gold);
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.2;
+            
         }
+
+
+       .hotel-logo-small h2 span {
+            font-size: 14px;
+            color: var(--accent-gold);
+            font-weight: 400;
+}
         
         .hotel-logo-small p {
             color: rgba(255,255,255,0.8);
@@ -343,8 +360,8 @@
     <nav class="admin-nav">
         <div class="nav-header">
             <div class="hotel-logo-small">
-                <h2>TIMA SARA</h2>
-                <p>HOTEL</p>
+                <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
+                <h2>TIMA SARA<br><span>HOTEL</span></h2>
             </div>
         </div>
         
