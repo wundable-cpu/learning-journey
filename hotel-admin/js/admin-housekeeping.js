@@ -78,6 +78,7 @@ async function loadRoomStatus() {
 }
 
 // Display room status
+// Display room status organized by floor
 function displayRoomStatus() {
     const grid = document.getElementById('roomStatusGrid');
     
@@ -86,13 +87,55 @@ function displayRoomStatus() {
         return;
     }
     
-    grid.innerHTML = allRoomStatus.map(room => `
-        <div class="room-status-card ${room.status}" onclick="changeRoomStatus('${room.room_number}', '${room.status}')">
-            <div class="room-number">${room.room_number}</div>
-            <div class="room-status-badge">${getStatusIcon(room.status)} ${formatStatus(room.status)}</div>
-            ${room.notes ? `<div class="room-notes">${room.notes}</div>` : ''}
-        </div>
-    `).join('');
+    // Group rooms by floor
+    const floors = {
+        'Ground': [],
+        'First': [],
+        'Second': [],
+        'Third': []
+    };
+    
+    allRoomStatus.forEach(room => {
+        if (floors[room.floor]) {
+            floors[room.floor].push(room);
+        }
+    });
+    
+    // Sort rooms within each floor
+    Object.keys(floors).forEach(floor => {
+        floors[floor].sort((a, b) => a.room_number.localeCompare(b.room_number));
+    });
+    
+    // Generate HTML grouped by floor
+    let html = '';
+    
+    ['Ground', 'First', 'Second', 'Third'].forEach(floor => {
+        if (floors[floor].length > 0) {
+            html += `
+                <div class="floor-section">
+                    <div class="floor-header">
+                        <h3>🏢 ${floor} Floor</h3>
+                        <span class="floor-count">${floors[floor].length} rooms</span>
+                    </div>
+                    <div class="room-status-grid">
+                        ${floors[floor].map(room => `
+                            <div class="room-status-card ${room.status} ${room.room_type.toLowerCase().replace(' ', '-')}" 
+                                 onclick="changeRoomStatus('${room.room_number}', '${room.status}')"
+                                 title="Click to change status">
+                                <div class="room-number">${room.room_number}</div>
+                                <div class="room-type-label">${room.room_type}</div>
+                                <div class="room-status-badge">${getStatusIcon(room.status)} ${formatStatus(room.status)}</div>
+                                ${room.last_cleaned ? `<div class="room-info">Cleaned: ${new Date(room.last_cleaned).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</div>` : ''}
+                                ${room.notes ? `<div class="room-notes">${room.notes}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    });
+    
+    grid.innerHTML = html;
 }
 
 // Display tasks

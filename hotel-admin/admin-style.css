@@ -4637,3 +4637,120 @@ body {
     font-size: 16px;
     font-weight: 500;
 }
+
+/* ============================================
+   FLOOR SECTIONS & ROOM TYPE STYLING
+   ============================================ */
+
+.floor-section {
+    margin-bottom: 40px;
+}
+
+.floor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    border-radius: 10px;
+    color: white;
+}
+
+.floor-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.floor-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.room-type-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+/* Room type color coding */
+.room-status-card.standard .room-type-label {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+}
+
+.room-status-card.executive .room-type-label {
+    background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+    color: #6a1b9a;
+}
+
+.room-status-card.deluxe .room-type-label {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    color: #e65100;
+}
+
+.room-status-card.royal-suite .room-type-label {
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    color: #c2185b;
+    animation: shimmer-gold 3s infinite;
+}
+
+@keyframes shimmer-gold {
+    0%, 100% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); }
+}
+
+/* Room border colors by type */
+.room-status-card.standard {
+    border-left: 4px solid #2196f3;
+}
+
+.room-status-card.executive {
+    border-left: 4px solid #9c27b0;
+}
+
+.room-status-card.deluxe {
+    border-left: 4px solid #ff9800;
+}
+
+.room-status-card.royal-suite {
+    border-left: 4px solid #e91e63;
+}
+
+.room-info {
+    font-size: 10px;
+    color: var(--text-light);
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Room status grid within floor section */
+.floor-section .room-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .floor-section .room-status-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+    
+    .floor-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}

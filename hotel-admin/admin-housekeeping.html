@@ -122,6 +122,48 @@
                 </div>
             </div>
 
+            <!-- Room Type Summary -->
+<div class="card" style="margin-bottom: 30px;">
+    <h2 style="margin-bottom: 20px;">📊 Room Type Summary</h2>
+    <div class="stats-grid">
+        <div class="stat-card" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">
+            <div class="stat-icon" style="background: white;">🛏️</div>
+            <div class="stat-details">
+                <div class="stat-label">Standard Rooms</div>
+                <div class="stat-value">11</div>
+                <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">₵550/night</div>
+            </div>
+        </div>
+        
+        <div class="stat-card" style="background: linear-gradient(135deg, #f3e5f5, #e1bee7);">
+            <div class="stat-icon" style="background: white;">🏨</div>
+            <div class="stat-details">
+                <div class="stat-label">Executive Rooms</div>
+                <div class="stat-value">11</div>
+                <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">₵800/night</div>
+            </div>
+        </div>
+        
+        <div class="stat-card" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">
+            <div class="stat-icon" style="background: white;">⭐</div>
+            <div class="stat-details">
+                <div class="stat-label">Deluxe Rooms</div>
+                <div class="stat-value">3</div>
+                <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">₵1,500/night</div>
+            </div>
+        </div>
+        
+        <div class="stat-card" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0);">
+            <div class="stat-icon" style="background: white;">👑</div>
+            <div class="stat-details">
+                <div class="stat-label">Royal Suites</div>
+                <div class="stat-value">3</div>
+                <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">₵2,500/night</div>
+            </div>
+        </div>
+    </div>
+</div>
+
             <!-- Action Bar -->
             <div class="card" style="margin-bottom: 30px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
@@ -184,10 +226,48 @@
                 <form id="taskForm">
                     <input type="hidden" id="taskId">
                     
-                    <div class="form-group">
-                        <label for="taskRoom">Room Number *</label>
-                        <input type="text" id="taskRoom" required placeholder="e.g., G01">
-                    </div>
+            <div class="form-group">
+                <label for="taskRoom">Room Number *</label>
+                <select id="taskRoom" required>
+                   <option value="">-- Select Room --</option>
+                   <optgroup label="🏢 Ground Floor">
+                       <option value="002">002 - Executive</option>
+                       <option value="003">003 - Executive</option>
+                       <option value="004">004 - Standard</option>
+                       <option value="005">005 - Standard</option>
+                   </optgroup>
+                   <optgroup label="🏢 First Floor">
+                       <option value="101">101 - Executive</option>
+                       <option value="102">102 - Standard</option>
+                       <option value="103">103 - Standard</option>
+                       <option value="104">104 - Standard</option>
+                       <option value="105">105 - Executive</option>
+                       <option value="106">106 - Executive</option>
+                       <option value="107">107 - Deluxe</option>
+                       <option value="108">108 - Royal Suite 👑</option>
+                   </optgroup>
+                   <optgroup label="🏢 Second Floor">
+                       <option value="201">201 - Executive</option>
+                       <option value="202">202 - Standard</option>
+                       <option value="203">203 - Standard</option>
+                       <option value="204">204 - Standard</option>
+                       <option value="205">205 - Executive</option>
+                       <option value="206">206 - Executive</option>
+                       <option value="207">207 - Deluxe</option>
+                       <option value="208">208 - Royal Suite 👑</option>
+                   </optgroup>
+                   <optgroup label="🏢 Third Floor">
+                       <option value="301">301 - Executive</option>
+                       <option value="302">302 - Standard</option>
+                       <option value="303">303 - Standard</option>
+                       <option value="304">304 - Standard</option>
+                       <option value="305">305 - Executive</option>
+                       <option value="306">306 - Executive</option>
+                       <option value="307">307 - Deluxe</option>
+                       <option value="308">308 - Royal Suite 👑</option>
+                   </optgroup>
+                </select>
+            </div>
                     
                     <div class="form-row">
                         <div class="form-group">
