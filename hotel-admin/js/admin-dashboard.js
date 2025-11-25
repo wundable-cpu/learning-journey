@@ -1,242 +1,299 @@
-console.log('📊 Dashboard module loading...');
+// Use global Supabase client
+const supabase = window.supabase_client || (() => {
+    console.error('❌ Supabase not initialized!');
+    return null;
+})();
 
-const supabase = window.supabase_client;
-
-// Initialize
-document.addEventListener('DOMContentLoaded', async function() {
-    console.log('✅ Dashboard page loaded');
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📊 Dashboard loading...');
     
     if (!supabase) {
         alert('Database connection failed. Please refresh.');
         return;
     }
     
-    await loadDashboardData();
+    loadDashboardData();
 });
 
-// Load all dashboard data
 async function loadDashboardData() {
     console.log('📡 Loading dashboard data...');
     
     try {
-        const today = new Date().toISOString().split('T')[0];
+        // Load existing room data
+        await loadRoomStats();
         
-        // Get all bookings
-        const { data: allBookings, error: bookingsError } = await supabase
-            .from('bookings')
-            .select('*');
+        // Load F&B data
+        await loadFBStats();
+        await loadCategoryBreakdown();
+        await loadTopItems();
+        await loadRevenueChart();
         
-        if (bookingsError) throw bookingsError;
-        
-        // Get room status
-        const { data: roomStatus, error: roomError } = await supabase
-            .from('room_status')
-            .select('*');
-        
-        if (roomError) throw roomError;
-        
-        // Calculate room status counts
-        const statusCounts = {
-            clean: 0,
-            occupied: 0,
-            dirty: 0,
-            maintenance: 0,
-            reserved: 0
-        };
-        
-        roomStatus.forEach(room => {
-            if (statusCounts.hasOwnProperty(room.status)) {
-                statusCounts[room.status]++;
-            }
-        });
-        
-        // Update room status display
-        document.getElementById('availableRooms').textContent = statusCounts.clean;
-        document.getElementById('occupiedRooms').textContent = statusCounts.occupied;
-        document.getElementById('cleaningRooms').textContent = statusCounts.dirty;
-        document.getElementById('maintenanceRooms').textContent = statusCounts.maintenance;
-        document.getElementById('reservedRooms').textContent = statusCounts.reserved;
-        
-        // Calculate occupancy
-        const currentlyOccupied = allBookings.filter(b => 
-            b.check_in <= today && b.check_out >= today && 
-            (b.status === 'confirmed' || b.status === 'checked-in')
-        ).length;
-        
-        const occupancyRate = (currentlyOccupied / 28 * 100).toFixed(0);
-        
-        // Update circular occupancy display
-        document.getElementById('occupiedCount').textContent = currentlyOccupied;
-        document.getElementById('totalRooms').textContent = '28';
-        document.getElementById('occupancyPercent').textContent = occupancyRate + '%';
-        document.getElementById('roomsOccupiedStat').textContent = currentlyOccupied;
-        
-        // Animate circle
-        const circumference = 2 * Math.PI * 50; // 314
-        const offset = circumference - (occupancyRate / 100 * circumference);
-        document.getElementById('occupancyCircle').style.strokeDashoffset = offset;
-        
-        // Check-outs today
-        const checkoutsToday = allBookings.filter(b => b.check_out === today).length;
-        document.getElementById('checkoutsToday').textContent = checkoutsToday;
-        
-        console.log('✅ Dashboard stats updated');
-        
-        // Load upcoming arrivals
-        await loadUpcomingArrivals(allBookings, today);
-        
-        // Load departures today
-        await loadDeparturesToday(allBookings, today);
-        
-        // Load weekly occupancy chart
-        await loadWeeklyOccupancyChart(allBookings);
+        console.log('✅ Dashboard data loaded');
         
     } catch (error) {
         console.error('❌ Error loading dashboard:', error);
-        alert('Error loading dashboard: ' + error.message);
     }
 }
 
-// Load upcoming arrivals (today and tomorrow)
-async function loadUpcomingArrivals(allBookings, today) {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
-    
-    const arrivals = allBookings
-        .filter(b => (b.check_in === today || b.check_in === tomorrowStr) && b.status !== 'cancelled')
-        .sort((a, b) => new Date(a.check_in) - new Date(b.check_in))
-        .slice(0, 2);
-    
-    const container = document.getElementById('upcomingArrivals');
-    
-    if (arrivals.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 15px; color: var(--text-light); font-size: 13px;">No upcoming arrivals</div>';
-        return;
-    }
-    
-    container.innerHTML = arrivals.map(booking => `
-        <div class="guest-card">
-            <div class="guest-info">
-                <div class="guest-name">Guest: ${booking.guest_name.split(' ')[0]} ${booking.guest_name.split(' ')[1] || ''}</div>
-                <div class="guest-room">Room: ${booking.room_number}</div>
-            </div>
-            <div class="guest-time">${booking.check_in === today ? '2:00 PM' : 'Tomorrow'}</div>
-        </div>
-    `).join('');
+// Your existing room stats function (keep as is)
+async function loadRoomStats() {
+    // Keep your existing code for occupancy, check-ins, etc.
+    console.log('📊 Loading room stats...');
 }
 
-// Load departures today
-async function loadDeparturesToday(allBookings, today) {
-    const departures = allBookings
-        .filter(b => b.check_out === today && b.status !== 'cancelled')
-        .slice(0, 2);
+// NEW: Load F&B Statistics
+async function loadFBStats() {
+    console.log('💰 Loading F&B stats...');
     
-    const container = document.getElementById('departuresToday');
-    
-    if (departures.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 15px; color: var(--text-light); font-size: 13px;">No departures today</div>';
-        return;
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayStr = today.toISOString();
+        
+        // Get start of week (Monday)
+        const weekStart = new Date(today);
+        weekStart.setDate(today.getDate() - today.getDay() + 1);
+        const weekStartStr = weekStart.toISOString();
+        
+        // Get start of month
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const monthStartStr = monthStart.toISOString();
+        
+        // Today's F&B revenue
+        const { data: todayCharges, error: todayError } = await supabase
+            .from('guest_charges')
+            .select('total_amount')
+            .gte('charge_date', todayStr);
+        
+        if (todayError) throw todayError;
+        
+        const todayRevenue = todayCharges ? 
+            todayCharges.reduce((sum, c) => sum + parseFloat(c.total_amount), 0) : 0;
+        
+        // Week's F&B revenue
+        const { data: weekCharges, error: weekError } = await supabase
+            .from('guest_charges')
+            .select('total_amount')
+            .gte('charge_date', weekStartStr);
+        
+        const weekRevenue = weekCharges ? 
+            weekCharges.reduce((sum, c) => sum + parseFloat(c.total_amount), 0) : 0;
+        
+        // Month's F&B revenue
+        const { data: monthCharges, error: monthError } = await supabase
+            .from('guest_charges')
+            .select('total_amount')
+            .gte('charge_date', monthStartStr);
+        
+        const monthRevenue = monthCharges ? 
+            monthCharges.reduce((sum, c) => sum + parseFloat(c.total_amount), 0) : 0;
+        
+        // Today's order count
+        const todayOrders = todayCharges ? todayCharges.length : 0;
+        
+        // Update UI
+        document.getElementById('todayFBRevenue').textContent = `₵${todayRevenue.toFixed(2)}`;
+        document.getElementById('weekFBRevenue').textContent = `₵${weekRevenue.toFixed(2)}`;
+        document.getElementById('monthFBRevenue').textContent = `₵${monthRevenue.toFixed(2)}`;
+        document.getElementById('todayOrders').textContent = todayOrders;
+        
+        console.log('✅ F&B stats loaded:', { todayRevenue, weekRevenue, monthRevenue, todayOrders });
+        
+    } catch (error) {
+        console.error('❌ Error loading F&B stats:', error);
     }
-    
-    container.innerHTML = departures.map(booking => `
-        <div class="guest-card">
-            <div class="guest-info">
-                <div class="guest-name">Guest: ${booking.guest_name.split(' ')[0]} ${booking.guest_name.split(' ')[1] || ''}</div>
-                <div class="guest-room">Room: ${booking.room_number}</div>
-            </div>
-            <div class="guest-time">12:00 PM</div>
-        </div>
-    `).join('');
 }
 
-// Load weekly occupancy chart
-async function loadWeeklyOccupancyChart(allBookings) {
-    console.log('📊 Loading weekly occupancy chart...');
+// NEW: Load Category Breakdown
+async function loadCategoryBreakdown() {
+    console.log('📊 Loading category breakdown...');
     
-    const weeks = [];
-    const occupancyData = [];
+    try {
+        const { data: charges, error } = await supabase
+            .from('guest_charges')
+            .select('category, total_amount');
+        
+        if (error) throw error;
+        
+        // Group by category
+        const categoryTotals = {};
+        charges.forEach(charge => {
+            const category = charge.category || 'other';
+            if (!categoryTotals[category]) {
+                categoryTotals[category] = 0;
+            }
+            categoryTotals[category] += parseFloat(charge.total_amount);
+        });
+        
+        // Display
+        const container = document.getElementById('categoryBreakdown');
+        container.innerHTML = '';
+        
+        Object.keys(categoryTotals).sort((a, b) => categoryTotals[b] - categoryTotals[a]).forEach(category => {
+            const categoryName = category.charAt(0).toUpperCase() + category.slice(1).replace('_', ' ');
+            const amount = categoryTotals[category];
+            
+            container.innerHTML += `
+                <div class="category-item">
+                    <span class="category-name">${categoryName}</span>
+                    <span class="category-amount">₵${amount.toFixed(2)}</span>
+                </div>
+            `;
+        });
+        
+        console.log('✅ Category breakdown loaded');
+        
+    } catch (error) {
+        console.error('❌ Error loading categories:', error);
+    }
+}
+
+// NEW: Load Top Selling Items
+async function loadTopItems() {
+    console.log('🏆 Loading top items...');
     
-    // Get last 4 weeks
-    for (let i = 3; i >= 0; i--) {
-        const weekStart = new Date();
-        weekStart.setDate(weekStart.getDate() - (i * 7) - weekStart.getDay());
+    try {
+        const { data: charges, error } = await supabase
+            .from('guest_charges')
+            .select('item_description, quantity, total_amount');
         
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekEnd.getDate() + 6);
+        if (error) throw error;
         
-        weeks.push(`Week ${4-i}`);
+        // Group by item
+        const itemTotals = {};
+        charges.forEach(charge => {
+            const item = charge.item_description;
+            if (!itemTotals[item]) {
+                itemTotals[item] = { quantity: 0, revenue: 0 };
+            }
+            itemTotals[item].quantity += charge.quantity;
+            itemTotals[item].revenue += parseFloat(charge.total_amount);
+        });
         
-        // Calculate average occupancy for the week
-        let totalOccupancy = 0;
-        let days = 0;
+        // Sort by revenue and get top 5
+        const topItems = Object.keys(itemTotals)
+            .sort((a, b) => itemTotals[b].revenue - itemTotals[a].revenue)
+            .slice(0, 5);
         
-        for (let d = 0; d < 7; d++) {
-            const date = new Date(weekStart);
-            date.setDate(date.getDate() + d);
+        // Display
+        const container = document.getElementById('topItems');
+        container.innerHTML = '';
+        
+        topItems.forEach((item, index) => {
+            const data = itemTotals[item];
+            container.innerHTML += `
+                <div class="top-item">
+                    <div class="item-rank">${index + 1}</div>
+                    <div class="item-info">
+                        <div class="item-name">${item}</div>
+                        <div class="item-quantity">Sold: ${data.quantity} times</div>
+                    </div>
+                    <div class="item-revenue">₵${data.revenue.toFixed(2)}</div>
+                </div>
+            `;
+        });
+        
+        console.log('✅ Top items loaded');
+        
+    } catch (error) {
+        console.error('❌ Error loading top items:', error);
+    }
+}
+
+// NEW: Load Revenue Comparison Chart
+async function loadRevenueChart() {
+    console.log('📈 Loading revenue chart...');
+    
+    try {
+        // Get last 7 days
+        const days = [];
+        const roomRevenue = [];
+        const fbRevenue = [];
+        
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            date.setHours(0, 0, 0, 0);
             const dateStr = date.toISOString().split('T')[0];
             
-            const occupied = allBookings.filter(b => 
-                b.check_in <= dateStr && b.check_out >= dateStr && 
-                (b.status === 'confirmed' || b.status === 'checked-in')
-            ).length;
+            days.push(date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' }));
             
-            totalOccupancy += (occupied / 28 * 100);
-            days++;
+            // Get room revenue (bookings with check-in on this date)
+            const { data: bookings } = await supabase
+                .from('bookings')
+                .select('total_price')
+                .eq('check_in', dateStr);
+            
+            const roomTotal = bookings ? 
+                bookings.reduce((sum, b) => sum + parseFloat(b.total_price || 0), 0) : 0;
+            roomRevenue.push(roomTotal);
+            
+            // Get F&B revenue
+            const nextDay = new Date(date);
+            nextDay.setDate(nextDay.getDate() + 1);
+            const nextDayStr = nextDay.toISOString().split('T')[0];
+            
+            const { data: charges } = await supabase
+                .from('guest_charges')
+                .select('total_amount')
+                .gte('charge_date', dateStr)
+                .lt('charge_date', nextDayStr);
+            
+            const fbTotal = charges ? 
+                charges.reduce((sum, c) => sum + parseFloat(c.total_amount), 0) : 0;
+            fbRevenue.push(fbTotal);
         }
         
-        occupancyData.push((totalOccupancy / days).toFixed(1));
-    }
-    
-    // Calculate this week and month averages
-    document.getElementById('weekAvgOccupancy').textContent = occupancyData[3] + '%';
-    
-    const monthAvg = (occupancyData.reduce((sum, val) => sum + parseFloat(val), 0) / occupancyData.length).toFixed(1);
-    document.getElementById('monthAvgOccupancy').textContent = monthAvg + '%';
-    
-    // Create chart
-    const ctx = document.getElementById('weeklyOccupancyChart').getContext('2d');
-    
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: weeks,
-            datasets: [{
-                label: 'Occupancy %',
-                data: occupancyData,
-                backgroundColor: [
-                    'rgba(33, 150, 243, 0.8)',
-                    'rgba(76, 175, 80, 0.8)',
-                    'rgba(255, 152, 0, 0.8)',
-                    'rgba(156, 39, 176, 0.8)'
-                ],
-                borderRadius: 6,
-                barThickness: 40
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
+        // Create chart
+        const ctx = document.getElementById('revenueComparisonChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [
+                    {
+                        label: 'Room Revenue',
+                        data: roomRevenue,
+                        borderColor: '#1a365d',
+                        backgroundColor: 'rgba(26, 54, 93, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'F&B Revenue',
+                        data: fbRevenue,
+                        borderColor: '#d4af37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        tension: 0.4
+                    }
+                ]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    ticks: {
-                        callback: value => value + '%',
-                        font: { size: 10 }
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
                     }
                 },
-                x: {
-                    ticks: { font: { size: 10 } }
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₵' + value;
+                            }
+                        }
+                    }
                 }
             }
-        }
-    });
-    
-    console.log('✅ Weekly occupancy chart created');
+        });
+        
+        console.log('✅ Revenue chart loaded');
+        
+    } catch (error) {
+        console.error('❌ Error loading chart:', error);
+    }
 }
 
 // Logout
@@ -248,3 +305,6 @@ document.getElementById('logoutBtn')?.addEventListener('click', function() {
 });
 
 console.log('✅ Dashboard module loaded');
+
+
+

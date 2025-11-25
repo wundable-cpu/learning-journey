@@ -44,10 +44,6 @@
                 <span class="nav-icon">🍽️</span>
                 <span>Restaurant & Bar</span>
             </a>
-            <a href="admin-whatsapp.html" class="nav-item">
-                <span class="nav-icon">💬</span>
-                <span>WhatsApp</span>
-            </a>
             <a href="admin-analytics.html" class="nav-item">
                 <span class="nav-icon">📈</span>
                 <span>Analytics</span>
@@ -68,7 +64,6 @@
                 <span class="nav-icon">⚙️</span>
                 <span>Settings</span>
             </a>
-            
         </nav>
 
         <div class="sidebar-footer">
@@ -80,158 +75,248 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="main-content">
-         <!-- Top Bar -->
+    <main class="main-content">
+        <!-- Top Bar -->
         <header class="top-bar">
             <div class="top-bar-left">
                 <h1 class="page-title">Dashboard</h1>
-            </div>
-            <div class="current-datetime">
+                <div class="current-datetime">
                     <div class="time" id="currentTime">10:30 AM</div>
                     <div class="date" id="currentDate">WED, OCT 26, 2024</div>
+                </div>
             </div>
-            <div class="top-bar-right;">
-                 <div class="user-info">
+            <div class="top-bar-right">
+                <div class="user-info">
                     <span class="user-icon">👤</span>
                     <span class="user-name" id="userName">Welcome, Admin</span>
                 </div>
             </div>
-             
         </header>
-    
-    <!-- Three Column Layout -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 30px;">
-        
-        <!-- ROOM STATUS -->
-        <div class="card">
-            <h3 style="color: var(--text-light); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase;">Room Status</h3>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
             
-            <div class="room-status-list">
-                <div class="status-row">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="status-dot" style="background: #4CAF50;"></div>
-                        <span style="color: var(--text-dark); font-weight: 500;">AVAILABLE</span>
+            <!-- Room Status Card -->
+            <div class="dashboard-card room-status-card">
+                <h3>ROOM STATUS</h3>
+                <div class="status-list">
+                    <div class="status-item">
+                        <span class="status-dot available"></span>
+                        <span class="status-label">AVAILABLE</span>
+                        <span class="status-count" id="availableRooms">10</span>
                     </div>
-                    <span class="status-number" id="availableRooms">-</span>
-                </div>
-                
-                <div class="status-row">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="status-dot" style="background: #2196F3;"></div>
-                        <span style="color: var(--text-dark); font-weight: 500;">OCCUPIED</span>
+                    <div class="status-item">
+                        <span class="status-dot occupied"></span>
+                        <span class="status-label">OCCUPIED</span>
+                        <span class="status-count" id="occupiedRooms">18</span>
                     </div>
-                    <span class="status-number" id="occupiedRooms">-</span>
-                </div>
-                
-                <div class="status-row">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="status-dot" style="background: #FF9800;"></div>
-                        <span style="color: var(--text-dark); font-weight: 500;">CLEANING</span>
+                    <div class="status-item">
+                        <span class="status-dot cleaning"></span>
+                        <span class="status-label">CLEANING</span>
+                        <span class="status-count" id="cleaningRooms">2</span>
                     </div>
-                    <span class="status-number" id="cleaningRooms">-</span>
-                </div>
-                
-                <div class="status-row">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="status-dot" style="background: #f44336;"></div>
-                        <span style="color: var(--text-dark); font-weight: 500;">MAINTENANCE</span>
+                    <div class="status-item">
+                        <span class="status-dot maintenance"></span>
+                        <span class="status-label">MAINTENANCE</span>
+                        <span class="status-count" id="maintenanceRooms">0</span>
                     </div>
-                    <span class="status-number" id="maintenanceRooms">-</span>
-                </div>
-                
-                <div class="status-row">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="status-dot" style="background: #9C27B0;"></div>
-                        <span style="color: var(--text-dark); font-weight: 500;">RESERVED</span>
+                    <div class="status-item">
+                        <span class="status-dot reserved"></span>
+                        <span class="status-label">RESERVED</span>
+                        <span class="status-count" id="reservedRooms">0</span>
                     </div>
-                    <span class="status-number" id="reservedRooms">-</span>
                 </div>
             </div>
-        </div>
 
-        <!-- OCCUPANCY OVERVIEW -->
-        <div class="card">
-            <h3 style="color: var(--text-light); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase;">Occupancy Overview</h3>
-            
-            <!-- Circular Occupancy Display -->
-            <div style="display: flex; justify-content: center; margin-bottom: 25px;">
-                <div style="position: relative; width: 120px; height: 120px;">
-                    <svg width="120" height="120" style="transform: rotate(-90deg);">
-                        <!-- Background circle -->
-                        <circle cx="60" cy="60" r="50" fill="none" stroke="#e0e0e0" stroke-width="12"/>
-                        <!-- Progress circle -->
-                        <circle id="occupancyCircle" cx="60" cy="60" r="50" fill="none" stroke="#2196F3" stroke-width="12" 
-                                stroke-dasharray="314" stroke-dashoffset="314" 
-                                style="transition: stroke-dashoffset 1s ease;"/>
-                    </svg>
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                        <div style="font-size: 24px; font-weight: 700; color: var(--primary-blue);">
-                            <span id="occupiedCount">-</span>/<span id="totalRooms">28</span>
+            <!-- Occupancy Overview Card -->
+            <div class="dashboard-card occupancy-card">
+                <h3>OCCUPANCY OVERVIEW</h3>
+                <div class="occupancy-display">
+                    <div class="occupancy-fraction">
+                        <span class="occupied-count" id="occupiedCount">18</span>
+                        <span class="divider">/</span>
+                        <span class="total-count">28</span>
+                    </div>
+                    <div class="occupancy-chart">
+                        <svg class="progress-ring" width="120" height="120">
+                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                            <circle class="progress-ring-circle" cx="60" cy="60" r="54" id="progressCircle"></circle>
+                            <text x="60" y="70" class="progress-text" id="progressText">64%</text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="occupancy-details">
+                    <div class="detail-item">
+                        <span>ROOMS OCCUPIED</span>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <span>CHECK-INS TODAY:</span>
+                            <strong id="checkInsToday">5</strong>
+                            <span class="time">11:00 AM</span>
                         </div>
-                        <div style="font-size: 20px; font-weight: 700; color: var(--accent-gold);" id="occupancyPercent">-%</div>
+                        <div class="detail-item">
+                            <span>CHECK-OUTS TIME</span>
+                            <strong id="checkOutsToday">3</strong>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Quick Stats -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding-top: 15px; border-top: 1px solid var(--border-color);">
-                <div>
-                    <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 5px;">Rooms Occupied</div>
-                    <div style="font-size: 20px; font-weight: 700; color: var(--primary-blue);" id="roomsOccupiedStat">-</div>
+
+            <!-- Revenue Card -->
+            <div class="dashboard-card revenue-card">
+                <h3>REVENUE AT A GLANCE</h3>
+                <div class="revenue-amount">
+                    <span class="currency">GHS</span>
+                    <span class="amount" id="todayRevenue">4,500.00</span>
                 </div>
-                <div>
-                    <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 5px;">Check-outs Today</div>
-                    <div style="font-size: 20px; font-weight: 700; color: var(--text-dark);" id="checkoutsToday">-</div>
+                <div class="revenue-label">TODAY'S REVENUE</div>
+                <div class="revenue-month">
+                    <span>MONTH-TO-DATE:</span>
+                    <strong id="monthRevenue">GHS 32,100.00</strong>
                 </div>
             </div>
-            
-            <!-- Upcoming Arrivals -->
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                <h4 style="font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 12px; font-weight: 600;">Upcoming Arrivals</h4>
-                <div id="upcomingArrivals">
-                    <div style="text-align: center; padding: 20px; color: var(--text-light); font-size: 13px;">
-                        Loading...
+
+            <!-- Upcoming Arrivals Card -->
+            <div class="dashboard-card arrivals-card">
+                <h3>UPCOMING ARRIVALS</h3>
+                <div class="arrivals-list" id="arrivalsList">
+                    <div class="arrival-item">
+                        <div class="arrival-info">
+                            <span class="guest-name">Guest: John Doe</span>
+                            <span class="room-number">Room: 101</span>
+                        </div>
+                        <div class="arrival-time">10:30 AM</div>
+                    </div>
+                    <div class="arrival-item">
+                        <div class="arrival-info">
+                            <span class="guest-name">Guest: Aisha Rahman</span>
+                            <span class="room-number">Room: 205</span>
+                        </div>
+                        <div class="arrival-time">12:30 PM</div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Departures Today Card -->
+            <div class="dashboard-card departures-card">
+                <h3>DEPARTURES TODAY</h3>
+                <div class="departures-list" id="departuresList">
+                    <div class="departure-item">
+                        <div class="departure-info">
+                            <span class="guest-name">Guest: John Do2</span>
+                            <span class="room-number">Room: 7</span>
+                        </div>
+                        <div class="departure-time">10:00 AM</div>
+                    </div>
+                    <div class="departure-item">
+                        <div class="departure-info">
+                            <span class="guest-name">Guest: Emeka Obi</span>
+                            <span class="room-number">Emeka Obi</span>
+                        </div>
+                        <div class="departure-time">10:30 PM</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Existing Stats Cards -->
+<!-- Your current occupancy, check-ins, etc. -->
+
+<!-- NEW: F&B Revenue Section -->
+<div class="dashboard-section" style="margin-top: 40px;">
+    <h2 style="color: var(--primary-blue); margin-bottom: 20px;">
+        🍽️ Restaurant & Bar Revenue
+    </h2>
+    
+    <div class="stats-grid">
+        <!-- Today's F&B Revenue -->
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #ffd700, #ffed4e);">
+                💰
+            </div>
+            <div class="stat-details">
+                <h3>Today's F&B</h3>
+                <p class="stat-number" id="todayFBRevenue">₵0</p>
+                <span class="stat-label">Revenue Today</span>
             </div>
         </div>
-
-        <!-- WEEKLY OCCUPANCY TREND -->
-        <div class="card">
-            <h3 style="color: var(--text-light); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase;">Weekly Occupancy Trend</h3>
-            
-            <div style="height: 200px; margin-bottom: 20px;">
-                <canvas id="weeklyOccupancyChart"></canvas>
+        
+        <!-- This Week's F&B Revenue -->
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #48bb78, #38a169);">
+                📊
             </div>
-            
-            <!-- This Week Stats -->
-            <div style="padding-top: 15px; border-top: 1px solid var(--border-color);">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div>
-                        <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 5px;">This Week Avg</div>
-                        <div style="font-size: 20px; font-weight: 700; color: var(--primary-blue);" id="weekAvgOccupancy">-%</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 5px;">This Month Avg</div>
-                        <div style="font-size: 20px; font-weight: 700; color: var(--accent-gold);" id="monthAvgOccupancy">-%</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Departures Today -->
-            <div style="padding-top: 20px; border-top: 1px solid var(--border-color);">
-                <h4 style="font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 12px; font-weight: 600;">Departures Today</h4>
-                <div id="departuresToday">
-                    <div style="text-align: center; padding: 20px; color: var(--text-light); font-size: 13px;">
-                        Loading...
-                    </div>
-                </div>
+            <div class="stat-details">
+                <h3>This Week</h3>
+                <p class="stat-number" id="weekFBRevenue">₵0</p>
+                <span class="stat-label">F&B Revenue</span>
             </div>
         </div>
-
+        
+        <!-- This Month's F&B Revenue -->
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                📈
+            </div>
+            <div class="stat-details">
+                <h3>This Month</h3>
+                <p class="stat-number" id="monthFBRevenue">₵0</p>
+                <span class="stat-label">F&B Revenue</span>
+            </div>
+        </div>
+        
+        <!-- Total Orders Today -->
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #f6ad55, #ed8936);">
+                🧾
+            </div>
+            <div class="stat-details">
+                <h3>Orders Today</h3>
+                <p class="stat-number" id="todayOrders">0</p>
+                <span class="stat-label">F&B Transactions</span>
+            </div>
+        </div>
     </div>
-
 </div>
+
+<!-- Revenue Breakdown Section -->
+<div class="dashboard-section" style="margin-top: 40px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        
+        <!-- Category Breakdown -->
+        <div class="card">
+            <h3 style="color: var(--primary-blue); margin-bottom: 20px;">
+                Revenue by Category
+            </h3>
+            <div id="categoryBreakdown">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Top Selling Items -->
+        <div class="card">
+            <h3 style="color: var(--primary-blue); margin-bottom: 20px;">
+                🏆 Top 5 Selling Items
+            </h3>
+            <div id="topItems">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Comparison Chart -->
+<div class="dashboard-section" style="margin-top: 40px;">
+    <div class="card">
+        <h3 style="color: var(--primary-blue); margin-bottom: 20px;">
+            📊 Revenue Comparison (Last 7 Days)
+        </h3>
+        <canvas id="revenueComparisonChart" style="max-height: 400px;"></canvas>
+    </div>
+</div>
+    </main>
+
     <!-- Chart.js for future analytics -->
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
@@ -241,3 +326,4 @@
     <script src="js/admin-dashboard.js"></script>
 </body>
 </html>
+
