@@ -37,6 +37,42 @@
     background: #667eea;
     color: white;
 }
+
+<style>
+/* Fix sticky room column */
+.room-cell {
+    position: sticky;
+    left: 0;
+    background: white;
+    font-weight: 700;
+    border-right: 3px solid var(--border-color);
+    z-index: 10;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+/* Fix sticky header row */
+.calendar-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: white;
+}
+
+.calendar-table thead th {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: white;
+    z-index: 15;
+}
+
+/* Room cell in header should be extra sticky */
+.calendar-table thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 25;
+}
+</style>
 </style>
 </head>
 <body>

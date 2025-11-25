@@ -35,25 +35,7 @@ async function loadDashboardData() {
         
         if (roomError) throw roomError;
         
-        // Calculate stats
-        const todayCheckIns = allBookings.filter(b => b.check_in === today).length;
-        const todayCheckOuts = allBookings.filter(b => b.check_out === today).length;
-        
-        const currentlyOccupied = allBookings.filter(b => 
-            b.check_in <= today && b.check_out >= today && 
-            (b.status === 'confirmed' || b.status === 'checked-in')
-        ).length;
-        
-        const occupancyRate = (currentlyOccupied / 28 * 100).toFixed(1);
-        const availableRooms = 28 - currentlyOccupied;
-        
-        // Update quick stats
-        document.getElementById('todayCheckIns').textContent = todayCheckIns;
-        document.getElementById('todayCheckOuts').textContent = todayCheckOuts;
-        document.getElementById('occupancyRate').textContent = occupancyRate + '%';
-        document.getElementById('availableRooms').textContent = availableRooms;
-        
-        // Update room status counts
+        // Calculate room status counts
         const statusCounts = {
             clean: 0,
             occupied: 0,
@@ -68,19 +50,46 @@ async function loadDashboardData() {
             }
         });
         
-        document.getElementById('availableCount').textContent = statusCounts.clean;
-        document.getElementById('occupiedCount').textContent = statusCounts.occupied;
-        document.getElementById('cleaningCount').textContent = statusCounts.dirty;
-        document.getElementById('maintenanceCount').textContent = statusCounts.maintenance;
-        document.getElementById('reservedCount').textContent = statusCounts.reserved;
+        // Update room status display
+        document.getElementById('availableRooms').textContent = statusCounts.clean;
+        document.getElementById('occupiedRooms').textContent = statusCounts.occupied;
+        document.getElementById('cleaningRooms').textContent = statusCounts.dirty;
+        document.getElementById('maintenanceRooms').textContent = statusCounts.maintenance;
+        document.getElementById('reservedRooms').textContent = statusCounts.reserved;
         
-        console.log('✅ Stats updated');
+        // Calculate occupancy
+        const currentlyOccupied = allBookings.filter(b => 
+            b.check_in <= today && b.check_out >= today && 
+            (b.status === 'confirmed' || b.status === 'checked-in')
+        ).length;
         
-        // Load occupancy chart
-        await loadOccupancyChart(allBookings);
+        const occupancyRate = (currentlyOccupied / 28 * 100).toFixed(0);
         
-        // Load recent bookings
-        await loadRecentBookings(allBookings);
+        // Update circular occupancy display
+        document.getElementById('occupiedCount').textContent = currentlyOccupied;
+        document.getElementById('totalRooms').textContent = '28';
+        document.getElementById('occupancyPercent').textContent = occupancyRate + '%';
+        document.getElementById('roomsOccupiedStat').textContent = currentlyOccupied;
+        
+        // Animate circle
+        const circumference = 2 * Math.PI * 50; // 314
+        const offset = circumference - (occupancyRate / 100 * circumference);
+        document.getElementById('occupancyCircle').style.strokeDashoffset = offset;
+        
+        // Check-outs today
+        const checkoutsToday = allBookings.filter(b => b.check_out === today).length;
+        document.getElementById('checkoutsToday').textContent = checkoutsToday;
+        
+        console.log('✅ Dashboard stats updated');
+        
+        // Load upcoming arrivals
+        await loadUpcomingArrivals(allBookings, today);
+        
+        // Load departures today
+        await loadDeparturesToday(allBookings, today);
+        
+        // Load weekly occupancy chart
+        await loadWeeklyOccupancyChart(allBookings);
         
     } catch (error) {
         console.error('❌ Error loading dashboard:', error);
@@ -88,18 +97,83 @@ async function loadDashboardData() {
     }
 }
 
-// Load 7-day occupancy bar chart
-async function loadOccupancyChart(allBookings) {
-    console.log('📊 Loading occupancy chart...');
+// Load upcoming arrivals (today and tomorrow)
+async function loadUpcomingArrivals(allBookings, today) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
     
-    try {
-        const days = [];
-        const occupancyData = [];
-        const colors = [];
+    const arrivals = allBookings
+        .filter(b => (b.check_in === today || b.check_in === tomorrowStr) && b.status !== 'cancelled')
+        .sort((a, b) => new Date(a.check_in) - new Date(b.check_in))
+        .slice(0, 2);
+    
+    const container = document.getElementById('upcomingArrivals');
+    
+    if (arrivals.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 15px; color: var(--text-light); font-size: 13px;">No upcoming arrivals</div>';
+        return;
+    }
+    
+    container.innerHTML = arrivals.map(booking => `
+        <div class="guest-card">
+            <div class="guest-info">
+                <div class="guest-name">Guest: ${booking.guest_name.split(' ')[0]} ${booking.guest_name.split(' ')[1] || ''}</div>
+                <div class="guest-room">Room: ${booking.room_number}</div>
+            </div>
+            <div class="guest-time">${booking.check_in === today ? '2:00 PM' : 'Tomorrow'}</div>
+        </div>
+    `).join('');
+}
+
+// Load departures today
+async function loadDeparturesToday(allBookings, today) {
+    const departures = allBookings
+        .filter(b => b.check_out === today && b.status !== 'cancelled')
+        .slice(0, 2);
+    
+    const container = document.getElementById('departuresToday');
+    
+    if (departures.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 15px; color: var(--text-light); font-size: 13px;">No departures today</div>';
+        return;
+    }
+    
+    container.innerHTML = departures.map(booking => `
+        <div class="guest-card">
+            <div class="guest-info">
+                <div class="guest-name">Guest: ${booking.guest_name.split(' ')[0]} ${booking.guest_name.split(' ')[1] || ''}</div>
+                <div class="guest-room">Room: ${booking.room_number}</div>
+            </div>
+            <div class="guest-time">12:00 PM</div>
+        </div>
+    `).join('');
+}
+
+// Load weekly occupancy chart
+async function loadWeeklyOccupancyChart(allBookings) {
+    console.log('📊 Loading weekly occupancy chart...');
+    
+    const weeks = [];
+    const occupancyData = [];
+    
+    // Get last 4 weeks
+    for (let i = 3; i >= 0; i--) {
+        const weekStart = new Date();
+        weekStart.setDate(weekStart.getDate() - (i * 7) - weekStart.getDay());
         
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+        
+        weeks.push(`Week ${4-i}`);
+        
+        // Calculate average occupancy for the week
+        let totalOccupancy = 0;
+        let days = 0;
+        
+        for (let d = 0; d < 7; d++) {
+            const date = new Date(weekStart);
+            date.setDate(date.getDate() + d);
             const dateStr = date.toISOString().split('T')[0];
             
             const occupied = allBookings.filter(b => 
@@ -107,137 +181,62 @@ async function loadOccupancyChart(allBookings) {
                 (b.status === 'confirmed' || b.status === 'checked-in')
             ).length;
             
-            const rate = (occupied / 28 * 100).toFixed(1);
-            
-            days.push(date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }));
-            occupancyData.push(parseFloat(rate));
-            
-            // Color based on occupancy level
-            if (rate >= 80) {
-                colors.push('rgba(76, 175, 80, 0.8)'); // Green - high occupancy
-            } else if (rate >= 50) {
-                colors.push('rgba(255, 152, 0, 0.8)'); // Orange - medium
-            } else {
-                colors.push('rgba(33, 150, 243, 0.8)'); // Blue - low
-            }
+            totalOccupancy += (occupied / 28 * 100);
+            days++;
         }
         
-        const ctx = document.getElementById('occupancyChart').getContext('2d');
-        
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: days,
-                datasets: [{
-                    label: 'Occupancy Rate (%)',
-                    data: occupancyData,
-                    backgroundColor: colors,
-                    borderColor: colors.map(c => c.replace('0.8', '1')),
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    barThickness: 50
-                }]
+        occupancyData.push((totalOccupancy / days).toFixed(1));
+    }
+    
+    // Calculate this week and month averages
+    document.getElementById('weekAvgOccupancy').textContent = occupancyData[3] + '%';
+    
+    const monthAvg = (occupancyData.reduce((sum, val) => sum + parseFloat(val), 0) / occupancyData.length).toFixed(1);
+    document.getElementById('monthAvgOccupancy').textContent = monthAvg + '%';
+    
+    // Create chart
+    const ctx = document.getElementById('weeklyOccupancyChart').getContext('2d');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: weeks,
+            datasets: [{
+                label: 'Occupancy %',
+                data: occupancyData,
+                backgroundColor: [
+                    'rgba(33, 150, 243, 0.8)',
+                    'rgba(76, 175, 80, 0.8)',
+                    'rgba(255, 152, 0, 0.8)',
+                    'rgba(156, 39, 176, 0.8)'
+                ],
+                borderRadius: 6,
+                barThickness: 40
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { 
-                        display: false 
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'Occupancy: ' + context.parsed.y.toFixed(1) + '%';
-                            }
-                        }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: value => value + '%',
+                        font: { size: 10 }
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            callback: function(value) {
-                                return value + '%';
-                            },
-                            font: {
-                                size: 12
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            font: {
-                                size: 11
-                            }
-                        }
-                    }
+                x: {
+                    ticks: { font: { size: 10 } }
                 }
             }
-        });
-        
-        console.log('✅ Occupancy chart created');
-        
-    } catch (error) {
-        console.error('❌ Error loading occupancy chart:', error);
-    }
-}
-
-// Load recent bookings
-async function loadRecentBookings(allBookings) {
-    console.log('📡 Loading recent bookings...');
-    
-    try {
-        const recentBookings = allBookings
-            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-            .slice(0, 5);
-        
-        const container = document.getElementById('recentBookings');
-        
-        if (!recentBookings || recentBookings.length === 0) {
-            container.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                    <p>No recent bookings</p>
-                </div>
-            `;
-            return;
         }
-        
-        container.innerHTML = recentBookings.map(booking => `
-            <div style="padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div style="font-weight: 700; color: var(--primary-blue); margin-bottom: 5px;">
-                        ${booking.guest_name}
-                    </div>
-                    <div style="font-size: 12px; color: var(--text-light);">
-                        ${booking.room_type} - Room ${booking.room_number} • 
-                        ${new Date(booking.check_in).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} - 
-                        ${new Date(booking.check_out).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 5px;">
-                        ₵${parseFloat(booking.total_price).toFixed(2)}
-                    </div>
-                    <div style="font-size: 11px; color: var(--text-light);">
-                        ${new Date(booking.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-        
-        console.log('✅ Recent bookings loaded');
-        
-    } catch (error) {
-        console.error('❌ Error loading recent bookings:', error);
-    }
+    });
+    
+    console.log('✅ Weekly occupancy chart created');
 }
 
 // Logout

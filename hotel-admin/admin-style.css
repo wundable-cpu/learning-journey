@@ -4850,3 +4850,83 @@ body {
     padding-top: 12px;
     border-top: 1px solid var(--border-color);
 }
+
+/* ============================================
+   ORIGINAL DASHBOARD DESIGN
+   ============================================ */
+
+.room-status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* Arrival/Departure Cards */
+.guest-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.guest-card:hover {
+    background: #e3f2fd;
+    transform: translateX(3px);
+}
+
+.guest-card:last-child {
+    margin-bottom: 0;
+}
+
+.guest-info {
+    flex: 1;
+}
+
+.guest-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.guest-room {
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.guest-time {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+
+@media (max-width: 1200px) {
+    .content-container > div:first-child {
+        grid-template-columns: 1fr;
+    }
+}

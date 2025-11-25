@@ -473,3 +473,90 @@ document.getElementById('logoutBtn')?.addEventListener('click', function() {
 });
 
 console.log('✅ Reservations module loaded');
+
+// Fix search function
+function setupSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+    
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        
+        if (!searchTerm) {
+            displayBookings(allBookings);
+            return;
+        }
+        
+        const filtered = allBookings.filter(booking => 
+            booking.guest_name.toLowerCase().includes(searchTerm) ||
+            booking.guest_email.toLowerCase().includes(searchTerm) ||
+            booking.guest_phone.toLowerCase().includes(searchTerm) ||
+            booking.booking_reference.toLowerCase().includes(searchTerm) ||
+            booking.room_number.toLowerCase().includes(searchTerm)
+        );
+        
+        displayBookings(filtered);
+        console.log(`🔍 Search: "${searchTerm}" - ${filtered.length} results`);
+    });
+}
+
+// Fix export function
+function exportToCSV() {
+    console.log('📥 Exporting bookings to CSV...');
+    
+    if (allBookings.length === 0) {
+        alert('No bookings to export');
+        return;
+    }
+    
+    // CSV headers
+    const headers = ['Booking Ref', 'Guest Name', 'Email', 'Phone', 'Check-in', 'Check-out', 'Room Type', 'Room Number', 'Adults', 'Children', 'Total Price', 'Status'];
+    
+    // CSV rows
+    const rows = allBookings.map(booking => [
+        booking.booking_reference,
+        booking.guest_name,
+        booking.guest_email,
+        booking.guest_phone,
+        booking.check_in,
+        booking.check_out,
+        booking.room_type,
+        booking.room_number,
+        booking.num_adults,
+        booking.num_children,
+        booking.total_price,
+        booking.status
+    ]);
+    
+    // Combine headers and rows
+    const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${cell}"`).join(','))
+        .join('\n');
+    
+    // Create download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `bookings_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    console.log('✅ CSV exported');
+}
+
+// Make sure to call setupSearch in DOMContentLoaded
+document.addEventListener('DOMContentLoaded', async function() {
+    // ... existing code ...
+    setupSearch();
+    
+    // Setup export button
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportToCSV);
+    }
+});

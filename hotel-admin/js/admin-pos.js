@@ -323,4 +323,33 @@ document.getElementById('logoutBtn')?.addEventListener('click', function() {
     }
 });
 
+// Fix the updateTotals function
+function updateTotals() {
+    const subtotal = currentOrder.reduce((sum, item) => {
+        return sum + (parseFloat(item.price) * parseInt(item.quantity));
+    }, 0);
+    
+    const serviceCharge = subtotal * 0.10;
+    const total = subtotal + serviceCharge;
+    
+    console.log('💰 Subtotal:', subtotal, 'Service:', serviceCharge, 'Total:', total);
+    
+    document.getElementById('subtotalAmount').textContent = `₵${subtotal.toFixed(2)}`;
+    document.getElementById('serviceChargeAmount').textContent = `₵${serviceCharge.toFixed(2)}`;
+    document.getElementById('totalAmount').textContent = `₵${total.toFixed(2)}`;
+}
+
+// Make sure totals update on quantity change
+function updateQuantity(index, change) {
+    currentOrder[index].quantity += change;
+    
+    if (currentOrder[index].quantity <= 0) {
+        currentOrder.splice(index, 1);
+    }
+    
+    updateOrderDisplay();
+    updateTotals(); // ADD THIS LINE
+}
+
 console.log('✅ POS module loaded');
+

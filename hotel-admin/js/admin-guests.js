@@ -507,3 +507,70 @@ document.getElementById('logoutBtn')?.addEventListener('click', function() {
 });
 
 console.log('✅ Guest Management module loaded');
+
+// Fix the updateStats function
+function updateStats() {
+    // Total guests (unique count)
+    const totalGuests = allGuests.length;
+    
+    // Currently checked in
+    const today = new Date().toISOString().split('T')[0];
+    const checkedIn = allGuests.filter(g => 
+        g.check_in <= today && g.check_out >= today && g.status === 'checked-in'
+    ).length;
+    
+    // Checking in today
+    const checkingInToday = allGuests.filter(g => 
+        g.check_in === today
+    ).length;
+    
+    // This month's guests
+    const thisMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+    const thisMonthGuests = allGuests.filter(g => 
+        g.check_in.startsWith(thisMonth)
+    ).length;
+    
+    // Update display - REMOVE duplicate
+    document.getElementById('totalGuests').textContent = totalGuests;
+    document.getElementById('checkedInGuests').textContent = checkedIn;
+    document.getElementById('checkingInToday').textContent = checkingInToday;
+    document.getElementById('monthGuests').textContent = thisMonthGuests;
+}
+
+// Export CSV function
+function exportGuestsToCSV() {
+    console.log('📥 Exporting guests to CSV...');
+    
+    if (allGuests.length === 0) {
+        alert('No guests to export');
+        return;
+    }
+    
+    const headers = ['Name', 'Email', 'Phone', 'Check-in', 'Check-out', 'Room Number', 'Room Type', 'Adults', 'Children', 'Status', 'Booking Ref'];
+    
+    const rows = allGuests.map(guest => [
+        guest.guest_name,
+        guest.guest_email,
+        guest.guest_phone,
+        guest.check_in,
+        guest.check_out,
+        guest.room_number,
+        guest.room_type,
+        guest.num_adults,
+        guest.num_children,
+        guest.status,
+        guest.booking_reference
+    ]);
+    
+    const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${cell}"`).join(','))
+        .join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `guests_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    
+    console.log('✅ Guests exported');
+}

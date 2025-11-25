@@ -103,73 +103,72 @@ async function loadBookingsForMonth() {
     }
 }
 
-// Render the calendar
-function renderCalendar() {
-    console.log('🎨 Rendering calendar...');
+// In admin-reservations-calendar.js, fix the generateCalendar function:
+
+function generateCalendar() {
+    const table = document.getElementById('calendarTable');
+    const monthYear = document.getElementById('currentMonthYear');
     
-    const calendarBody = document.getElementById('calendarBody');
-    const monthYearDisplay = document.getElementById('monthYear');
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
     
-    if (!calendarBody || !monthYearDisplay) {
-        console.error('❌ Calendar elements not found');
-        return;
-    }
-    
-    // Update month/year display
-    monthYearDisplay.textContent = new Date(currentYear, currentMonth).toLocaleString('en-US', { 
+    // Update month display
+    monthYear.textContent = currentDate.toLocaleDateString('en-GB', { 
         month: 'long', 
         year: 'numeric' 
-    }).toUpperCase();
-    
-    // Clear previous calendar
-    calendarBody.innerHTML = '';
-    
-    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-    const firstDayIndex = getFirstDayOfMonth(currentMonth, currentYear);
-    const prevMonthDays = getDaysInMonth(currentMonth - 1, currentYear);
-    
-    // Render each room as a row
-    allRooms.forEach(room => {
-        const roomRow = document.createElement('div');
-        roomRow.classList.add('calendar-room-row');
-        roomRow.dataset.roomId = room.id;
-        
-        // Room number cell
-        const roomNumberCell = document.createElement('div');
-        roomNumberCell.classList.add('grid-cell', 'room-number-cell');
-        roomNumberCell.textContent = room.room_number;
-        roomRow.appendChild(roomNumberCell);
-        
-        // Previous month days (grayed out)
-        for (let i = 0; i < firstDayIndex; i++) {
-            const dayCell = document.createElement('div');
-            dayCell.classList.add('grid-cell', 'date-cell', 'day-off-month');
-            dayCell.innerHTML = `<span class="date-num">${prevMonthDays - firstDayIndex + i + 1}</span>`;
-            roomRow.appendChild(dayCell);
-        }
-        
-        // Current month days
-        for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(currentYear, currentMonth, day);
-            const dayCell = createDayCell(date, room);
-            roomRow.appendChild(dayCell);
-        }
-        
-        // Next month days (to fill the week)
-        const totalCells = firstDayIndex + daysInMonth;
-        const remainingCells = 7 - (totalCells % 7);
-        if (remainingCells < 7) {
-            for (let i = 1; i <= remainingCells; i++) {
-                const dayCell = document.createElement('div');
-                dayCell.classList.add('grid-cell', 'date-cell', 'day-off-month');
-                dayCell.innerHTML = `<span class="date-num">${i}</span>`;
-                roomRow.appendChild(dayCell);
-            }
-        }
-        
-        calendarBody.appendChild(roomRow);
     });
     
+    // Generate header with dates
+    let headerHTML = '<thead><tr><th class="room-cell" style="position: sticky; left: 0; z-index: 25;">Room</th>';
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dayName = date.toLocaleDateString('en-GB', { weekday: 'short' });
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+        
+        headerHTML += `
+            <th class="date-cell ${isWeekend ? 'weekend' : ''}" style="position: sticky; top: 0; z-index: 15;">
+                <div style="font-size: 14px; font-weight: 700;">${day}</div>
+                <div style="font-size: 11px; opacity: 0.9;">${dayName}</div>
+            </th>
+        `;
+    }
+    headerHTML += '</tr></thead>';
+    
+    // Generate room rows
+    let bodyHTML = '<tbody>';
+    
+    allRooms.forEach(room => {
+        bodyHTML += `<tr><td class="room-cell">${room}</td>`;
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const booking = bookingsByDate[`${room}_${dateStr}`];
+            
+            bodyHTML += `<td class="calendar-day ${booking ? 'booked' : ''}" data-date="${dateStr}" data-room="${room}">`;
+            
+            if (booking) {
+                bodyHTML += `
+                    <div class="booking-strip" style="background: ${getBookingColor(booking.status)};" 
+                         title="${booking.guest_name} - ${booking.booking_reference}">
+                        ${booking.guest_name.split(' ')[0]}
+                    </div>
+                `;
+            }
+            
+            bodyHTML += '</td>';
+        }
+        
+        bodyHTML += '</tr>';
+    });
+    
+    bodyHTML += '</tbody>';
+    
+    table.innerHTML = headerHTML + bodyHTML;
+
     console.log('✅ Calendar rendered');
 }
 
