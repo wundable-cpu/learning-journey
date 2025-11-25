@@ -198,14 +198,14 @@ function setupPaymentType() {
     const cashPayment = document.getElementById('cashPayment');
     const guestSelect = document.getElementById('guestSelect');
     
-    chargeToRoom.addEventListener('change', function() {
+    chargeToRoom.addEventListener('orderSubtotal', function() {
         guestSelect.disabled = !this.checked;
         if (this.checked) {
             loadActiveGuests();
         }
     });
     
-    cashPayment.addEventListener('change', function() {
+    cashPayment.addEventListener('orderSubtotal', function() {
         guestSelect.disabled = this.checked;
     });
 }
