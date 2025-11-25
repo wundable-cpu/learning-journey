@@ -1,287 +1,181 @@
-// Use global Supabase client
-const supabase = window.supabase_client || (() => {
-    console.error('❌ Supabase not initialized!');
-    return null;
-})();
+console.log('📊 Dashboard module loading...');
 
-// Initialize dashboard
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('📊 Dashboard loading...');
+const supabase = window.supabase_client;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('✅ Dashboard page loaded');
     
     if (!supabase) {
         alert('Database connection failed. Please refresh.');
         return;
     }
     
-    loadDashboardData();
+    await loadDashboardData();
 });
 
+// Load all dashboard data
 async function loadDashboardData() {
     console.log('📡 Loading dashboard data...');
     
     try {
-        // Load existing room data
-        await loadRoomStats();
+        const today = new Date().toISOString().split('T')[0];
         
-        // Load F&B data
-        await loadFBStats();
-        await loadCategoryBreakdown();
-        await loadTopItems();
-        await loadRevenueChart();
+        // Get all bookings
+        const { data: allBookings, error: bookingsError } = await supabase
+            .from('bookings')
+            .select('*');
         
-        console.log('✅ Dashboard data loaded');
+        if (bookingsError) throw bookingsError;
+        
+        // Get room status
+        const { data: roomStatus, error: roomError } = await supabase
+            .from('room_status')
+            .select('*');
+        
+        if (roomError) throw roomError;
+        
+        // Calculate stats
+        const todayCheckIns = allBookings.filter(b => b.check_in === today).length;
+        const todayCheckOuts = allBookings.filter(b => b.check_out === today).length;
+        
+        const currentlyOccupied = allBookings.filter(b => 
+            b.check_in <= today && b.check_out >= today && 
+            (b.status === 'confirmed' || b.status === 'checked-in')
+        ).length;
+        
+        const occupancyRate = (currentlyOccupied / 28 * 100).toFixed(1);
+        const availableRooms = 28 - currentlyOccupied;
+        
+        // Update quick stats
+        document.getElementById('todayCheckIns').textContent = todayCheckIns;
+        document.getElementById('todayCheckOuts').textContent = todayCheckOuts;
+        document.getElementById('occupancyRate').textContent = occupancyRate + '%';
+        document.getElementById('availableRooms').textContent = availableRooms;
+        
+        // Update room status counts
+        const statusCounts = {
+            clean: 0,
+            occupied: 0,
+            dirty: 0,
+            maintenance: 0,
+            reserved: 0
+        };
+        
+        roomStatus.forEach(room => {
+            if (statusCounts.hasOwnProperty(room.status)) {
+                statusCounts[room.status]++;
+            }
+        });
+        
+        document.getElementById('availableCount').textContent = statusCounts.clean;
+        document.getElementById('occupiedCount').textContent = statusCounts.occupied;
+        document.getElementById('cleaningCount').textContent = statusCounts.dirty;
+        document.getElementById('maintenanceCount').textContent = statusCounts.maintenance;
+        document.getElementById('reservedCount').textContent = statusCounts.reserved;
+        
+        console.log('✅ Stats updated');
+        
+        // Load occupancy chart
+        await loadOccupancyChart(allBookings);
+        
+        // Load recent bookings
+        await loadRecentBookings(allBookings);
         
     } catch (error) {
         console.error('❌ Error loading dashboard:', error);
+        alert('Error loading dashboard: ' + error.message);
     }
 }
 
-// Your existing room stats function (keep as is)
-async function loadRoomStats() {
-    // Keep your existing code for occupancy, check-ins, etc.
-    console.log('📊 Loading room stats...');
-}
-
-// NEW: Load F&B Statistics
-async function loadFBStats() {
-    console.log('💰 Loading F&B stats...');
+// Load 7-day occupancy bar chart
+async function loadOccupancyChart(allBookings) {
+    console.log('📊 Loading occupancy chart...');
     
     try {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const todayStr = today.toISOString();
-        
-        // Get start of week (Monday)
-        const weekStart = new Date(today);
-        weekStart.setDate(today.getDate() - today.getDay() + 1);
-        const weekStartStr = weekStart.toISOString();
-        
-        // Get start of month
-        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-        const monthStartStr = monthStart.toISOString();
-        
-        // Today's F&B revenue
-        const { data: todayCharges, error: todayError } = await supabase
-            .from('guest_charges')
-            .select('total_amount')
-            .gte('charge_date', todayStr);
-        
-        if (todayError) throw todayError;
-        
-        const todayRevenue = todayCharges ? 
-            todayCharges.reduce((sum, c) => sum + parseFloat(c.total_amount), 0) : 0;
-        
-        // Week's F&B revenue
-        const { data: weekCharges, error: weekError } = await supabase
-            .from('guest_charges')
-            .select('total_amount')
-            .gte('charge_date', weekStartStr);
-        
-        const weekRevenue = weekCharges ? 
-            weekCharges.reduce((sum, c) => sum + parseFloat(c.total_amount), 0) : 0;
-        
-        // Month's F&B revenue
-        const { data: monthCharges, error: monthError } = await supabase
-            .from('guest_charges')
-            .select('total_amount')
-            .gte('charge_date', monthStartStr);
-        
-        const monthRevenue = monthCharges ? 
-            monthCharges.reduce((sum, c) => sum + parseFloat(c.total_amount), 0) : 0;
-        
-        // Today's order count
-        const todayOrders = todayCharges ? todayCharges.length : 0;
-        
-        // Update UI
-        document.getElementById('todayFBRevenue').textContent = `₵${todayRevenue.toFixed(2)}`;
-        document.getElementById('weekFBRevenue').textContent = `₵${weekRevenue.toFixed(2)}`;
-        document.getElementById('monthFBRevenue').textContent = `₵${monthRevenue.toFixed(2)}`;
-        document.getElementById('todayOrders').textContent = todayOrders;
-        
-        console.log('✅ F&B stats loaded:', { todayRevenue, weekRevenue, monthRevenue, todayOrders });
-        
-    } catch (error) {
-        console.error('❌ Error loading F&B stats:', error);
-    }
-}
-
-// NEW: Load Category Breakdown
-async function loadCategoryBreakdown() {
-    console.log('📊 Loading category breakdown...');
-    
-    try {
-        const { data: charges, error } = await supabase
-            .from('guest_charges')
-            .select('category, total_amount');
-        
-        if (error) throw error;
-        
-        // Group by category
-        const categoryTotals = {};
-        charges.forEach(charge => {
-            const category = charge.category || 'other';
-            if (!categoryTotals[category]) {
-                categoryTotals[category] = 0;
-            }
-            categoryTotals[category] += parseFloat(charge.total_amount);
-        });
-        
-        // Display
-        const container = document.getElementById('categoryBreakdown');
-        container.innerHTML = '';
-        
-        Object.keys(categoryTotals).sort((a, b) => categoryTotals[b] - categoryTotals[a]).forEach(category => {
-            const categoryName = category.charAt(0).toUpperCase() + category.slice(1).replace('_', ' ');
-            const amount = categoryTotals[category];
-            
-            container.innerHTML += `
-                <div class="category-item">
-                    <span class="category-name">${categoryName}</span>
-                    <span class="category-amount">₵${amount.toFixed(2)}</span>
-                </div>
-            `;
-        });
-        
-        console.log('✅ Category breakdown loaded');
-        
-    } catch (error) {
-        console.error('❌ Error loading categories:', error);
-    }
-}
-
-// NEW: Load Top Selling Items
-async function loadTopItems() {
-    console.log('🏆 Loading top items...');
-    
-    try {
-        const { data: charges, error } = await supabase
-            .from('guest_charges')
-            .select('item_description, quantity, total_amount');
-        
-        if (error) throw error;
-        
-        // Group by item
-        const itemTotals = {};
-        charges.forEach(charge => {
-            const item = charge.item_description;
-            if (!itemTotals[item]) {
-                itemTotals[item] = { quantity: 0, revenue: 0 };
-            }
-            itemTotals[item].quantity += charge.quantity;
-            itemTotals[item].revenue += parseFloat(charge.total_amount);
-        });
-        
-        // Sort by revenue and get top 5
-        const topItems = Object.keys(itemTotals)
-            .sort((a, b) => itemTotals[b].revenue - itemTotals[a].revenue)
-            .slice(0, 5);
-        
-        // Display
-        const container = document.getElementById('topItems');
-        container.innerHTML = '';
-        
-        topItems.forEach((item, index) => {
-            const data = itemTotals[item];
-            container.innerHTML += `
-                <div class="top-item">
-                    <div class="item-rank">${index + 1}</div>
-                    <div class="item-info">
-                        <div class="item-name">${item}</div>
-                        <div class="item-quantity">Sold: ${data.quantity} times</div>
-                    </div>
-                    <div class="item-revenue">₵${data.revenue.toFixed(2)}</div>
-                </div>
-            `;
-        });
-        
-        console.log('✅ Top items loaded');
-        
-    } catch (error) {
-        console.error('❌ Error loading top items:', error);
-    }
-}
-
-// NEW: Load Revenue Comparison Chart
-async function loadRevenueChart() {
-    console.log('📈 Loading revenue chart...');
-    
-    try {
-        // Get last 7 days
         const days = [];
-        const roomRevenue = [];
-        const fbRevenue = [];
+        const occupancyData = [];
+        const colors = [];
         
         for (let i = 6; i >= 0; i--) {
             const date = new Date();
             date.setDate(date.getDate() - i);
-            date.setHours(0, 0, 0, 0);
             const dateStr = date.toISOString().split('T')[0];
             
-            days.push(date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' }));
+            const occupied = allBookings.filter(b => 
+                b.check_in <= dateStr && b.check_out >= dateStr && 
+                (b.status === 'confirmed' || b.status === 'checked-in')
+            ).length;
             
-            // Get room revenue (bookings with check-in on this date)
-            const { data: bookings } = await supabase
-                .from('bookings')
-                .select('total_price')
-                .eq('check_in', dateStr);
+            const rate = (occupied / 28 * 100).toFixed(1);
             
-            const roomTotal = bookings ? 
-                bookings.reduce((sum, b) => sum + parseFloat(b.total_price || 0), 0) : 0;
-            roomRevenue.push(roomTotal);
+            days.push(date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }));
+            occupancyData.push(parseFloat(rate));
             
-            // Get F&B revenue
-            const nextDay = new Date(date);
-            nextDay.setDate(nextDay.getDate() + 1);
-            const nextDayStr = nextDay.toISOString().split('T')[0];
-            
-            const { data: charges } = await supabase
-                .from('guest_charges')
-                .select('total_amount')
-                .gte('charge_date', dateStr)
-                .lt('charge_date', nextDayStr);
-            
-            const fbTotal = charges ? 
-                charges.reduce((sum, c) => sum + parseFloat(c.total_amount), 0) : 0;
-            fbRevenue.push(fbTotal);
+            // Color based on occupancy level
+            if (rate >= 80) {
+                colors.push('rgba(76, 175, 80, 0.8)'); // Green - high occupancy
+            } else if (rate >= 50) {
+                colors.push('rgba(255, 152, 0, 0.8)'); // Orange - medium
+            } else {
+                colors.push('rgba(33, 150, 243, 0.8)'); // Blue - low
+            }
         }
         
-        // Create chart
-        const ctx = document.getElementById('revenueComparisonChart').getContext('2d');
+        const ctx = document.getElementById('occupancyChart').getContext('2d');
+        
         new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: days,
-                datasets: [
-                    {
-                        label: 'Room Revenue',
-                        data: roomRevenue,
-                        borderColor: '#1a365d',
-                        backgroundColor: 'rgba(26, 54, 93, 0.1)',
-                        tension: 0.4
-                    },
-                    {
-                        label: 'F&B Revenue',
-                        data: fbRevenue,
-                        borderColor: '#d4af37',
-                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                        tension: 0.4
-                    }
-                ]
+                datasets: [{
+                    label: 'Occupancy Rate (%)',
+                    data: occupancyData,
+                    backgroundColor: colors,
+                    borderColor: colors.map(c => c.replace('0.8', '1')),
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    barThickness: 50
+                }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        position: 'top'
+                    legend: { 
+                        display: false 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Occupancy: ' + context.parsed.y.toFixed(1) + '%';
+                            }
+                        }
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
+                        max: 100,
                         ticks: {
                             callback: function(value) {
-                                return '₵' + value;
+                                return value + '%';
+                            },
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 11
                             }
                         }
                     }
@@ -289,10 +183,60 @@ async function loadRevenueChart() {
             }
         });
         
-        console.log('✅ Revenue chart loaded');
+        console.log('✅ Occupancy chart created');
         
     } catch (error) {
-        console.error('❌ Error loading chart:', error);
+        console.error('❌ Error loading occupancy chart:', error);
+    }
+}
+
+// Load recent bookings
+async function loadRecentBookings(allBookings) {
+    console.log('📡 Loading recent bookings...');
+    
+    try {
+        const recentBookings = allBookings
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(0, 5);
+        
+        const container = document.getElementById('recentBookings');
+        
+        if (!recentBookings || recentBookings.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                    <p>No recent bookings</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = recentBookings.map(booking => `
+            <div style="padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-weight: 700; color: var(--primary-blue); margin-bottom: 5px;">
+                        ${booking.guest_name}
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-light);">
+                        ${booking.room_type} - Room ${booking.room_number} • 
+                        ${new Date(booking.check_in).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} - 
+                        ${new Date(booking.check_out).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 5px;">
+                        ₵${parseFloat(booking.total_price).toFixed(2)}
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-light);">
+                        ${new Date(booking.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        console.log('✅ Recent bookings loaded');
+        
+    } catch (error) {
+        console.error('❌ Error loading recent bookings:', error);
     }
 }
 
