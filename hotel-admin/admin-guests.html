@@ -90,39 +90,36 @@
         </header>
 
         <!-- Guest Statistics -->
-        <div class="stats-grid" style="margin-bottom: 30px;">
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #e3f2fd;">👥</div>
-        <div class="stat-details">
-            <div class="stat-label">Total Guests</div>
-            <div class="stat-value" id="totalGuests">-</div>
+        <div class="guest-stats-grid">
+            <div class="stat-card">            
+                <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1);">👥</div>
+                <div class="stat-info">
+                    <h3 id="totalGuestsCount">0</h3>
+                    <p>Total Guests</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(39, 174, 96, 0.1);">⭐</div>
+                <div class="stat-info">
+                    <h3 id="vipGuestsCount">0</h3>
+                    <p>VIP Guests</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1);">🔄</div>
+                <div class="stat-info">
+                    <h3 id="returningGuestsCount">0</h3>
+                    <p>Returning Guests</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(241, 196, 15, 0.1);">📅</div>
+                <div class="stat-info">
+                    <h3 id="currentGuestsCount">0</h3>
+                    <p>Currently Checked In</p>
+                </div>
+            </div>
         </div>
-    </div>
-    
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #e8f5e9;">✅</div>
-        <div class="stat-details">
-            <div class="stat-label">Checked In</div>
-            <div class="stat-value" id="checkedInGuests">-</div>
-        </div>
-    </div>
-    
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #fff3e0;">📅</div>
-        <div class="stat-details">
-            <div class="stat-label">Arriving Today</div>
-            <div class="stat-value" id="checkingInToday">-</div>
-        </div>
-    </div>
-    
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #f3e5f5;">📊</div>
-        <div class="stat-details">
-            <div class="stat-label">This Month</div>
-            <div class="stat-value" id="monthGuests">-</div>
-        </div>
-    </div>
-</div>
 
         <!-- Search and Filters -->
         <div class="guests-toolbar">

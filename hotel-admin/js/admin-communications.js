@@ -292,4 +292,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-console.log('📧 Communications module loaded');
+console.log('📧 Communications module loaded'); 

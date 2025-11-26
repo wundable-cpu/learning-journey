@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Restaurant Order</h1>
+
+        <div class="menu-item" data-price="12.50">
+            <input type="checkbox" id="burger">
+            <label for="burger">Cheeseburger ($12.50)</label>
+        </div>
+
+        <div class="menu-item" data-price="4.00">
+            <input type="checkbox" id="fries">
+            <label for="fries">Fries ($4.00)</label>
+        </div>
+
+        <div class="menu-item" data-price="2.50">
+            <input type="checkbox" id="soda">
+            <label for="soda">Soda ($2.50)</label>
+        </div>
+        
+        <hr>
+
+        <div class="totals">
+            <p>Subtotal: <span id="subtotal">$0.00</span></p>
+            <p>Tax (10%): <span id="tax">$0.00</span></p>
+            <h3>Total: <span id="grand-total">$0.00</span></h3>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

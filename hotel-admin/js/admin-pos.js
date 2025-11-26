@@ -83,7 +83,7 @@ function displayMenuItems(category) {
 
 // Setup category tabs
 function setupCategoryTabs() {
-    const tabs = document.querySelectorAll('.category-tab');
+    const tabs = document.querySelectorAll('.pos-tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', function() {
             // Remove active from all tabs
@@ -96,6 +96,12 @@ function setupCategoryTabs() {
             displayMenuItems(activeCategory);
         });
     });
+}
+
+// Filter menu (called from HTML onclick)
+function filterMenu(category) {
+    activeCategory = category;
+    displayMenuItems(category);
 }
 
 // Add item to order
@@ -170,15 +176,21 @@ function removeItem(index) {
     updateOrderDisplay();
 }
 
-// Update totals
+// ✅ FIXED: Update totals with CORRECT IDs
 function updateTotals() {
-    const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = currentOrder.reduce((sum, item) => {
+        return sum + (parseFloat(item.price) * parseInt(item.quantity));
+    }, 0);
+    
     const serviceCharge = subtotal * 0.10;
     const total = subtotal + serviceCharge;
     
-    document.getElementById('subtotalAmount').textContent = `₵${subtotal.toFixed(2)}`;
-    document.getElementById('serviceChargeAmount').textContent = `₵${serviceCharge.toFixed(2)}`;
-    document.getElementById('totalAmount').textContent = `₵${total.toFixed(2)}`;
+    console.log('💰 Calculations:', { subtotal, serviceCharge, total });
+    
+    // ✅ USING CORRECT IDs FROM HTML
+    document.getElementById('orderSubtotal').textContent = `₵${subtotal.toFixed(2)}`;
+    document.getElementById('orderService').textContent = `₵${serviceCharge.toFixed(2)}`;
+    document.getElementById('orderTotal').textContent = `₵${total.toFixed(2)}`;
 }
 
 // Clear order
@@ -192,22 +204,40 @@ function clearOrder() {
     }
 }
 
-// Setup payment type
+// ✅ FIXED: Setup payment type with CORRECT event listener
 function setupPaymentType() {
-    const chargeToRoom = document.getElementById('chargeToRoom');
-    const cashPayment = document.getElementById('cashPayment');
+    const paymentRadios = document.querySelectorAll('input[name="paymentType"]');
+    const guestSelect = document.getElementById('guestSelect');
+    const roomSelectContainer = document.getElementById('roomSelectContainer');
+    
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'room') {
+                roomSelectContainer.style.display = 'block';
+                guestSelect.disabled = false;
+                loadActiveGuests();
+            } else {
+                roomSelectContainer.style.display = 'none';
+                guestSelect.disabled = true;
+            }
+        });
+    });
+}
+
+// ✅ NEW: Toggle guest select function (called from HTML)
+function toggleGuestSelect() {
+    const roomType = document.querySelector('input[name="paymentType"]:checked').value;
+    const roomSelectContainer = document.getElementById('roomSelectContainer');
     const guestSelect = document.getElementById('guestSelect');
     
-    chargeToRoom.addEventListener('orderSubtotal', function() {
-        guestSelect.disabled = !this.checked;
-        if (this.checked) {
-            loadActiveGuests();
-        }
-    });
-    
-    cashPayment.addEventListener('orderSubtotal', function() {
-        guestSelect.disabled = this.checked;
-    });
+    if (roomType === 'room') {
+        roomSelectContainer.style.display = 'block';
+        guestSelect.disabled = false;
+        loadActiveGuests();
+    } else {
+        roomSelectContainer.style.display = 'none';
+        guestSelect.disabled = true;
+    }
 }
 
 // Load active guests
@@ -248,7 +278,7 @@ async function processOrder() {
         return;
     }
     
-    const paymentType = document.getElementById('chargeToRoom').checked ? 'room' : 'cash';
+    const paymentType = document.querySelector('input[name="paymentType"]:checked').value;
     const guestId = document.getElementById('guestSelect').value;
     
     if (paymentType === 'room' && !guestId) {
@@ -260,6 +290,8 @@ async function processOrder() {
         const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const serviceCharge = subtotal * 0.10;
         const total = subtotal + serviceCharge;
+        
+        console.log('💳 Processing order:', { paymentType, total, items: currentOrder.length });
         
         if (paymentType === 'room') {
             // Save to guest_charges table
@@ -277,6 +309,8 @@ async function processOrder() {
                     category: item.category,
                     charge_date: new Date().toISOString()
                 };
+                
+                console.log('📝 Saving charge:', chargeData);
                 
                 const { error } = await supabase
                     .from('guest_charges')
@@ -307,10 +341,10 @@ async function processOrder() {
 // Helper functions
 function getCategoryLabel(category) {
     const labels = {
-        restaurant: '🍽️ Restaurant',
+        food: '🍽️ Food',
+        beverage: '☕ Beverage',
         bar: '🍺 Bar',
-        room_service: '🛎️ Room Service',
-        beverage: '☕ Beverage'
+        room_service: '🛎️ Room Service'
     };
     return labels[category] || category;
 }
@@ -322,34 +356,6 @@ document.getElementById('logoutBtn')?.addEventListener('click', function() {
         window.location.href = 'admin-login.html';
     }
 });
-
-// Fix the updateTotals function
-function updateTotals() {
-    const subtotal = currentOrder.reduce((sum, item) => {
-        return sum + (parseFloat(item.price) * parseInt(item.quantity));
-    }, 0);
-    
-    const serviceCharge = subtotal * 0.10;
-    const total = subtotal + serviceCharge;
-    
-    console.log('💰 Subtotal:', subtotal, 'Service:', serviceCharge, 'Total:', total);
-    
-    document.getElementById('subtotalAmount').textContent = `₵${subtotal.toFixed(2)}`;
-    document.getElementById('serviceChargeAmount').textContent = `₵${serviceCharge.toFixed(2)}`;
-    document.getElementById('totalAmount').textContent = `₵${total.toFixed(2)}`;
-}
-
-// Make sure totals update on quantity change
-function updateQuantity(index, change) {
-    currentOrder[index].quantity += change;
-    
-    if (currentOrder[index].quantity <= 0) {
-        currentOrder.splice(index, 1);
-    }
-    
-    updateOrderDisplay();
-    updateTotals(); // ADD THIS LINE
-}
 
 console.log('✅ POS module loaded');
 

@@ -145,40 +145,6 @@
         </div>
     </div>
 </div>
-        <div class="analytics-metrics">
-            <div class="metric-card">
-                <div class="metric-header">
-                    <span class="metric-label">Total Revenue</span>
-                    <span class="metric-trend up">↑ 12%</span>
-                </div>
-                <div class="metric-value" id="totalRevenue">GHS 0</div>
-                <div class="metric-footer">vs last period</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-header">
-                    <span class="metric-label">Avg Occupancy</span>
-                    <span class="metric-trend up">↑ 8%</span>
-                </div>
-                <div class="metric-value" id="avgOccupancy">0%</div>
-                <div class="metric-footer">vs last period</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-header">
-                    <span class="metric-label">Total Bookings</span>
-                    <span class="metric-trend up">↑ 15%</span>
-                </div>
-                <div class="metric-value" id="totalBookings">0</div>
-                <div class="metric-footer">vs last period</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-header">
-                    <span class="metric-label">Avg Booking Value</span>
-                    <span class="metric-trend down">↓ 3%</span>
-                </div>
-                <div class="metric-value" id="avgBookingValue">GHS 0</div>
-                <div class="metric-footer">vs last period</div>
-            </div>
-        </div>
 
         <!-- Charts Grid -->
         <div class="charts-grid">
@@ -188,7 +154,7 @@
                     <h3>Revenue Trend</h3>
                     <button class="export-chart-btn">📥</button>
                 </div>
-                <canvas id="revenueChart"></canvas>
+                <canvas id="revenueChart" style="max-height: 300px;"></canvas>
             </div>
 
             <!-- Occupancy Chart -->
@@ -196,7 +162,7 @@
                 <div class="chart-header">
                     <h3>Occupancy Rate</h3>
                 </div>
-                <canvas id="occupancyChart"></canvas>
+                <canvas id="occupancyChart" style="max-height: 250px;"></canvas>
             </div>
 
             <!-- Room Type Distribution -->
@@ -204,7 +170,7 @@
                 <div class="chart-header">
                     <h3>Bookings by Room Type</h3>
                 </div>
-                <canvas id="roomTypeChart"></canvas>
+                <canvas id="roomTypeChart" style="max-height: 250px;"></canvas>
             </div>
 
             <!-- Top Revenue Sources -->
@@ -238,6 +204,87 @@
                     <div class="insight-item">
                         <span class="insight-label">Guest Satisfaction</span>
                         <span class="insight-value">4.8 ⭐</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Restaurant & Bar Revenue Section -->
+        <div class="dashboard-section" style="margin-top: 40px;">
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px;">
+                🍽️ Restaurant & Bar Revenue
+            </h2>
+            
+            <div class="stats-grid">
+                <!-- Restaurant Revenue -->
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #ffd700, #ffed4e);">
+                        🍽️
+                    </div>
+                    <div class="stat-details">
+                        <h3>Restaurant</h3>
+                        <p class="stat-number" id="restaurantRevenue">₵0.00</p>
+                        <span class="stat-label" id="restaurantOrders">0 orders</span>
+                    </div>
+                </div>
+                
+                <!-- Bar Revenue -->
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #48bb78, #38a169);">
+                        🍺
+                    </div>
+                    <div class="stat-details">
+                        <h3>Bar</h3>
+                        <p class="stat-number" id="barRevenue">₵0.00</p>
+                        <span class="stat-label" id="barOrders">0 orders</span>
+                    </div>
+                </div>
+                
+                <!-- Room Service Revenue -->
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        🛎️
+                    </div>
+                    <div class="stat-details">
+                        <h3>Room Service</h3>
+                        <p class="stat-number" id="roomServiceRevenue">₵0.00</p>
+                        <span class="stat-label" id="roomServiceOrders">0 orders</span>
+                    </div>
+                </div>
+                
+                <!-- Beverage Revenue -->
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f6ad55, #ed8936);">
+                        ☕
+                    </div>
+                    <div class="stat-details">
+                        <h3>Beverages</h3>
+                        <p class="stat-number" id="beverageRevenue">₵0.00</p>
+                        <span class="stat-label" id="beverageOrders">0 orders</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- F&B Revenue Chart & Top Items -->
+        <div class="dashboard-section" style="margin-top: 40px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                
+                <!-- F&B Revenue by Category Chart -->
+                <div class="card">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 20px;">
+                        📊 F&B Revenue by Category
+                    </h3>
+                    <canvas id="fbRevenueChart" style="max-height: 250px;"></canvas>
+                </div>
+                
+                <!-- Top Selling Items -->
+                <div class="card">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 20px;">
+                        🏆 Top Selling Items
+                    </h3>
+                    <div id="topSellingItems">
+                        <p style="text-align: center; color: var(--text-light); padding: 20px;">Loading...</p>
                     </div>
                 </div>
             </div>
