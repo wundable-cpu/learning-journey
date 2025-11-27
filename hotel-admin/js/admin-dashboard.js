@@ -66,7 +66,7 @@ async function loadDashboardData() {
     }
 }
 
-// AUTO ROOM ALLOCATION FUNCTION
+// AUTO ROOM ALLOCATION FUNCTION - Using real Tima Sara Hotel room numbers
 async function autoAllocateRooms() {
     console.log('🤖 Auto-allocating rooms for bookings without room numbers...');
     
@@ -114,7 +114,7 @@ async function autoAllocateRooms() {
     }
 }
 
-// Find an available room for given dates and type
+// Find an available room for given dates and type - Using actual Tima Sara Hotel layout
 async function findAvailableRoom(checkIn, checkOut, roomType) {
     try {
         // Get all bookings that overlap with the requested dates
@@ -129,13 +129,36 @@ async function findAvailableRoom(checkIn, checkOut, roomType) {
         // Extract occupied room numbers
         const occupiedRooms = overlappingBookings.map(b => b.room_number);
         
-        // Define room number ranges by type
+        // ACTUAL TIMA SARA HOTEL ROOM LAYOUT
         const roomRanges = {
-            'Standard': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'],
-            'Executive': ['E01', 'E02', 'E03', 'E04', 'E05'],
-            'Deluxe': ['F03', 'G01', 'S05', 'T02', 'W09'],
-            'Royal Suite': ['RS1']
+            'Standard': [
+                '004', '005',                                    // Ground Floor
+                '102', '103', '104',                            // First Floor
+                '202', '203', '204',                            // Second Floor
+                '302', '303', '304'                             // Third Floor
+            ],  // Total: 11 Standard rooms
+            
+            'Executive': [
+                '002', '003',                                   // Ground Floor
+                '101', '105', '106',                            // First Floor
+                '201', '205', '206',                            // Second Floor
+                '301', '305', '306'                             // Third Floor
+            ],  // Total: 11 Executive rooms
+            
+            'Deluxe': [
+                '107',                                          // First Floor
+                '207',                                          // Second Floor
+                '307'                                           // Third Floor
+            ],  // Total: 3 Deluxe rooms
+            
+            'Royal Suite': [
+                '108',                                          // First Floor
+                '208',                                          // Second Floor
+                '308'                                           // Third Floor
+            ]   // Total: 3 Royal Suites
         };
+        
+        // Total: 11 + 11 + 3 + 3 = 28 rooms
         
         // Get rooms for the requested type, fallback to all rooms
         let availableRooms = roomRanges[roomType] || [];
