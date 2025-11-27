@@ -68,9 +68,14 @@ async function loadAnalyticsData() {
         // Load charts
         await loadRevenueChart(bookings, charges);
         await loadOccupancyChart(bookings);
+        await loadRoomTypeChart(bookings);
         
         // NEW: Load F&B data
         await loadFBRevenueData(charges);
+        
+        // Load additional analytics
+        await loadTopPerformingRooms(bookings);
+        await loadGuestInsights(bookings);
         
     } catch (error) {
         console.error('❌ Error loading analytics:', error);
@@ -378,6 +383,198 @@ function loadTopSellingItems(charges) {
     `;
     
     console.log('✅ Top selling items loaded');
+}
+
+// Load Room Type Distribution Chart
+async function loadRoomTypeChart(bookings) {
+    console.log('🏠 Loading room type chart...');
+    
+    try {
+        // Count bookings by room type
+        const roomTypes = {
+            'Standard': 0,
+            'Executive': 0,
+            'Deluxe': 0,
+            'Royal Suite': 0
+        };
+        
+        bookings.forEach(booking => {
+            const roomType = booking.room_type || 'Standard';
+            if (roomTypes[roomType] !== undefined) {
+                roomTypes[roomType]++;
+            }
+        });
+        
+        const ctx = document.getElementById('roomTypeChart').getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(roomTypes),
+                datasets: [{
+                    data: Object.values(roomTypes),
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 206, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(153, 102, 255)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return label + ': ' + value + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        console.log('✅ Room type chart loaded');
+        
+    } catch (error) {
+        console.error('❌ Error loading room type chart:', error);
+    }
+}
+
+// Load Top Performing Rooms
+async function loadTopPerformingRooms(bookings) {
+    console.log('🏆 Loading top performing rooms...');
+    
+    try {
+        // Calculate revenue by room
+        const roomRevenue = {};
+        
+        bookings.forEach(booking => {
+            const room = booking.room_number;
+            const revenue = parseFloat(booking.total_price || 0);
+            
+            if (!roomRevenue[room]) {
+                roomRevenue[room] = {
+                    room: room,
+                    revenue: 0,
+                    bookings: 0,
+                    type: booking.room_type || 'Standard'
+                };
+            }
+            
+            roomRevenue[room].revenue += revenue;
+            roomRevenue[room].bookings++;
+        });
+        
+        // Sort by revenue and get top 5
+        const topRooms = Object.values(roomRevenue)
+            .sort((a, b) => b.revenue - a.revenue)
+            .slice(0, 5);
+        
+        // Display
+        const container = document.getElementById('topRoomsList');
+        
+        if (topRooms.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 20px;">No bookings yet</p>';
+            return;
+        }
+        
+        container.innerHTML = topRooms.map((room, index) => `
+            <div class="top-room-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee;">
+                <div>
+                    <div style="font-weight: 600; color: var(--primary-blue);">
+                        #${index + 1} Room ${room.room}
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-light);">
+                        ${room.type} • ${room.bookings} bookings
+                    </div>
+                </div>
+                <div style="font-weight: 600; color: var(--success-green);">
+                    ₵${room.revenue.toLocaleString('en-GH', { minimumFractionDigits: 2 })}
+                </div>
+            </div>
+        `).join('');
+        
+        console.log('✅ Top performing rooms loaded');
+        
+    } catch (error) {
+        console.error('❌ Error loading top rooms:', error);
+        document.getElementById('topRoomsList').innerHTML = 
+            '<p style="text-align: center; color: #e53e3e; padding: 20px;">Error loading data</p>';
+    }
+}
+
+// Load Guest Insights
+async function loadGuestInsights(bookings) {
+    console.log('👥 Loading guest insights...');
+    
+    try {
+        // Count unique guests (new vs returning)
+        const guestCounts = {};
+        
+        bookings.forEach(booking => {
+            const guestName = booking.guest_name;
+            if (!guestCounts[guestName]) {
+                guestCounts[guestName] = 0;
+            }
+            guestCounts[guestName]++;
+        });
+        
+        // Separate new vs returning
+        let newGuests = 0;
+        let returningGuests = 0;
+        
+        Object.values(guestCounts).forEach(count => {
+            if (count === 1) {
+                newGuests++;
+            } else {
+                returningGuests++;
+            }
+        });
+        
+        // Calculate average stay duration
+        let totalNights = 0;
+        let bookingCount = 0;
+        
+        bookings.forEach(booking => {
+            const checkIn = new Date(booking.check_in);
+            const checkOut = new Date(booking.check_out);
+            const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+            
+            if (nights > 0 && nights < 365) { // Sanity check
+                totalNights += nights;
+                bookingCount++;
+            }
+        });
+        
+        const avgStayDuration = bookingCount > 0 ? (totalNights / bookingCount).toFixed(1) : 0;
+        
+        // Update display
+        document.getElementById('newGuestsCount').textContent = newGuests;
+        document.getElementById('returningGuestsCount').textContent = returningGuests;
+        document.getElementById('avgStayDuration').textContent = avgStayDuration + ' nights';
+        
+        console.log('✅ Guest insights loaded:', { newGuests, returningGuests, avgStayDuration });
+        
+    } catch (error) {
+        console.error('❌ Error loading guest insights:', error);
+    }
 }
 
 // Logout
