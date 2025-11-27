@@ -9,6 +9,7 @@
 .view-switcher {
     display: flex;
     gap: 10px;
+    margin-bottom: 20px;
 }
 
 .view-btn {
@@ -38,46 +39,172 @@
     color: white;
 }
 
-<style>
-/* Fix sticky room column */
-.room-cell {
-    position: sticky;
-    left: 0;
+/* Calendar Styles */
+.calendar-module {
     background: white;
-    font-weight: 700;
-    border-right: 3px solid var(--border-color);
-    z-index: 10;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Fix sticky header row */
-.calendar-table thead {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: white;
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e2e8f0;
 }
 
-.calendar-table thead th {
-    position: sticky;
-    top: 0;
-    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+.nav-arrow {
+    background: #667eea;
     color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-arrow:hover {
+    background: #5568d3;
+    transform: scale(1.05);
+}
+
+.month-year {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a365d;
+}
+
+.legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.color-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid #e2e8f0;
+}
+
+.color-box.available {
+    background: white;
+}
+
+.color-box.confirmed {
+    background: #48bb78;
+}
+
+.color-box.pending {
+    background: #ed8936;
+}
+
+.color-box.checked-in {
+    background: #4299e1;
+}
+
+.color-box.checked-out {
+    background: #718096;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.calendar-table th {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(135deg, #1a365d, #2d3748);
+    color: white;
+    padding: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 11px;
+    min-width: 80px;
     z-index: 15;
 }
 
-/* Room cell in header should be extra sticky */
-.calendar-table thead th:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 25;
+.calendar-table td {
+    padding: 4px;
+    border: 1px solid #e2e8f0;
+    min-height: 60px;
+    vertical-align: top;
+    background: white;
 }
-</style>
+
+/* Sticky room column */
+.room-cell {
+    position: sticky !important;
+    left: 0 !important;
+    background: white !important;
+    z-index: 20 !important;
+    font-weight: 700 !important;
+    border-right: 3px solid #e2e8f0 !important;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05) !important;
+}
+
+.calendar-table thead th:first-child {
+    z-index: 25 !important;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-confirmed {
+    background: #48bb78;
+    color: white;
+}
+
+.status-pending {
+    background: #ed8936;
+    color: white;
+}
+
+.status-checked-in {
+    background: #4299e1;
+    color: white;
+}
+
+.status-checked-out {
+    background: #718096;
+    color: white;
+}
+
+.status-cancelled {
+    background: #f56565;
+    color: white;
+}
 </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
-      <aside class="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">
             <a href="https://timasarahotel.com" target="_blank" style="text-decoration: none; color: inherit;">
             <img src="../images/tima_sara_logo.png" alt="Tima Sara Hotel" class="sidebar-logo">
@@ -86,12 +213,13 @@
             </a>
             <h2>TIMA SARA<br><span>HOTEL</span></h2>
         </div>
-    <nav class="sidebar-nav">
+
+        <nav class="sidebar-nav">
             <a href="admin-dashboard.html" class="nav-item">
                 <span class="nav-icon">📊</span>
                 <span>Dashboard</span>
             </a>
-            <a href="admin-reservations.html" class="nav-item">
+            <a href="admin-reservations.html" class="nav-item active">
                 <span class="nav-icon">📅</span>
                 <span>Reservations</span>
             </a>
@@ -123,24 +251,28 @@
                 <span class="nav-icon">💰</span>
                 <span>Invoices</span>
             </a>
+            <a href="admin-communications.html" class="nav-item">
+                <span class="nav-icon">📧</span>
+                <span>Communications</span>
+            </a>
             <a href="admin-settings.html" class="nav-item">
                 <span class="nav-icon">⚙️</span>
                 <span>Settings</span>
             </a>
         </nav>
 
-         <div class="sidebar-footer">
+        <div class="sidebar-footer">
             <button id="logoutBtn" class="logout-btn">
                 <span class="nav-icon">🚪</span>
                 <span>Logout</span>
             </button>
-         </div>
+        </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
         <header class="top-bar">
-            
+            <div class="top-bar-left">
                 <h1 class="page-title">Reservations - Calendar View</h1>
             </div>
             <div class="top-bar-right">
@@ -150,6 +282,7 @@
                 </div>
             </div>
         </header>
+
         <!-- View Switcher -->
         <div class="view-switcher">
             <a href="admin-reservations.html" class="view-btn">
@@ -176,25 +309,10 @@
                     </div>
                 </div>
 
-                <!-- Calendar Grid -->
-                <div class="calendar-grid">
-                    <!-- Header Row -->
-                    <div class="grid-header">
-                        <div class="grid-cell room-label-col">ROOM NO</div>
-                        <div class="grid-cell day-label">MON</div>
-                        <div class="grid-cell day-label">TUE</div>
-                        <div class="grid-cell day-label">WED</div>
-                        <div class="grid-cell day-label">THU</div>
-                        <div class="grid-cell day-label">FRI</div>
-                        <div class="grid-cell day-label">SAT</div>
-                        <div class="grid-cell day-label">SUN</div>
-                    </div>
-
-                    <!-- Calendar Body (will be populated by JavaScript) -->
-                    <div class="calendar-body" id="calendarBody">
-                        <div style="text-align: center; padding: 40px; color: #a0aec0;">
-                            Loading calendar...
-                        </div>
+                <!-- Calendar Grid (Generated by JavaScript) -->
+                <div class="calendar-grid" id="calendarBody">
+                    <div style="text-align: center; padding: 40px; color: #a0aec0;">
+                        Loading calendar...
                     </div>
                 </div>
             </div>

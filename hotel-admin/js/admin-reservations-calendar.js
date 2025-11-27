@@ -27,7 +27,7 @@ async function loadRoomsAndBookings() {
     console.log('📡 Loading rooms and bookings...');
     
     try {
-        // Load all bookings first
+        // Load all bookings
         const { data: bookings, error } = await supabase
             .from('bookings')
             .select('*')
@@ -41,28 +41,29 @@ async function loadRoomsAndBookings() {
         // Extract unique room numbers from bookings
         const roomNumbers = [...new Set(allBookings.map(b => b.room_number))].filter(r => r);
         
-        // Create room objects
-        allRooms = roomNumbers.sort().map(roomNum => ({
+        // Create room objects sorted
+        allRooms = roomNumbers.sort((a, b) => {
+            const numA = parseInt(a);
+            const numB = parseInt(b);
+            if (!isNaN(numA) && !isNaN(numB)) {
+                return numA - numB;
+            }
+            return a.localeCompare(b);
+        }).map(roomNum => ({
             id: roomNum,
             room_number: roomNum
         }));
         
-        // If no rooms found in bookings, create default room list
+        // If no rooms found, create default list
         if (allRooms.length === 0) {
-            allRooms = [
-                { id: 'G01', room_number: 'G01' },
-                { id: 'F03', room_number: 'F03' },
-                { id: 'S05', room_number: 'S05' },
-                { id: 'T02', room_number: 'T02' },
-                { id: 'E01', room_number: 'E01' },
-                { id: 'D01', room_number: 'D01' },
-                { id: 'R01', room_number: 'R01' }
-            ];
+            allRooms = Array.from({ length: 28 }, (_, i) => ({
+                id: (i + 1).toString(),
+                room_number: (i + 1).toString()
+            }));
         }
         
-        console.log(`✅ Found ${allRooms.length} unique rooms`);
+        console.log(`✅ Found ${allRooms.length} rooms`);
         
-        // Load bookings for current month
         await loadBookingsForMonth();
         
     } catch (error) {
@@ -74,11 +75,9 @@ async function loadRoomsAndBookings() {
 // Load bookings for the current displayed month
 async function loadBookingsForMonth() {
     try {
-        // Get first and last day of current month
         const firstDay = new Date(currentYear, currentMonth, 1);
         const lastDay = new Date(currentYear, currentMonth + 1, 0);
         
-        // Extend range to catch overlapping bookings
         const startDate = new Date(firstDay);
         startDate.setDate(startDate.getDate() - 7);
         
@@ -103,7 +102,7 @@ async function loadBookingsForMonth() {
     }
 }
 
-// Render the calendar
+// Render the calendar with horizontal scroll (like the sample image)
 function renderCalendar() {
     console.log('🎨 Rendering calendar...');
     
@@ -116,141 +115,260 @@ function renderCalendar() {
     }
     
     // Update month/year display
-    monthYearDisplay.textContent = new Date(currentYear, currentMonth).toLocaleString('en-US', { 
+    const monthName = new Date(currentYear, currentMonth).toLocaleString('en-US', { 
         month: 'long', 
         year: 'numeric' 
     }).toUpperCase();
+    monthYearDisplay.textContent = monthName;
     
-    // Clear previous calendar
-    calendarBody.innerHTML = '';
+    // Get calendar data - Start exactly on the 1st of the month
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
     
-    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-    const firstDayIndex = getFirstDayOfMonth(currentMonth, currentYear);
-    const prevMonthDays = getDaysInMonth(currentMonth - 1, currentYear);
+    // Start date is exactly the 1st of the month
+    const startDate = new Date(currentYear, currentMonth, 1);
     
-    // Render each room as a row
-    allRooms.forEach(room => {
-        const roomRow = document.createElement('div');
-        roomRow.classList.add('calendar-room-row');
-        roomRow.dataset.roomId = room.id;
+    // Show the full month (from 1st to last day)
+    const totalDaysToShow = daysInMonth;
+    
+    // Create scrollable container with table
+    let html = '<div style="overflow-x: auto; max-width: 100%; border: 1px solid #e2e8f0; border-radius: 8px;">';
+    html += '<table style="border-collapse: collapse; min-width: 100%; background: white;">';
+    
+    // Create header row
+    html += '<thead><tr>';
+    
+    // Sticky room header
+    html += `<th style="
+        position: sticky;
+        left: 0;
+        background: #1a365d;
+        color: white;
+        padding: 16px 20px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 13px;
+        border: 1px solid #2d3748;
+        z-index: 30;
+        min-width: 120px;
+        max-width: 120px;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+    ">ROOM</th>`;
+    
+    // Date headers - start from the actual day the 1st falls on
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const firstDayOfWeek = firstDayOfMonth.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    for (let i = 0; i < totalDaysToShow; i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
         
-        // Room number cell
-        const roomNumberCell = document.createElement('div');
-        roomNumberCell.classList.add('grid-cell', 'room-number-cell');
-        roomNumberCell.textContent = room.room_number;
-        roomRow.appendChild(roomNumberCell);
+        // Calculate correct day name
+        const dayIndex = (firstDayOfWeek + i) % 7;
+        const dayName = dayNames[dayIndex];
+        const dateNum = currentDate.getDate();
         
-        // Previous month days (grayed out)
-        for (let i = 0; i < firstDayIndex; i++) {
-            const dayCell = document.createElement('div');
-            dayCell.classList.add('grid-cell', 'date-cell', 'day-off-month');
-            dayCell.innerHTML = `<span class="date-num">${prevMonthDays - firstDayIndex + i + 1}</span>`;
-            roomRow.appendChild(dayCell);
-        }
+        const headerBg = 'linear-gradient(135deg, #1a365d, #2d3748)';
         
-        // Current month days
-        for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(currentYear, currentMonth, day);
-            const dayCell = createDayCell(date, room);
-            roomRow.appendChild(dayCell);
-        }
+        html += `<th style="
+            padding: 12px;
+            text-align: center;
+            font-size: 11px;
+            border: 1px solid #2d3748;
+            background: ${headerBg};
+            color: white;
+            min-width: 100px;
+            max-width: 100px;
+            white-space: nowrap;
+        ">
+            <div style="font-weight: 600; letter-spacing: 0.5px;">${dayName}</div>
+            <div style="font-size: 18px; font-weight: 700; margin-top: 4px;">${dateNum}</div>
+        </th>`;
+    }
+    
+    html += '</tr></thead>';
+    
+    // Create body with rooms
+    html += '<tbody>';
+    
+    allRooms.forEach((room, rowIndex) => {
+        const rowBg = rowIndex % 2 === 0 ? '#ffffff' : '#f8fafc';
         
-        // Next month days (to fill the week)
-        const totalCells = firstDayIndex + daysInMonth;
-        const remainingCells = 7 - (totalCells % 7);
-        if (remainingCells < 7) {
-            for (let i = 1; i <= remainingCells; i++) {
-                const dayCell = document.createElement('div');
-                dayCell.classList.add('grid-cell', 'date-cell', 'day-off-month');
-                dayCell.innerHTML = `<span class="date-num">${i}</span>`;
-                roomRow.appendChild(dayCell);
+        html += '<tr>';
+        
+        // Sticky room cell
+        html += `<td style="
+            position: sticky;
+            left: 0;
+            background: ${rowBg};
+            padding: 18px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            border: 1px solid #e2e8f0;
+            z-index: 20;
+            min-width: 120px;
+            max-width: 120px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.08);
+        ">
+            <div style="color: #2d3748;">Room ${room.room_number}</div>
+        </td>`;
+        
+        // Date cells
+        for (let i = 0; i < totalDaysToShow; i++) {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
+            const dateStr = currentDate.toISOString().split('T')[0];
+            
+            // Find bookings for this room and date
+            const dayBookings = allBookings.filter(booking => {
+                if (booking.room_number !== room.room_number) return false;
+                
+                const checkIn = new Date(booking.check_in);
+                const checkOut = new Date(booking.check_out);
+                
+                checkIn.setHours(0, 0, 0, 0);
+                checkOut.setHours(0, 0, 0, 0);
+                currentDate.setHours(0, 0, 0, 0);
+                
+                return currentDate >= checkIn && currentDate < checkOut;
+            });
+            
+            let cellContent = '';
+            let cellBg = rowBg; // Use alternating row background
+            let cellStyle = `
+                padding: 0;
+                text-align: center;
+                vertical-align: middle;
+                border: 1px solid #e2e8f0;
+                min-width: 100px;
+                max-width: 100px;
+                height: 70px;
+                background: ${cellBg};
+            `;
+            
+            // Display booking info
+            if (dayBookings.length > 0) {
+                const booking = dayBookings[0];
+                const checkInDate = new Date(booking.check_in);
+                checkInDate.setHours(0, 0, 0, 0);
+                
+                const isFirstDay = currentDate.getTime() === checkInDate.getTime();
+                
+                // Status colors matching sample
+                const statusColors = {
+                    'confirmed': '#48bb78',      // Green
+                    'pending': '#ed8936',        // Orange
+                    'checked-in': '#4299e1',     // Blue
+                    'checked-out': '#718096',    // Gray
+                    'cancelled': '#f56565'       // Red
+                };
+                
+                const bgColor = statusColors[booking.status] || '#cbd5e0';
+                
+                if (isFirstDay) {
+                    // Show guest name on first day - centered and visible
+                    const firstName = booking.guest_name.split(' ')[0];
+                    const guestInitials = booking.guest_name.split(' ').map(n => n[0]).join('');
+                    
+                    cellContent = `
+                        <div onclick='showBookingDetails(${JSON.stringify(booking).replace(/'/g, "&apos;")})' 
+                             style="
+                                height: 100%;
+                                width: 100%;
+                                background: ${bgColor};
+                                color: white;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                cursor: pointer;
+                                transition: opacity 0.2s;
+                                padding: 8px 4px;
+                             "
+                             onmouseover="this.style.opacity='0.85'"
+                             onmouseout="this.style.opacity='1'"
+                             title="Click for details: ${booking.guest_name}">
+                            <div style="font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center;">
+                                ${firstName}
+                            </div>
+                            <div style="font-size: 10px; margin-top: 4px; opacity: 0.9; font-weight: 500;">
+                                ${guestInitials}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Continuation of booking - just colored background, clickable
+                    cellContent = `
+                        <div onclick='showBookingDetails(${JSON.stringify(booking).replace(/'/g, "&apos;")})' 
+                             style="
+                                height: 100%;
+                                width: 100%;
+                                background: ${bgColor};
+                                cursor: pointer;
+                                transition: opacity 0.2s;
+                             "
+                             onmouseover="this.style.opacity='0.85'"
+                             onmouseout="this.style.opacity='1'"
+                             title="Click for details: ${booking.guest_name}">
+                        </div>
+                    `;
+                }
             }
+            
+            html += `<td style="${cellStyle}">${cellContent}</td>`;
         }
         
-        calendarBody.appendChild(roomRow);
+        html += '</tr>';
     });
+    
+    html += '</tbody></table></div>';
+    
+    calendarBody.innerHTML = html;
     
     console.log('✅ Calendar rendered');
 }
 
-// Create a day cell with booking information
-function createDayCell(date, room) {
-    const dayCell = document.createElement('div');
-    dayCell.classList.add('grid-cell', 'date-cell');
-    dayCell.innerHTML = `<span class="date-num">${date.getDate()}</span>`;
-    dayCell.dataset.date = date.toISOString().split('T')[0];
-    dayCell.dataset.roomId = room.id;
-    
-    // Find bookings for this room
-    const roomBookings = allBookings.filter(booking => 
-        booking.room_number === room.room_number
-    );
-    
-    // Check each booking
-    roomBookings.forEach(booking => {
-        const checkIn = new Date(booking.check_in);
-        const checkOut = new Date(booking.check_out);
-        
-        // Normalize to start of day
-        const dateDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        const checkInDay = new Date(checkIn.getFullYear(), checkIn.getMonth(), checkIn.getDate());
-        const checkOutDay = new Date(checkOut.getFullYear(), checkOut.getMonth(), checkOut.getDate());
-        
-        // Check if this date falls within the booking
-        if (dateDay >= checkInDay && dateDay < checkOutDay) {
-            const bookingStrip = document.createElement('div');
-            bookingStrip.classList.add('booking-strip', booking.status);
-            bookingStrip.title = `${booking.guest_name} - ${booking.booking_reference}`;
-            
-            // Show guest name only on first day
-            if (dateDay.getTime() === checkInDay.getTime()) {
-                bookingStrip.textContent = booking.guest_name;
-            }
-            
-            // Click handler
-            bookingStrip.addEventListener('click', (e) => {
-                e.stopPropagation();
-                showBookingDetails(booking);
-            });
-            
-            dayCell.appendChild(bookingStrip);
-        }
-    });
-    
-    return dayCell;
-}
-
-// Show booking details
+// Show booking details in alert (matching the detailed format)
 function showBookingDetails(booking) {
     const checkIn = new Date(booking.check_in).toLocaleDateString('en-GB');
     const checkOut = new Date(booking.check_out).toLocaleDateString('en-GB');
+    const nights = Math.ceil((new Date(booking.check_out) - new Date(booking.check_in)) / (1000 * 60 * 60 * 24));
     
-    alert(`
-📋 Booking Details
+    const details = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 BOOKING DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Guest: ${booking.guest_name}
-Reference: ${booking.booking_reference}
-Room: ${booking.room_number} (${booking.room_type})
-Check-in: ${checkIn}
-Check-out: ${checkOut}
-Status: ${booking.status.toUpperCase()}
-Total: ₵${parseFloat(booking.total_price).toFixed(2)}
-    `);
-}
+🔖 Reference: ${booking.booking_reference}
+👤 Guest Name: ${booking.guest_name}
+📧 Email: ${booking.guest_email}
+📞 Phone: ${booking.guest_phone}
 
-// Helper functions
-function getDaysInMonth(month, year) {
-    return new Date(year, month + 1, 0).getDate();
-}
+🏠 Room Number: ${booking.room_number}
+🛏️  Room Type: ${booking.room_type}
 
-function getFirstDayOfMonth(month, year) {
-    let day = new Date(year, month, 1).getDay();
-    return day === 0 ? 6 : day - 1; // Monday = 0, Sunday = 6
+📅 Check-In: ${checkIn}
+📅 Check-Out: ${checkOut}
+🌙 Duration: ${nights} Night(s)
+
+👥 Guests: ${booking.num_adults} Adult(s)${booking.num_children ? ', ' + booking.num_children + ' Child(ren)' : ''}
+
+💰 Total Price: ₵${parseFloat(booking.total_price).toLocaleString('en-GH', { minimumFractionDigits: 2 })}
+
+🏷️  Status: ${booking.status.toUpperCase()}
+
+${booking.special_requests ? `📝 Special Requests:\n${booking.special_requests}` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    `.trim();
+    
+    alert(details);
 }
 
 // Setup navigation
 function setupNavigation() {
-    document.getElementById('prevMonth').addEventListener('click', async () => {
+    document.getElementById('prevMonth')?.addEventListener('click', async () => {
         currentMonth--;
         if (currentMonth < 0) {
             currentMonth = 11;
@@ -260,7 +378,7 @@ function setupNavigation() {
         renderCalendar();
     });
     
-    document.getElementById('nextMonth').addEventListener('click', async () => {
+    document.getElementById('nextMonth')?.addEventListener('click', async () => {
         currentMonth++;
         if (currentMonth > 11) {
             currentMonth = 0;

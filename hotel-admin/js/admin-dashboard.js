@@ -1,159 +1,407 @@
-// Use global Supabase client
-const supabase = window.supabase_client || (() => {
-    console.error('❌ Supabase not initialized!');
-    return null;
-})();
+console.log('📊 Dashboard module loading...');
+
+const supabase = window.supabase_client;
+const TOTAL_ROOMS = 28;
 
 // Initialize dashboard
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('📊 Dashboard loading...');
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('✅ Dashboard page loaded');
     
     if (!supabase) {
         alert('Database connection failed. Please refresh.');
         return;
     }
     
-    loadDashboardData();
+    // Update current time and date
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    // Load all dashboard data
+    await loadDashboardData();
+    
+    // Setup logout
+    setupLogout();
 });
 
+// Update current date and time display
+function updateDateTime() {
+    const now = new Date();
+    
+    // Update time (e.g., "10:30 AM")
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+    document.getElementById('currentTime').textContent = `${displayHours}:${displayMinutes} ${ampm}`;
+    
+    // Update date (e.g., "WED, NOV 27, 2024")
+    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const dayName = days[now.getDay()];
+    const monthName = months[now.getMonth()];
+    const date = now.getDate();
+    const year = now.getFullYear();
+    document.getElementById('currentDate').textContent = `${dayName}, ${monthName} ${date}, ${year}`;
+}
+
+// Load all dashboard data
 async function loadDashboardData() {
     console.log('📡 Loading dashboard data...');
     
     try {
-        // Load room stats
-        await loadRoomStats();
+        // Load all data in parallel
+        await Promise.all([
+            loadRoomStatus(),
+            loadUpcomingArrivals(),
+            loadDeparturesToday(),
+            loadOccupancyOverview(),
+            loadMonthlyOccupancyTrend()
+        ]);
         
-        // Load monthly occupancy trend
-        await loadMonthlyOccupancyTrend();
-        
-        console.log('✅ Dashboard data loaded');
+        console.log('✅ Dashboard data loaded successfully');
         
     } catch (error) {
-        console.error('❌ Error loading dashboard:', error);
+        console.error('❌ Error loading dashboard data:', error);
     }
 }
 
-// Load room statistics
-async function loadRoomStats() {
-    console.log('📊 Loading room stats...');
+// AUTO ROOM ALLOCATION FUNCTION
+async function autoAllocateRooms() {
+    console.log('🤖 Auto-allocating rooms for bookings without room numbers...');
     
     try {
-        // Get all bookings
-        const { data: bookings, error } = await supabase
+        // Get all confirmed bookings without room numbers
+        const { data: unallocatedBookings, error: fetchError } = await supabase
             .from('bookings')
-            .select('*');
+            .select('*')
+            .is('room_number', null)
+            .eq('status', 'confirmed')
+            .order('check_in');
+        
+        if (fetchError) throw fetchError;
+        
+        if (!unallocatedBookings || unallocatedBookings.length === 0) {
+            console.log('✅ No bookings need room allocation');
+            return;
+        }
+        
+        console.log(`📋 Found ${unallocatedBookings.length} bookings needing room allocation`);
+        
+        // Process each booking
+        for (const booking of unallocatedBookings) {
+            const roomNumber = await findAvailableRoom(booking.check_in, booking.check_out, booking.room_type);
+            
+            if (roomNumber) {
+                // Update booking with allocated room
+                const { error: updateError } = await supabase
+                    .from('bookings')
+                    .update({ room_number: roomNumber })
+                    .eq('id', booking.id);
+                
+                if (updateError) {
+                    console.error(`❌ Error allocating room ${roomNumber} to booking ${booking.id}:`, updateError);
+                } else {
+                    console.log(`✅ Allocated Room ${roomNumber} to ${booking.guest_name} (${booking.booking_reference})`);
+                }
+            } else {
+                console.warn(`⚠️ No available room for ${booking.guest_name} (${booking.room_type})`);
+            }
+        }
+        
+    } catch (error) {
+        console.error('❌ Error in auto room allocation:', error);
+    }
+}
+
+// Find an available room for given dates and type
+async function findAvailableRoom(checkIn, checkOut, roomType) {
+    try {
+        // Get all bookings that overlap with the requested dates
+        const { data: overlappingBookings, error } = await supabase
+            .from('bookings')
+            .select('room_number')
+            .not('room_number', 'is', null)
+            .or(`and(check_in.lt.${checkOut},check_out.gt.${checkIn})`);
         
         if (error) throw error;
         
+        // Extract occupied room numbers
+        const occupiedRooms = overlappingBookings.map(b => b.room_number);
+        
+        // Define room number ranges by type
+        const roomRanges = {
+            'Standard': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'],
+            'Executive': ['E01', 'E02', 'E03', 'E04', 'E05'],
+            'Deluxe': ['F03', 'G01', 'S05', 'T02', 'W09'],
+            'Royal Suite': ['RS1']
+        };
+        
+        // Get rooms for the requested type, fallback to all rooms
+        let availableRooms = roomRanges[roomType] || [];
+        
+        // If no specific type, use all rooms
+        if (availableRooms.length === 0) {
+            availableRooms = Object.values(roomRanges).flat();
+        }
+        
+        // Find first available room
+        for (const room of availableRooms) {
+            if (!occupiedRooms.includes(room)) {
+                return room;
+            }
+        }
+        
+        // If no room of preferred type, try any available room
+        const allRooms = Object.values(roomRanges).flat();
+        for (const room of allRooms) {
+            if (!occupiedRooms.includes(room)) {
+                console.log(`⚠️ Allocated ${room} (different type) for ${roomType} request`);
+                return room;
+            }
+        }
+        
+        return null; // No rooms available
+        
+    } catch (error) {
+        console.error('Error finding available room:', error);
+        return null;
+    }
+}
+
+// Load room status (Available, Occupied, etc.)
+async function loadRoomStatus() {
+    try {
         const today = new Date().toISOString().split('T')[0];
         
-        // Calculate stats
-        const occupiedRooms = bookings.filter(b => 
-            b.check_in <= today && b.check_out >= today && 
-            (b.status === 'confirmed' || b.status === 'checked-in')
-        ).length;
+        // Get today's bookings (checked-in or overlapping)
+        const { data: bookings, error } = await supabase
+            .from('bookings')
+            .select('room_number, status')
+            .or(`and(check_in.lte.${today},check_out.gt.${today})`);
         
-        const totalRooms = 28;
-        const availableRooms = totalRooms - occupiedRooms;
-        const occupancyRate = ((occupiedRooms / totalRooms) * 100).toFixed(0);
+        if (error) throw error;
         
-        // Update UI
-        document.getElementById('availableRooms').textContent = availableRooms;
-        document.getElementById('occupiedRooms').textContent = occupiedRooms;
-        document.getElementById('occupiedCount').textContent = occupiedRooms;
-        document.getElementById('progressText').textContent = occupancyRate + '%';
+        // Count by status
+        const checkedInRooms = bookings.filter(b => b.status === 'checked-in' && b.room_number).length;
+        const confirmedRooms = bookings.filter(b => b.status === 'confirmed' && b.room_number).length;
+        const occupiedCount = checkedInRooms;
+        const reservedCount = confirmedRooms;
+        const availableCount = TOTAL_ROOMS - occupiedCount - reservedCount;
         
-        // Update circular progress
+        // Update display
+        document.getElementById('availableRooms').textContent = availableCount;
+        document.getElementById('occupiedRooms').textContent = occupiedCount;
+        document.getElementById('reservedRooms').textContent = reservedCount;
+        
+        console.log(`✅ Room Status: ${availableCount} available, ${occupiedCount} occupied, ${reservedCount} reserved`);
+        
+        // Auto-allocate rooms for bookings without room numbers
+        await autoAllocateRooms();
+        
+    } catch (error) {
+        console.error('Error loading room status:', error);
+    }
+}
+
+// Load upcoming arrivals (today's check-ins)
+async function loadUpcomingArrivals() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        
+        const { data: arrivals, error } = await supabase
+            .from('bookings')
+            .select('*')
+            .eq('check_in', today)
+            .in('status', ['confirmed', 'pending'])
+            .order('created_at')
+            .limit(5);
+        
+        if (error) throw error;
+        
+        const arrivalsList = document.getElementById('arrivalsList');
+        
+        if (!arrivals || arrivals.length === 0) {
+            arrivalsList.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: #718096;">
+                    No arrivals scheduled for today
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        arrivals.forEach(booking => {
+            const checkInTime = new Date(booking.check_in + 'T14:00:00').toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit', 
+                hour12: true 
+            });
+            
+            html += `
+                <div class="arrival-item">
+                    <div class="arrival-info">
+                        <span class="guest-name">Guest: ${booking.guest_name}</span>
+                        <span class="room-number">Room: ${booking.room_number || 'TBA'}</span>
+                    </div>
+                    <div class="arrival-time">${checkInTime}</div>
+                </div>
+            `;
+        });
+        
+        arrivalsList.innerHTML = html;
+        console.log(`✅ Loaded ${arrivals.length} upcoming arrivals`);
+        
+    } catch (error) {
+        console.error('Error loading arrivals:', error);
+    }
+}
+
+// Load departures today (today's check-outs)
+async function loadDeparturesToday() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        
+        const { data: departures, error } = await supabase
+            .from('bookings')
+            .select('*')
+            .eq('check_out', today)
+            .eq('status', 'checked-in')
+            .order('created_at')
+            .limit(5);
+        
+        if (error) throw error;
+        
+        const departuresList = document.getElementById('departuresList');
+        
+        if (!departures || departures.length === 0) {
+            departuresList.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: #718096;">
+                    No departures scheduled for today
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        departures.forEach(booking => {
+            const checkOutTime = new Date(booking.check_out + 'T11:00:00').toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit', 
+                hour12: true 
+            });
+            
+            html += `
+                <div class="departure-item">
+                    <div class="departure-info">
+                        <span class="guest-name">Guest: ${booking.guest_name}</span>
+                        <span class="room-number">Room: ${booking.room_number || 'N/A'}</span>
+                    </div>
+                    <div class="departure-time">${checkOutTime}</div>
+                </div>
+            `;
+        });
+        
+        departuresList.innerHTML = html;
+        console.log(`✅ Loaded ${departures.length} departures today`);
+        
+    } catch (error) {
+        console.error('Error loading departures:', error);
+    }
+}
+
+// Load occupancy overview
+async function loadOccupancyOverview() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Get current occupancy
+        const { data: occupiedBookings, error: occError } = await supabase
+            .from('bookings')
+            .select('room_number')
+            .eq('status', 'checked-in')
+            .lte('check_in', today)
+            .gt('check_out', today);
+        
+        if (occError) throw occError;
+        
+        const occupiedCount = occupiedBookings?.length || 0;
+        const occupancyRate = Math.round((occupiedCount / TOTAL_ROOMS) * 100);
+        
+        // Update display
+        document.getElementById('occupiedCount').textContent = occupiedCount;
+        document.getElementById('progressText').textContent = `${occupancyRate}%`;
+        
+        // Update SVG circle
         const circle = document.getElementById('progressCircle');
         const radius = 54;
         const circumference = 2 * Math.PI * radius;
         const offset = circumference - (occupancyRate / 100) * circumference;
-        circle.style.strokeDasharray = `${circumference} ${circumference}`;
-        circle.style.strokeDashoffset = offset;
+        circle.style.strokeDasharray = `${circumference}`;
+        circle.style.strokeDashoffset = `${offset}`;
         
-        console.log('✅ Room stats loaded:', { occupiedRooms, availableRooms, occupancyRate });
+        // Get today's check-ins and check-outs count
+        const { data: checkIns, error: ciError } = await supabase
+            .from('bookings')
+            .select('id')
+            .eq('check_in', today);
+        
+        const { data: checkOuts, error: coError } = await supabase
+            .from('bookings')
+            .select('id')
+            .eq('check_out', today);
+        
+        document.getElementById('checkInsToday').textContent = checkIns?.length || 0;
+        document.getElementById('checkOutsToday').textContent = checkOuts?.length || 0;
+        
+        console.log(`✅ Occupancy: ${occupiedCount}/${TOTAL_ROOMS} (${occupancyRate}%)`);
         
     } catch (error) {
-        console.error('❌ Error loading room stats:', error);
+        console.error('Error loading occupancy:', error);
     }
 }
 
-// NEW: Load Monthly Occupancy Trend Chart (Last 12 Months)
+// Load monthly occupancy trend (last 12 months)
 async function loadMonthlyOccupancyTrend() {
-    console.log('📊 Loading monthly occupancy trend...');
-    
     try {
-        const months = [];
+        const monthLabels = [];
         const occupancyData = [];
-        const totalRooms = 28;
         
-        // Get last 12 months
+        // Calculate for last 12 months
         for (let i = 11; i >= 0; i--) {
             const date = new Date();
             date.setMonth(date.getMonth() - i);
+            
             const year = date.getFullYear();
             const month = date.getMonth();
-            const monthKey = date.toISOString().slice(0, 7); // YYYY-MM
+            const monthName = date.toLocaleString('en-US', { month: 'short' });
+            const yearShort = date.getFullYear().toString().slice(-2);
             
-            // Get days in this month
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            monthLabels.push(`${monthName} '${yearShort}`);
             
-            // Get all bookings that overlap with this month
-            const { data: bookings, error } = await supabase
-                .from('bookings')
-                .select('*')
-                .or(`and(check_in.lte.${monthKey}-${daysInMonth},check_out.gte.${monthKey}-01)`)
-                .in('status', ['confirmed', 'checked-in']);
-            
-            if (error) throw error;
-            
-            // Calculate total occupied room-nights for this month
-            let occupiedRoomNights = 0;
-            
-            bookings.forEach(booking => {
-                const checkIn = new Date(booking.check_in);
-                const checkOut = new Date(booking.check_out);
-                const monthStart = new Date(year, month, 1);
-                const monthEnd = new Date(year, month + 1, 0);
-                
-                // Find overlap between booking and this month
-                const overlapStart = checkIn > monthStart ? checkIn : monthStart;
-                const overlapEnd = checkOut < monthEnd ? checkOut : monthEnd;
-                
-                // Calculate nights in this month
-                const nights = Math.max(0, Math.ceil((overlapEnd - overlapStart) / (1000 * 60 * 60 * 24)));
-                occupiedRoomNights += nights;
-            });
-            
-            // Total available room-nights = total rooms × days in month
-            const availableRoomNights = totalRooms * daysInMonth;
-            
-            // Calculate occupancy rate
-            const occupancyRate = (occupiedRoomNights / availableRoomNights) * 100;
-            
-            months.push(date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }));
-            occupancyData.push(occupancyRate.toFixed(1));
+            // Calculate occupancy for this month
+            const occupancy = await calculateMonthOccupancy(year, month);
+            occupancyData.push(occupancy);
         }
         
         // Create chart
         const ctx = document.getElementById('monthlyOccupancyChart').getContext('2d');
+        
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: months,
+                labels: monthLabels,
                 datasets: [{
                     label: 'Occupancy Rate (%)',
                     data: occupancyData,
                     borderColor: '#d4af37',
                     backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                    borderWidth: 3,
                     tension: 0.4,
                     fill: true,
                     pointRadius: 5,
                     pointBackgroundColor: '#d4af37',
                     pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 7
+                    pointBorderWidth: 2
                 }]
             },
             options: {
@@ -166,7 +414,7 @@ async function loadMonthlyOccupancyTrend() {
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return 'Occupancy: ' + context.parsed.y + '%';
+                                return `Occupancy: ${context.parsed.y.toFixed(1)}%`;
                             }
                         }
                     }
@@ -176,18 +424,10 @@ async function loadMonthlyOccupancyTrend() {
                         beginAtZero: true,
                         max: 100,
                         ticks: {
+                            stepSize: 20,
                             callback: function(value) {
                                 return value + '%';
-                            },
-                            stepSize: 20
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
+                            }
                         }
                     }
                 }
@@ -197,16 +437,66 @@ async function loadMonthlyOccupancyTrend() {
         console.log('✅ Monthly occupancy trend loaded');
         
     } catch (error) {
-        console.error('❌ Error loading monthly occupancy trend:', error);
+        console.error('Error loading monthly trend:', error);
     }
 }
 
-// Logout
-document.getElementById('logoutBtn')?.addEventListener('click', function() {
-    if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('hms_user');
-        window.location.href = 'admin-login.html';
+// Calculate occupancy for a specific month
+async function calculateMonthOccupancy(year, month) {
+    try {
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(year, month, 1).toISOString().split('T')[0];
+        const lastDay = new Date(year, month, daysInMonth).toISOString().split('T')[0];
+        
+        // Get all bookings overlapping with this month
+        const { data: bookings, error } = await supabase
+            .from('bookings')
+            .select('check_in, check_out')
+            .or(`and(check_in.lte.${lastDay},check_out.gte.${firstDay})`);
+        
+        if (error) throw error;
+        
+        if (!bookings || bookings.length === 0) return 0;
+        
+        // Calculate total room-nights
+        let totalRoomNights = 0;
+        
+        bookings.forEach(booking => {
+            const checkIn = new Date(booking.check_in);
+            const checkOut = new Date(booking.check_out);
+            const monthStart = new Date(year, month, 1);
+            const monthEnd = new Date(year, month, daysInMonth);
+            
+            // Find overlap
+            const overlapStart = checkIn > monthStart ? checkIn : monthStart;
+            const overlapEnd = checkOut < monthEnd ? checkOut : monthEnd;
+            
+            if (overlapStart < overlapEnd) {
+                const nights = Math.ceil((overlapEnd - overlapStart) / (1000 * 60 * 60 * 24));
+                totalRoomNights += nights;
+            }
+        });
+        
+        // Calculate occupancy rate
+        const totalAvailableRoomNights = TOTAL_ROOMS * daysInMonth;
+        const occupancyRate = (totalRoomNights / totalAvailableRoomNights) * 100;
+        
+        return occupancyRate;
+        
+    } catch (error) {
+        console.error(`Error calculating occupancy for ${year}-${month}:`, error);
+        return 0;
     }
-});
+}
+
+// Setup logout
+function setupLogout() {
+    document.getElementById('logoutBtn')?.addEventListener('click', function() {
+        if (confirm('Are you sure you want to logout?')) {
+            localStorage.removeItem('hms_user');
+            window.location.href = 'admin-login.html';
+        }
+    });
+}
 
 console.log('✅ Dashboard module loaded');

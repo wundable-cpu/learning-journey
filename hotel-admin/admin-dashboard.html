@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Tima Sara Hotel Management</title>
     <link rel="stylesheet" href="admin-style.css">
+    <style>
+        /* Responsive Dashboard Fixes */
+        .main-content {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 100%;
+        }
+        
+        /* Full width for monthly trend */
+        .full-width-card {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 767px) {
+            .dashboard-card {
+                min-width: 0 !important;
+                width: 100% !important;
+            }
+        }
+    </style>
 </head>
 <body class="dashboard-page">
     
@@ -49,7 +75,7 @@
                 <span>Analytics</span>
             </a>
             <a href="admin-reports.html" class="nav-item">
-                <span class="nav-icon">📋</span>
+                <span class="nav-icon">📄</span>
                 <span>Reports</span>
             </a>
             <a href="admin-invoices.html" class="nav-item">
@@ -81,39 +107,39 @@
             <div class="top-bar-left">
                 <h1 class="page-title">Dashboard</h1>
                 <div class="current-datetime">
-                    <div class="time" id="currentTime">10:30 AM</div>
-                    <div class="date" id="currentDate">WED, OCT 26, 2024</div>
+                    <div class="time" id="currentTime">--:-- --</div>
+                    <div class="date" id="currentDate">Loading...</div>
                 </div>
             </div>
             <div class="top-bar-right">
                 <div class="user-info">
                     <span class="user-icon">👤</span>
-                    <span class="user-name" id="userName">Welcome, Admin</span>
+                    <span class="user-name" id="userName">Jacob Mahama</span>
                 </div>
             </div>
         </header>
 
-        <!-- Dashboard Grid -->
+        <!-- Dashboard Grid: Reordered for logical mobile flow -->
         <div class="dashboard-grid">
             
-            <!-- Room Status Card -->
+            <!-- 1. ROOM STATUS -->
             <div class="dashboard-card room-status-card">
                 <h3>ROOM STATUS</h3>
                 <div class="status-list">
                     <div class="status-item">
                         <span class="status-dot available"></span>
                         <span class="status-label">AVAILABLE</span>
-                        <span class="status-count" id="availableRooms">10</span>
+                        <span class="status-count" id="availableRooms">-</span>
                     </div>
                     <div class="status-item">
                         <span class="status-dot occupied"></span>
                         <span class="status-label">OCCUPIED</span>
-                        <span class="status-count" id="occupiedRooms">18</span>
+                        <span class="status-count" id="occupiedRooms">-</span>
                     </div>
                     <div class="status-item">
                         <span class="status-dot cleaning"></span>
                         <span class="status-label">CLEANING</span>
-                        <span class="status-count" id="cleaningRooms">2</span>
+                        <span class="status-count" id="cleaningRooms">0</span>
                     </div>
                     <div class="status-item">
                         <span class="status-dot maintenance"></span>
@@ -123,17 +149,37 @@
                     <div class="status-item">
                         <span class="status-dot reserved"></span>
                         <span class="status-label">RESERVED</span>
-                        <span class="status-count" id="reservedRooms">0</span>
+                        <span class="status-count" id="reservedRooms">-</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Occupancy Overview Card -->
+            <!-- 2. UPCOMING ARRIVALS -->
+            <div class="dashboard-card arrivals-card">
+                <h3>UPCOMING ARRIVALS</h3>
+                <div class="arrivals-list" id="arrivalsList">
+                    <div style="text-align: center; padding: 20px; color: #718096;">
+                        Loading arrivals...
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. DEPARTURES TODAY -->
+            <div class="dashboard-card departures-card">
+                <h3>DEPARTURES TODAY</h3>
+                <div class="departures-list" id="departuresList">
+                    <div style="text-align: center; padding: 20px; color: #718096;">
+                        Loading departures...
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. OCCUPANCY OVERVIEW -->
             <div class="dashboard-card occupancy-card">
                 <h3>OCCUPANCY OVERVIEW</h3>
                 <div class="occupancy-display">
                     <div class="occupancy-fraction">
-                        <span class="occupied-count" id="occupiedCount">18</span>
+                        <span class="occupied-count" id="occupiedCount">-</span>
                         <span class="divider">/</span>
                         <span class="total-count">28</span>
                     </div>
@@ -141,7 +187,7 @@
                         <svg class="progress-ring" width="120" height="120">
                             <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
                             <circle class="progress-ring-circle" cx="60" cy="60" r="54" id="progressCircle"></circle>
-                            <text x="60" y="70" class="progress-text" id="progressText">64%</text>
+                            <text x="60" y="70" class="progress-text" id="progressText">-%</text>
                         </svg>
                     </div>
                 </div>
@@ -152,82 +198,35 @@
                     <div class="detail-row">
                         <div class="detail-item">
                             <span>CHECK-INS TODAY:</span>
-                            <strong id="checkInsToday">5</strong>
+                            <strong id="checkInsToday">-</strong>
                         </div>
                         <div class="detail-item">
-                            <span>CHECK-OUTS TODAY</span>
-                            <strong id="checkOutsToday">3</strong> <br>
-                            <span>CHECK-OUTS TIME</span><br>
-                             <span class="time">11:00 AM</span>
+                            <span>CHECK-OUTS TODAY:</span>
+                            <strong id="checkOutsToday">-</strong>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Upcoming Arrivals Card -->
-            <div class="dashboard-card arrivals-card">
-                <h3>UPCOMING ARRIVALS</h3>
-                <div class="arrivals-list" id="arrivalsList">
-                    <div class="arrival-item">
-                        <div class="arrival-info">
-                            <span class="guest-name">Guest: John Doe</span>
-                            <span class="room-number">Room: 101</span>
-                        </div>
-                        <div class="arrival-time">10:30 AM</div>
-                    </div>
-                    <div class="arrival-item">
-                        <div class="arrival-info">
-                            <span class="guest-name">Guest: Aisha Rahman</span>
-                            <span class="room-number">Room: 205</span>
-                        </div>
-                        <div class="arrival-time">12:30 PM</div>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Second Row: Monthly Occupancy Trend & Departures -->
-        <div class="dashboard-grid" style="margin-top: 20px; grid-template-columns: 2fr 1fr;">
-            
-            <!-- CHANGED: Monthly Occupancy Trend Card (Larger) -->
-            <div class="dashboard-card" style="grid-column: span 1;">
+        <!-- 5. MONTHLY OCCUPANCY TREND (Full Width) -->
+        <div class="dashboard-grid" style="margin-top: 20px;">
+            <div class="dashboard-card full-width-card">
                 <h3>MONTHLY OCCUPANCY TREND</h3>
                 <div style="padding: 20px;">
                     <canvas id="monthlyOccupancyChart" style="max-height: 250px;"></canvas>
                 </div>
             </div>
-
-            <!-- Departures Today Card -->
-            <div class="dashboard-card departures-card">
-                <h3>DEPARTURES TODAY</h3>
-                <div class="departures-list" id="departuresList">
-                    <div class="departure-item">
-                        <div class="departure-info">
-                            <span class="guest-name">Guest: John Do2</span>
-                            <span class="room-number">Room: 7</span>
-                        </div>
-                        <div class="departure-time">10:00 AM</div>
-                    </div>
-                    <div class="departure-item">
-                        <div class="departure-info">
-                            <span class="guest-name">Guest: Emeka Obi</span>
-                            <span class="room-number">Emeka Obi</span>
-                        </div>
-                        <div class="departure-time">10:30 PM</div>
-                    </div>
-                </div>
-            </div>
-
         </div>
+
     </main>
 
-    <!-- Chart.js for analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-    <!-- Supabase -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script src="js/admin-script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/admin-dashboard.js"></script>
+
 </body>
 </html>
