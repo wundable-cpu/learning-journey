@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamale Weather - Tima Sara Hotel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .weather-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .temp {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .description {
+            font-size: 1.5em;
+            text-transform: capitalize;
+        }
+        .details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .detail-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        button {
+            background-color: #1abc9c;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #16a085;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌤️ Current Weather in Tamale</h1>
+    <p>Live weather at Tima Sara Hotel</p>
+    
+    <div id="weatherCard" class="weather-card">
+        <p>Loading weather data...</p>
+    </div>
+    
+    <button id="refreshBtn">Refresh Weather</button>
+
+    <script>
+        const API_KEY = '6d0e5c6693f8213bd4b8116dcab0c44f'; // ← PUT YOUR API KEY HERE
+        const CITY = 'Tamale';
+        const COUNTRY = 'GH'; // Ghana country code
+        
+        const weatherCard = document.getElementById('weatherCard');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        const fetchWeather = () => {
+            weatherCard.innerHTML = '<p>Loading weather data...</p>';
+            
+            // API endpoint with your city
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${CITY},${COUNTRY}&appid=${API_KEY}&units=metric`;
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Weather data not available');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Weather data:', data);
+                    
+                    // Display weather
+                    weatherCard.innerHTML = `
+                        <div class="temp">${Math.round(data.main.temp)}°C</div>
+                        <div class="description">${data.weather[0].description}</div>
+                        <div class="details">
+                            <div class="detail-item">
+                                <div>💧 Humidity</div>
+                                <div><strong>${data.main.humidity}%</strong></div>
+                            </div>
+                            <div class="detail-item">
+                                <div>🌬️ Wind Speed</div>
+                                <div><strong>${data.wind.speed} m/s</strong></div>
+                            </div>
+                            <div class="detail-item">
+                                <div>👁️ Visibility</div>
+                                <div><strong>${(data.visibility / 1000).toFixed(1)} km</strong></div>
+                            </div>
+                            <div class="detail-item">
+                                <div>🌡️ Feels Like</div>
+                                <div><strong>${Math.round(data.main.feels_like)}°C</strong></div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    weatherCard.innerHTML = `
+                        <p style="color: #ffcccc;">Error loading weather: ${error.message}</p>
+                        <p>Make sure your API key is activated (takes ~10 minutes)</p>
+                    `;
+                    console.error('Weather error:', error);
+                });
+        };
+
+        // Load weather on page load
+        fetchWeather();
+
+        // Refresh button
+        refreshBtn.addEventListener('click', fetchWeather);
+    </script>
+</body>
+</html>
+
+

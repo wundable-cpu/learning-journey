@@ -1,17 +1,23 @@
-# API keys and sensitive files
-weather-test.html
-api-keys.txt
+# System files
+.DS_Store
+Thumbs.db
 
-# Any file with "key" or "secret" in the name
-*key*
-*secret*
+# Backup files
+*-backup/
+backup-*/
+*.bak
 
-# Environment files
+# Logs
+*.log
+
+# Environment
 .env
 .env.local
 
-# OS files
-.DS_Store
-Thumbs.db.DS_Store
-*.DS_Store
-._.DS_Store
+# Editor
+.vscode/
+.idea/
+
+# Temporary
+*.tmp
+temp/
